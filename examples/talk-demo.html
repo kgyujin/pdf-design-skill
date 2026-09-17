@@ -32,7 +32,6 @@
 
 <section class="slide">
   <header class="slide-head">
-    <div class="eyebrow">Problem</div>
     <div class="slide-title">Reads, not writes, were saturating the database</div>
     <p class="slide-msg">Peak DB CPU hit 85% while most queries repeated the same keys.</p>
   </header>
@@ -58,7 +57,6 @@
 
 <section class="slide">
   <header class="slide-head">
-    <div class="eyebrow">Result</div>
     <div class="slide-title">p95 dropped below the target within one week of rollout</div>
   </header>
   <div class="slide-body l-figure">
@@ -103,7 +101,6 @@
 
 <section class="slide">
   <header class="slide-head">
-    <div class="eyebrow">Model</div>
     <div class="slide-title">Expected latency depends on the hit ratio, not on cache speed alone</div>
   </header>
   <div class="slide-body l-equation">
@@ -133,7 +130,6 @@
 
 <section class="slide">
   <header class="slide-head">
-    <div class="eyebrow">Procedure</div>
     <div class="slide-title">The read path checks the cache first and fills it on a miss</div>
   </header>
   <div class="slide-body l-steps">
@@ -158,7 +154,6 @@
 
 <section class="slide">
   <header class="slide-head">
-    <div class="eyebrow">Evidence</div>
     <div class="slide-title">Hit ratio rose to 88% and DB CPU halved</div>
   </header>
   <div class="slide-body l-table">
@@ -185,7 +180,6 @@
 
 <section class="slide">
   <header class="slide-head">
-    <div class="eyebrow">Design choice</div>
     <div class="slide-title">Cache-aside fit a read-heavy API better than write-through</div>
   </header>
   <div class="slide-body l-compare">
@@ -202,7 +196,7 @@
 </section>
 
 <section class="slide section">
-  <div class="sec-big">02</div>
+  <div class="sec-big">2</div>
   <div class="slide-title">Where the gain stops</div>
   <p>Conditions and limits of the result</p>
   <footer class="slide-foot"><span class="source"></span><span class="page"></span></footer>
@@ -211,7 +205,6 @@
 
 <section class="slide">
   <header class="slide-head">
-    <div class="eyebrow">Limitations</div>
     <div class="slide-title">The result holds only while keys repeat and data can be slightly stale</div>
   </header>
   <div class="slide-body l-split">
@@ -237,7 +230,6 @@
 
 <section class="slide appendix">
   <header class="slide-head">
-    <div class="eyebrow">Worked example</div>
     <div class="slide-title">Plugging in sample values shows why the hit ratio dominates</div>
   </header>
   <div class="slide-body l-equation">

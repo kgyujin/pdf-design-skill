@@ -9,8 +9,8 @@ html[data-style="classic"] {
   --font-label: var(--font-sans);
   --head-weight: 700;
   --head-tracking: 0;
-  --label-transform: uppercase;
-  --label-tracking: 0.14em;
+  --label-transform: none;
+  --label-tracking: 0.04em;
   --radius: 0pt;
   --leading: 1.8;
 }

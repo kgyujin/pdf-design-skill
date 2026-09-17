@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko" data-style="swiss" data-palette="indigo" data-font="auto" data-density="normal" data-radius="auto">
+<html lang="ko" data-style="swiss" data-palette="graphite" data-font="auto" data-density="normal" data-radius="auto">
 <head>
 <meta charset="utf-8">
 <title>8월 서비스 운영 리포트 (예시)</title>
@@ -17,7 +17,7 @@
 <section class="cover">
   <div class="cover-top"><span>플랫폼 운영팀</span><span>2026. 09. 01</span></div>
   <div class="cover-body">
-    <div class="eyebrow">Monthly Ops Report · 예시 데이터</div>
+    <div class="eyebrow">월간 운영 리포트 · 예시 데이터</div>
     <div class="cover-title">응답 속도는 절반으로,<br>장애는 한 건으로</div>
     <p class="cover-sub">캐시 계층 도입 후 8월 API p95 응답시간이 42% 줄었다. 남은 과제는 배치 작업의 야간 지연이다.</p>
   </div>
@@ -29,7 +29,6 @@
 </section>
 
 <main>
-  <div class="eyebrow">Executive Summary</div>
   <h1>핵심 지표는 모두 목표를 넘었다</h1>
   <p class="lead">p95 응답시간과 가용성은 목표를 달성했다. 반면 배치 작업 지연이 3주 연속 늘고 있어 9월 우선 과제로 올린다.</p>
 
@@ -40,7 +39,7 @@
     <div class="kpi"><div class="kpi-label">배치 평균 지연</div><div class="kpi-value">+18분</div><div class="kpi-delta down">▼ 3주 연속 증가</div></div>
   </div>
 
-  <h2><span class="sec-num">01</span>응답시간 추이</h2>
+  <h2><span class="sec-num">1</span>응답시간 추이</h2>
   <p>8월 12일 Redis 캐시 계층을 배포한 뒤 p95가 200ms대에서 130ms 안팎으로 내려와 유지되고 있다. 캐시 적중률은 배포 첫 주 71%에서 마지막 주 88%로 올랐다.</p>
 
   <figure>
@@ -60,7 +59,7 @@
     <figcaption>그림 1. 주간 API p95 응답시간(ms). 출처: APM 대시보드, 기준일 2026-09-01 (예시 데이터)</figcaption>
   </figure>
 
-  <h2><span class="sec-num">02</span>서비스별 현황</h2>
+  <h2><span class="sec-num">2</span>서비스별 현황</h2>
   <table>
     <thead><tr><th>서비스</th><th>담당</th><th class="num">p95 (ms)</th><th class="num">에러율</th><th>목표 대비</th></tr></thead>
     <tbody>
@@ -72,7 +71,7 @@
     <caption>표 1. 서비스별 8월 평균 지표 (예시 데이터)</caption>
   </table>
 
-  <h2><span class="sec-num">03</span>장애 기록</h2>
+  <h2><span class="sec-num">3</span>장애 기록</h2>
   <table>
     <thead><tr><th>등급</th><th>일시</th><th>내용</th><th class="num">영향 시간</th></tr></thead>
     <tbody>
@@ -87,12 +86,15 @@
     <p>현재 추세라면 10월 중순에 야간 배치가 오전 업무 시작(09:00) 이후까지 이어진다. 커넥션 풀 분리와 작업 병렬화를 9월 안에 끝내야 한다.</p>
   </div>
 
-  <h2><span class="sec-num">04</span>9월 우선 과제</h2>
-  <div class="grid-3">
-    <div class="card"><div class="eyebrow">P0</div><h4>배치 커넥션 풀 분리</h4><p class="small">정산 배치 전용 풀을 두어 API 트래픽과 격리한다.</p></div>
-    <div class="card"><div class="eyebrow">P1</div><h4>캐시 무효화 규칙 정리</h4><p class="small">상품 가격 변경 시 캐시가 늦게 갱신되는 경로를 없앤다.</p></div>
-    <div class="card"><div class="eyebrow">P2</div><h4>외부 API 서킷브레이커</h4><p class="small">결제사 지연이 전체 타임아웃으로 번지지 않게 막는다.</p></div>
-  </div>
+  <h2><span class="sec-num">4</span>9월 우선 과제</h2>
+  <table>
+    <thead><tr><th>순위</th><th>과제</th><th>내용</th><th>담당</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><strong>배치 커넥션 풀 분리</strong></td><td>정산 배치 전용 풀을 두어 API 트래픽과 격리한다.</td><td class="muted small">정산팀</td></tr>
+      <tr><td>2</td><td><strong>캐시 무효화 규칙 정리</strong></td><td>상품 가격 변경 시 캐시가 늦게 갱신되는 경로를 없앤다.</td><td class="muted small">커머스팀</td></tr>
+      <tr><td>3</td><td><strong>외부 API 서킷브레이커</strong></td><td>결제사 지연이 전체 타임아웃으로 번지지 않게 막는다.</td><td class="muted small">플랫폼팀</td></tr>
+    </tbody>
+  </table>
 </main>
 
 </body>

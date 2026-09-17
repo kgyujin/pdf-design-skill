@@ -12,6 +12,7 @@
   - CHECK_SCRIPT 의 임계값(pt)은 SKILL/프롬프트의 글자 크기 기준과 맞춰야 한다.
 변경사항 내역:
 - 2026-09-17 | 최초 작성 | 노트 파서, 시간 추정, 레이아웃 검사
+- 2026-09-17 | AI 티 검사 | audit_design: 장식 효과·대문자 라벨·0 붙은 번호·이모지·줄표·카드 3개 나열 등
 """
 
 from __future__ import annotations
@@ -204,6 +205,78 @@ def audit_slides(slides: list[Slide]) -> list[dict]:
             issues.append({"level": "warn", "where": where, "message": "하단 출처(.slide-foot .source)가 비어 있습니다."})
         if not slide.title:
             issues.append({"level": "warn", "where": where, "message": "슬라이드 제목(.slide-title)이 없습니다."})
+    return issues
+
+
+AI_TELL_PREFIX = "AI 티: "
+STYLE_BLOCK_PATTERN = re.compile(r"<style(?![^>]*id=\"pdf-design-accent\")[^>]*>(.*?)</style>", re.DOTALL | re.IGNORECASE)
+INLINE_STYLE_PATTERN = re.compile(r'\sstyle="([^"]*)"', re.IGNORECASE)
+# (정규식, 설명). 문서가 직접 넣은 스타일에서만 찾는다. 스킬 CSS 번들은 references/anti-ai-design.md 기준으로 관리한다.
+STYLE_TELLS = (
+    (re.compile(r"gradient\s*\(", re.I), "그라데이션"),
+    (re.compile(r"(?:box|text)-shadow\s*:", re.I), "그림자 효과"),
+    (re.compile(r"backdrop-filter|filter\s*:\s*blur", re.I), "흐림(유리) 효과"),
+    (re.compile(r"border-radius\s*:\s*(?:999|9999)px|border-radius\s*:\s*50%", re.I), "알약·원형 장식"),
+    (re.compile(r"text-transform\s*:\s*uppercase", re.I), "대문자 라벨"),
+    (re.compile(r"letter-spacing\s*:\s*0?\.(?:[1-9])\d*em", re.I), "넓은 자간 라벨"),
+    (re.compile(r"border-left\s*:\s*(?:[2-9]|\d{2})(?:\.\d+)?(?:pt|px)", re.I), "왼쪽 굵은 세로 바"),
+    (re.compile(r":[^;{}]*#[0-9a-f]{3}(?:[0-9a-f]{3})?\b", re.I), "토큰이 아닌 HEX 색"),
+)
+EMOJI_PATTERN = re.compile("[\U0001F000-\U0001FAFF☀-⛿✀-➿️]")
+EM_DASH_PROSE_PATTERN = re.compile(r"\S\s*—\s*\S")
+TAG_PATTERN = re.compile(r"<[^>]+>")
+NON_TEXT_PATTERN = re.compile(r"<(style|script)\b.*?</\1>|<!--.*?-->", re.DOTALL | re.IGNORECASE)
+
+
+def _visible_text(fragment: str) -> str:
+    return _collapse(TAG_PATTERN.sub(" ", NON_TEXT_PATTERN.sub(" ", fragment)))
+
+
+def audit_design(html_text: str) -> list[dict]:
+    """문서 HTML에서 흔한 'AI가 만든 티' 패턴을 찾는다(references/anti-ai-design.md)."""
+    issues = []
+
+    def warn(message: str, where: str = "document") -> None:
+        issues.append({"level": "warn", "where": where, "message": AI_TELL_PREFIX + message})
+
+    style_sources = STYLE_BLOCK_PATTERN.findall(html_text)
+    # 핀 위치·막대 길이처럼 값만 주는 인라인 스타일은 정상이다.
+    style_sources += [value for value in INLINE_STYLE_PATTERN.findall(html_text) if not re.fullmatch(r"[\s;]*(?:(?:left|top|width|height)\s*:\s*[\d.]+(?:%|mm|pt|px)\s*;?\s*)+", value)]
+    style_text = re.sub(r"/\*.*?\*/", "", "\n".join(style_sources), flags=re.DOTALL)
+    for pattern, label in STYLE_TELLS:
+        found = pattern.search(style_text)
+        if found:
+            warn(f"문서 스타일에 {label}이(가) 있습니다: `{found.group(0)}`. 토큰과 기본 스타일을 쓰세요.")
+
+    body_text = _visible_text(html_text)
+    emoji = EMOJI_PATTERN.findall(body_text)
+    if emoji:
+        warn(f"이모지·장식 기호가 {len(emoji)}개 있습니다: {''.join(dict.fromkeys(emoji))[:10]}")
+
+    prose_blocks = re.findall(r"<(p|li|h[1-4])\b[^>]*>(.*?)</\1>", html_text, re.DOTALL | re.IGNORECASE)
+    dash_blocks = [text for _, text in prose_blocks if EM_DASH_PROSE_PATTERN.search(_visible_text(text))]
+    if len(dash_blocks) >= 2:
+        warn(f"줄표(—)로 문장을 잇는 문단이 {len(dash_blocks)}개입니다. 쉼표·마침표·괄호로 바꾸세요.")
+
+    padded = re.findall(r'class="(?:sec-num|sec-big)">\s*0\d', html_text)
+    if padded:
+        warn(f"0을 붙인 번호(01, 02 …)가 {len(padded)}곳에 있습니다. 1, 2 … 로 쓰세요.")
+
+    slides = SLIDE_PATTERN.findall(html_text)
+    if slides:
+        content_slides = [chunk for chunk in slides if not re.search(r'class="[^"]*\bslide\b[^"]*\b(?:hero|section)\b', chunk)]
+        labelled = [chunk for chunk in content_slides if 'class="eyebrow"' in chunk]
+        if len(content_slides) >= 3 and len(labelled) * 2 > len(content_slides):
+            warn(f"내용 슬라이드 {len(content_slides)}장 중 {len(labelled)}장에 제목 위 라벨이 있습니다. 표지·섹션에만 쓰세요.")
+    else:
+        body_only = re.sub(r'<section class="cover".*?</section>', "", html_text, flags=re.DOTALL)
+        eyebrow_count = body_only.count('class="eyebrow"')
+        if eyebrow_count >= 3:
+            warn(f"본문에 제목 위 라벨이 {eyebrow_count}개 있습니다. 반복 라벨은 빼세요.")
+
+    card_rows = re.findall(r'<div class="grid-3[^"]*">\s*(?:<div class="card[^"]*">.*?</div>\s*){3}</div>', html_text, re.DOTALL)
+    if card_rows:
+        warn(f"같은 모양 카드 3개를 나열한 곳이 {len(card_rows)}곳 있습니다. 번호 목록이나 표가 맞는지 확인하세요.")
     return issues
 
 

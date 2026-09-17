@@ -9,6 +9,7 @@
  * 변경사항 내역:
  * - 2026-09-17 | 최초 작성 | pdf-design base.css를 스타일·색조 축으로 분리
  * - 2026-09-17 | 바탕체 규칙 | 세리프를 고운바탕으로 교체, 스타일 기본값에서 세리프 제외
+ * - 2026-09-17 | AI 티 제거 | 대문자 라벨·0 붙은 번호·포인트색 세로 바·알약·강조색 남용 제거 (references/anti-ai-design.md)
  */
 
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
@@ -28,8 +29,8 @@
   --font-label: var(--font-sans);
   --head-weight: 800;
   --head-tracking: -0.02em;
-  --label-transform: uppercase;
-  --label-tracking: 0.12em;
+  --label-transform: none;
+  --label-tracking: 0;
   --radius: 6pt;
 
   /* 밀도 옵션이 정하는 값 */
@@ -91,7 +92,7 @@ h1 { font-size: var(--fs-2xl); font-weight: var(--head-weight); margin-bottom: v
 h2 { font-size: var(--fs-lg); font-weight: 700; margin: var(--sp-6) 0 var(--sp-3); padding-bottom: var(--sp-2); }
 h3 { font-size: var(--fs-md); font-weight: 700; margin: var(--sp-5) 0 var(--sp-2); }
 h4 { font-size: var(--fs-base); font-weight: 700; margin: var(--sp-4) 0 var(--sp-1); color: var(--ink-2); }
-.sec-num { color: var(--accent); margin-right: 0.4em; font-variant-numeric: tabular-nums; }
+.sec-num { color: var(--muted); margin-right: 0.4em; font-variant-numeric: tabular-nums; }
 
 p { margin: 0 0 var(--sp-3); color: var(--ink-2); orphans: 3; widows: 3; }
 strong { color: var(--ink); font-weight: 700; }
@@ -104,13 +105,13 @@ small, .small { font-size: var(--fs-sm); }
   font-weight: 700;
   letter-spacing: var(--label-tracking);
   text-transform: var(--label-transform);
-  color: var(--accent);
+  color: var(--muted);
 }
 .lead { font-size: var(--fs-md); line-height: 1.6; color: var(--ink-2); }
 
 ul, ol { margin: 0 0 var(--sp-3); padding-left: 1.2em; color: var(--ink-2); }
 li { margin-bottom: var(--sp-1); }
-li::marker { color: var(--accent); }
+li::marker { color: var(--muted); }
 
 code { font-family: var(--font-mono); font-size: 0.88em; background: var(--surface-2); padding: 1pt 4pt; border-radius: 3pt; }
 pre {
@@ -119,7 +120,7 @@ pre {
   padding: var(--sp-3) var(--sp-4); white-space: pre-wrap; break-inside: avoid;
 }
 pre code { background: none; padding: 0; }
-blockquote { margin: var(--sp-4) 0; padding: var(--sp-2) var(--sp-4); border-left: 3pt solid var(--accent); color: var(--ink-2); font-size: var(--fs-md); }
+blockquote { margin: var(--sp-4) 0; padding: var(--sp-1) var(--sp-5); border-left: 0; color: var(--ink-2); font-size: var(--fs-md); }
 hr { border: 0; border-top: 0.75pt solid var(--line); margin: var(--sp-5) 0; }
 
 /* ---------- 4. 표 ---------- */
@@ -140,11 +141,11 @@ figcaption { text-align: left; font-size: var(--fs-xs); color: var(--muted); pad
 .card > h3:first-child, .card > h4:first-child { margin-top: 0; }
 .card .eyebrow + h3, .card .eyebrow + h4 { margin-top: var(--sp-1); }
 
-.callout { background: var(--accent-soft); border-radius: var(--radius); padding: var(--sp-3) var(--sp-4); margin: var(--sp-4) 0; break-inside: avoid; }
+.callout { background: var(--surface-2); border-radius: var(--radius); padding: var(--sp-3) var(--sp-4); margin: var(--sp-4) 0; break-inside: avoid; }
 .callout > :last-child { margin-bottom: 0; }
-.callout-title { font-weight: 700; color: var(--accent); margin-bottom: var(--sp-1); font-family: var(--font-label); }
+.callout-title { font-weight: 700; color: var(--ink); margin-bottom: var(--sp-1); font-family: var(--font-label); }
 
-.tag { display: inline-block; font-size: var(--fs-xs); font-weight: 600; line-height: 1; padding: 3pt 6pt; border-radius: 999px; background: var(--accent-soft); color: var(--accent); margin: 0 2pt 3pt 0; }
+.tag { display: inline-block; font-size: var(--fs-xs); font-weight: 600; line-height: 1; padding: 3pt 5pt; border-radius: 2pt; border: 0.5pt solid var(--line); color: var(--ink-2); margin: 0 2pt 3pt 0; }
 
 .badge { display: inline-block; min-width: 34pt; text-align: center; font-size: var(--fs-xs); font-weight: 700; border-radius: 3pt; padding: 2pt 5pt; background: var(--surface-2); color: var(--muted); font-family: var(--font-label); }
 .badge.bad { background: color-mix(in srgb, var(--bad) 12%, var(--surface)); color: var(--bad); }
@@ -153,14 +154,14 @@ figcaption { text-align: left; font-size: var(--fs-xs); color: var(--muted); pad
 .badge.accent { background: var(--accent-soft); color: var(--accent); }
 
 .kpis { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: var(--sp-3); margin: var(--sp-4) 0; }
-.kpi { border-top: 2pt solid var(--accent); padding-top: var(--sp-2); break-inside: avoid; }
+.kpi { border-top: 1pt solid var(--ink); padding-top: var(--sp-2); break-inside: avoid; }
 .kpi-label { font-size: var(--fs-xs); color: var(--muted); font-weight: 600; font-family: var(--font-label); }
 .kpi-value { font-family: var(--font-head); font-size: var(--fs-xl); font-weight: var(--head-weight); letter-spacing: -0.02em; color: var(--ink); line-height: 1.25; }
 .kpi-delta { font-size: var(--fs-xs); font-weight: 600; }
 .up { color: var(--good); }
 .down { color: var(--bad); }
 
-.bar { height: 6pt; background: var(--surface-2); border-radius: 999px; overflow: hidden; }
+.bar { height: 5pt; background: var(--surface-2); border-radius: 1pt; overflow: hidden; }
 .bar > span { display: block; height: 100%; background: var(--accent); border-radius: inherit; }
 .bar > span.warn { background: var(--warn); }
 .bar > span.bad { background: var(--bad); }
@@ -223,7 +224,7 @@ figure img, figure svg { display: block; max-width: 100%; height: auto; border-r
 .main-col h2 { margin-top: var(--sp-5); font-size: var(--fs-md); }
 .main-col h2:first-child { margin-top: 0; }
 .name { font-family: var(--font-head); font-size: var(--fs-2xl); font-weight: var(--head-weight); letter-spacing: var(--head-tracking); line-height: 1.1; margin: 0; color: var(--ink); }
-.role { color: var(--accent); font-weight: 700; margin: var(--sp-1) 0 var(--sp-5); }
+.role { color: var(--ink-2); font-weight: 600; margin: var(--sp-1) 0 var(--sp-5); }
 .entry { margin-bottom: var(--sp-4); break-inside: avoid; }
 .entry-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--sp-2); }
 .entry-title { font-family: var(--font-head); font-weight: 700; font-size: var(--fs-md); color: var(--ink); }
@@ -291,16 +292,17 @@ aside.notes { display: none; }
 .slide.hero p { font-size: 18pt; color: var(--ink-2); }
 .slide.hero .meta { margin-top: 10mm; font-size: 14pt; color: var(--muted); line-height: 1.6; }
 .slide.section { justify-content: center; }
-.slide.section .sec-big { font-family: var(--font-head); font-size: 72pt; font-weight: var(--head-weight); line-height: 1; color: var(--accent); letter-spacing: -0.04em; }
+.slide.section .sec-big { font-family: var(--font-head); font-size: 72pt; font-weight: var(--head-weight); line-height: 1; color: var(--muted); letter-spacing: -0.04em; }
 .slide.section .slide-title { font-size: 40pt; margin-top: 8pt; }
 .slide.section p { color: var(--muted); margin-top: 8pt; }
-.slide.appendix .slide-head .eyebrow::after { content: " · Appendix"; color: var(--muted); }
+.slide.appendix .slide-title::before { content: "Appendix  "; font-size: 0.6em; font-weight: 600; color: var(--muted); }
+.slide.appendix:lang(ko) .slide-title::before { content: "부록  "; }
 
 /* 레이아웃: 핵심 포인트 3~5개 */
 .l-points .points { list-style: none; padding: 0; margin: 0; display: grid; gap: 7mm; counter-reset: point; }
 /* li 를 grid 로 만들면 설명 텍스트가 번호 열로 떨어진다. 번호는 절대 위치로 둔다. */
 .l-points .points > li { position: relative; padding-left: 12mm; margin: 0; color: var(--ink-2); counter-increment: point; }
-.l-points .points > li::before { content: counter(point, decimal-leading-zero); position: absolute; left: 0; top: 5pt; font-family: var(--font-label); font-size: 14pt; font-weight: 700; color: var(--accent); }
+.l-points .points > li::before { content: counter(point) "."; position: absolute; left: 0; top: 5pt; font-family: var(--font-label); font-size: 14pt; font-weight: 700; color: var(--muted); }
 .l-points .points > li > strong { display: block; color: var(--ink); font-size: 20pt; }
 .l-points.two-col .points { grid-template-columns: 1fr 1fr; column-gap: 14mm; }
 
@@ -316,17 +318,18 @@ aside.notes { display: none; }
 .fig-frame > svg { width: 100%; height: 100%; }
 .fig figcaption { margin-top: 4pt; }
 .fig-label { position: absolute; top: 0; left: 0; z-index: 2; font-family: var(--font-label); font-size: 10pt; padding: 2pt 6pt; background: var(--surface); border: 0.75pt solid var(--line); color: var(--muted); border-radius: 3pt; }
-.pin { position: absolute; z-index: 2; transform: translate(-50%, -50%); width: 22pt; height: 22pt; border-radius: 50%; background: var(--accent); color: var(--on-accent); font: 700 12pt/22pt var(--font-label); text-align: center; box-shadow: 0 0 0 2pt var(--surface); }
+.pin { position: absolute; z-index: 2; transform: translate(-50%, -50%); width: 22pt; height: 22pt; border-radius: 50%; background: var(--accent); color: var(--on-accent); font: 700 12pt/22pt var(--font-label); text-align: center; outline: 2pt solid var(--surface); }
 .callouts { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; justify-content: center; gap: 6mm; counter-reset: callout; }
 .callouts > li { position: relative; padding-left: 32pt; margin: 0; font-size: 17pt; counter-increment: callout; color: var(--ink-2); }
 .callouts > li::before { content: counter(callout); position: absolute; left: 0; top: 2pt; width: 22pt; height: 22pt; border-radius: 50%; background: var(--accent); color: var(--on-accent); font: 700 12pt/22pt var(--font-label); text-align: center; }
 .callouts > li > strong { display: block; color: var(--ink); }
-.look { font-size: 16pt; color: var(--ink-2); border-left: 2pt solid var(--accent); padding-left: 10pt; margin-top: 4mm; }
+.look { font-size: 16pt; color: var(--ink-2); margin-top: 4mm; }
 .look::before { content: "Look at: "; font-weight: 700; color: var(--ink); }
+.look:lang(ko)::before { content: "볼 곳: "; }
 
 /* 레이아웃: 수식 + 기호 설명 */
 .l-equation { display: grid; grid-template-rows: auto 1fr; gap: 8mm; }
-.equation { font-size: 28pt; text-align: center; padding: 8mm 0; background: var(--surface-2); border-radius: var(--radius); color: var(--ink); overflow-x: auto; }
+.equation { font-size: 28pt; text-align: center; padding: 6mm 0; border-top: 0.75pt solid var(--line); border-bottom: 0.75pt solid var(--line); color: var(--ink); overflow-x: auto; }
 .equation .katex-display { margin: 0; }
 .equation .term { border-radius: 3pt; padding: 0 2pt; }
 .symbols { display: grid; grid-template-columns: repeat(auto-fit, minmax(70mm, 1fr)); gap: 4mm 12mm; margin: 0; align-content: start; }
@@ -335,19 +338,17 @@ aside.notes { display: none; }
 .symbols dd { margin: 0; font-size: 16pt; color: var(--ink-2); }
 .derive { list-style: none; padding: 0; margin: 0; display: grid; gap: 3mm; counter-reset: derive; }
 .derive > li { counter-increment: derive; position: relative; padding-left: 10mm; font-size: 16pt; margin: 0; }
-.derive > li::before { content: counter(derive); position: absolute; left: 0; top: 3pt; color: var(--accent); font: 700 13pt var(--font-label); }
+.derive > li::before { content: counter(derive) "."; position: absolute; left: 0; top: 3pt; color: var(--muted); font: 700 13pt var(--font-label); }
 .derive .why { display: block; color: var(--muted); font-size: 13pt; }
 
 /* 레이아웃: 단계·절차 (가로 기본, .vertical 은 세로) */
-.l-steps .steps { list-style: none; padding: 0; margin: auto 0; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8mm; counter-reset: step; }
-.l-steps .steps > li { counter-increment: step; position: relative; margin: 0; padding: 5mm; border-top: 3pt solid var(--accent); background: var(--surface-2); border-radius: 0 0 var(--radius) var(--radius); font-size: 16pt; color: var(--ink-2); }
-.l-steps .steps > li::before { content: counter(step, decimal-leading-zero); display: block; font: 700 12pt var(--font-label); color: var(--accent); margin-bottom: 3pt; }
-.l-steps .steps > li:not(:last-child)::after { content: "→"; position: absolute; right: -6.5mm; top: 50%; transform: translateY(-50%); font-size: 16pt; color: var(--muted); }
+.l-steps .steps { list-style: none; padding: 0; margin: auto 0; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 10mm; counter-reset: step; }
+.l-steps .steps > li { counter-increment: step; position: relative; margin: 0; padding: 4mm 0 0; border-top: 1pt solid var(--ink); font-size: 16pt; color: var(--ink-2); }
+.l-steps .steps > li::before { content: counter(step) "."; display: block; font: 700 13pt var(--font-label); color: var(--muted); margin-bottom: 3pt; }
 .l-steps .steps > li > strong { display: block; color: var(--ink); font-size: 18pt; margin-bottom: 2pt; }
 .l-steps .steps.vertical { grid-auto-flow: row; grid-auto-rows: auto; gap: 3mm; margin: 0; }
-.l-steps .steps.vertical > li { border-top: 0; border-left: 3pt solid var(--accent); border-radius: 0 var(--radius) var(--radius) 0; padding: 3mm 5mm 3mm 16mm; }
-.l-steps .steps.vertical > li::before { position: absolute; left: 5mm; top: 3.5mm; margin: 0; }
-.l-steps .steps.vertical > li::after { content: none; }
+.l-steps .steps.vertical > li { border-top: 0.5pt solid var(--line); padding: 3mm 0 3mm 14mm; }
+.l-steps .steps.vertical > li::before { position: absolute; left: 0; top: 3.5mm; margin: 0; }
 .l-steps .steps .cond { display: inline-block; font-family: var(--font-mono); font-size: 12pt; background: var(--surface); border: 0.75pt solid var(--line); border-radius: 3pt; padding: 0 4pt; }
 
 /* 레이아웃: 비교 (2~3열) */
@@ -355,10 +356,10 @@ aside.notes { display: none; }
 .l-compare { display: flex; flex-flow: row wrap; align-content: flex-start; gap: 8mm 10mm; }
 .l-compare .col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 3mm; }
 .l-compare .col > h3 { font-size: 20pt; margin: 0; padding-bottom: 3mm; border-bottom: 1.5pt solid var(--ink); }
-.l-compare .col.pick > h3 { border-bottom-color: var(--accent); color: var(--accent); }
+.l-compare .col.pick > h3 { border-bottom-width: 3pt; }
 .l-compare .col ul { margin: 0; }
 .l-compare .col li { font-size: 16pt; }
-.verdict { flex: 1 0 100%; font-size: 18pt; color: var(--ink); background: var(--accent-soft); border-radius: var(--radius); padding: 4mm 6mm; }
+.verdict { flex: 1 0 100%; font-size: 18pt; font-weight: 600; color: var(--ink); border-top: 0.75pt solid var(--line); padding-top: 4mm; }
 
 /* 레이아웃: 표 */
 .l-table { justify-content: flex-start; }
@@ -372,7 +373,8 @@ aside.notes { display: none; }
 
 /* 제작자 해석·보충 설명: 원본 주장과 구분한다 */
 .interp { border: 1pt dashed var(--muted); border-radius: var(--radius); padding: 3mm 5mm; font-size: 16pt; color: var(--ink-2); }
-.interp::before { content: "Interpretation"; display: block; font: 700 10pt var(--font-label); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 2pt; }
+.interp::before { content: "Interpretation"; display: block; font: 600 11pt var(--font-label); color: var(--muted); margin-bottom: 2pt; }
+.interp:lang(ko)::before { content: "제작자 해석"; }
 .slide .interp p { font-size: 16pt; margin: 0; }
 
 /* 이전 버전 호환: 단순 슬라이드 요소 */
@@ -382,6 +384,6 @@ aside.notes { display: none; }
 .flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: center; gap: 10pt; }
 .flow .arrow { font-size: 22pt; color: var(--muted); }
 .flow .card { text-align: center; }
-.card.hl { background: var(--accent); border-color: var(--accent); }
-.card.hl, .card.hl h3, .card.hl h4, .card.hl p { color: var(--on-accent); }
+/* 강조 카드: 포인트색 면 대신 먹색 테두리. 스타일별 .card 규칙(html[data-style] .card)보다 우선하도록 명시도를 올린다. */
+html[data-style] .card.hl { background: var(--surface); border: 1.5pt solid var(--ink); }
 .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16pt; }

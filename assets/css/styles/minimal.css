@@ -1,6 +1,6 @@
 /*
  * 스타일: minimal — 여백 위주, 테두리 최소화, 가벼운 굵기. 제안서·포트폴리오·에세이용.
- * 표지: 흰 면 + 작은 포인트 사각형, 제목은 좌상단 / 제목: 룰 없음 / 카드: 테두리 없음
+ * 표지: 흰 면, 제목은 좌상단, 장식 없음 / 제목: 룰 없음 / 카드: 테두리 없음
  * 색은 토큰만 쓴다. 변경사항 내역: 2026-09-17 | 최초 작성
  */
 html[data-style="minimal"] {
@@ -24,14 +24,12 @@ html[data-style="minimal"] .kpi-value { font-weight: 500; font-size: calc(var(--
 html[data-style="minimal"] .kpi-label { order: 2; }
 html[data-style="minimal"] .card { border: 0; padding: 0; background: transparent; }
 html[data-style="minimal"] .card.soft { background: var(--surface-2); padding: var(--sp-4); }
-html[data-style="minimal"] .card.hl { background: var(--accent); padding: var(--sp-4); }
+html[data-style="minimal"] .card.hl { padding: var(--sp-4); }
 html[data-style="minimal"] .callout { background: var(--surface-2); }
 html[data-style="minimal"] .callout-title { color: var(--ink); }
 html[data-style="minimal"] .toc li { border-bottom: 0; padding: 2pt 0; }
 
 html[data-style="minimal"] .cover { background: var(--surface); padding: 30mm 26mm 26mm; }
-html[data-style="minimal"] .cover::before { content: ""; position: absolute; left: 26mm; top: 30mm; width: 7mm; height: 7mm; background: var(--accent); }
-html[data-style="minimal"] .cover-top { padding-left: 12mm; }
 html[data-style="minimal"] .cover-body { margin: 34mm 0 auto; }
 html[data-style="minimal"] .cover-title { font-weight: 600; font-size: calc(var(--fs-base) * 3.6); }
 html[data-style="minimal"] .cover-foot { border-top: 0; }
@@ -39,6 +37,5 @@ html[data-style="minimal"] .cover-foot { border-top: 0; }
 html[data-style="minimal"] .side { background: transparent; border-right: 0.5pt solid var(--line); }
 html[data-style="minimal"] .name { font-weight: 600; }
 
-html[data-style="minimal"] .slide.hero::before { content: ""; position: absolute; left: 24mm; top: 20mm; width: 9mm; height: 9mm; background: var(--accent); }
 html[data-style="minimal"] .slide-title { font-weight: 600; }
 html[data-style="minimal"] .big-number { font-weight: 500; }

@@ -14,9 +14,9 @@
 ## 텍스트
 | 클래스 | 용도 |
 |---|---|
-| `.eyebrow` | 제목 위 작은 라벨 |
+| `.eyebrow` | 제목 위 작은 라벨. 표지·히어로에서 문서 종류나 행사명을 밝힐 때만 쓴다(모든 제목 위에 반복하지 않는다) |
 | `.lead` | 요약 문단 |
-| `h2 > .sec-num` | 장 번호. 예: `<h2><span class="sec-num">01</span>배경</h2>` |
+| `h2 > .sec-num` | 장 번호. 예: `<h2><span class="sec-num">1</span>배경</h2>` (0을 붙이지 않는다) |
 | `.slide-title`, `.big-number` (`.muted`) | 슬라이드 제목, 큰 수치 |
 | `.muted`, `.small` | 보조 텍스트 |
 
@@ -25,9 +25,9 @@
 |---|---|
 | `.kpis` > `.kpi` > `.kpi-label`, `.kpi-value`, `.kpi-delta.up/.down` | 지표 묶음. 변화 표시는 ▲▼ 기호와 함께 쓴다 |
 | `.callout` > `.callout-title` | 강조 박스. 페이지당 1개 |
-| `.card`, `.card.soft`, `.card.hl` | 카드. `hl`은 포인트색으로 채운 강조 카드 |
-| `.tag` | 기술 스택 같은 짧은 태그 |
-| `.badge` (`.good` `.warn` `.bad` `.accent`) | 상태·등급 표시 |
+| `.card`, `.card.soft`, `.card.hl` | 카드. `hl`은 먹색 테두리로 구분한 강조 카드. 같은 카드 3개를 나열하기 전에 번호 목록·표가 맞는지 먼저 본다 |
+| `.tag` | 기술 스택 같은 짧은 태그(테두리만 있는 작은 사각형) |
+| `.badge` (`.good` `.warn` `.bad` `.accent`) | 상태·등급 표시. 표 안의 상태 값에만 쓴다 |
 | `.bar > span[style="width:NN%"]` (`.warn` `.bad`) | 진행 막대 |
 | `ol.toc > li > .sec-num + span` | 목차 |
 | `.flow`(카드 → `.arrow` → 카드), `.compare`, `.big-number` | `deck`용 간단한 흐름도·전후 비교·큰 수치 |
@@ -39,7 +39,6 @@
 ```html
 <section class="slide">                      <!-- .hero(표지) .section(파트 구분) .appendix(부록) -->
   <header class="slide-head">
-    <div class="eyebrow">Result</div>
     <div class="slide-title">결론을 담은 제목</div>
     <p class="slide-msg">핵심 메시지 한 문장(선택)</p>
   </header>
@@ -57,7 +56,7 @@
 | `l-points` (`two-col`) | `ol.points > li > strong + 설명` | 핵심 포인트 3~5개 |
 | `l-figure` (`wide` `flip`) | `figure.fig > .fig-frame > img/svg` + `.pin` + `figcaption`, 옆에 `ol.callouts` | Figure 중심. `.pin`은 `style="left:%; top:%"`로 위치 지정 |
 | `l-equation` | `.equation` (`$$…$$`) + `dl.symbols > div > dt + dd` 또는 `ol.derive > li + .why` | 수식·기호 설명·단계별 계산 |
-| `l-steps` | `ol.steps > li > strong + 설명` (`.vertical`, 조건식은 `.cond`) | 절차·Algorithm |
+| `l-steps` | `ol.steps > li > strong + 설명` (`.vertical`, 조건식은 `.cond`) | 절차·Algorithm. 번호와 룰로 순서를 보이며 화살표를 넣지 않는다 |
 | `l-compare` | `.col`(선택안은 `.col.pick`) `> h3 + ul`, 마지막에 `.verdict` | 비교와 결론 |
 | `l-table` | `table` + `caption`, 강조 행 `tr.hl`, 강조 칸 `td.hl` | 표 |
 | `l-split` | `.text` + 시각자료나 `.interp` | 글과 시각자료 나란히 |
@@ -65,8 +64,8 @@
 | 보조 클래스 | 용도 |
 |---|---|
 | `.fig-label` | Figure 왼쪽 위 표시: "adapted from …", "simplified view" |
-| `.look` | "Look at:"으로 시작하는 한 줄 안내 |
-| `.interp` | 제작자 해석(점선 박스, "Interpretation" 라벨). 원본 주장과 구분 |
+| `.look` | "Look at:"(한국어 문서는 "볼 곳:")으로 시작하는 한 줄 안내 |
+| `.interp` | 제작자 해석(점선 박스, "Interpretation"/"제작자 해석" 라벨). 원본 주장과 구분 |
 | `.sec-big` | 섹션 구분 슬라이드의 큰 번호 |
 | `.meta` | 표지 슬라이드의 발표자·소속·원본 정보 |
 

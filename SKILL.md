@@ -23,22 +23,24 @@ CLI는 `python3 SKILL_DIR/scripts/pdfdesign.py <명령>` 형태로 실행한다.
 
 각 값의 설명은 `pdfdesign.py options`로 확인한다. 스타일별 특징과 추천 조합은 `references/styles.md`에 있다.
 
+**AI 티 금지**: `references/anti-ai-design.md`의 패턴(모든 제목 위 대문자 라벨, `01` 번호, 색 채운 번호 칩, 포인트색 세로 바, 장식 도형, 그라데이션·그림자, 알약 태그, 같은 카드 3개 나열, 강조색 남용, 이모지, 줄표 문체)을 문서에 넣지 않는다. 기본 스타일은 이 기준으로 만들어져 있으므로, 문서 `<style>`에서 이런 효과를 다시 추가하지 않는다. `check`가 일부를 "AI 티:" 경고로 알려준다.
+
 **폰트 규칙**: 기본 폰트는 모든 스타일에서 Pretendard다(제목·본문·라벨 모두). 코드(`code`, `pre`)만 모노 폰트를 쓰고, 라벨을 모노로 바꾸는 `--font mono`도 요청할 때만 쓴다. 바탕체·명조체(세리프)는 **사용자가 명시적으로 요청했을 때만** 쓴다. 그때는 `--font serif`(제목만) 또는 `--font serif-all`(본문까지)을 지정하며, 폰트는 고운바탕(Gowun Batang)이다. "격식 있게", "클래식하게", "잡지처럼" 같은 요청만으로는 바탕체를 쓰지 않는다. 문서 `<style>`에서 다른 세리프 폰트를 직접 지정하지 않는다.
 
 ## 템플릿
 
 | 템플릿 | 용도 | 기본 디자인 |
 |---|---|---|
-| `report` | 표지·러닝 헤더·쪽번호가 있는 A4 문서 | swiss + indigo |
-| `onepager` | A4 한 장(이력서, 프로젝트 요약) | swiss + indigo |
-| `deck` | 짧은 16:9 발표(피치, 사내 공유) | swiss + indigo |
+| `report` | 표지·러닝 헤더·쪽번호가 있는 A4 문서 | swiss + graphite |
+| `onepager` | A4 한 장(이력서, 프로젝트 요약) | swiss + graphite |
+| `deck` | 짧은 16:9 발표(피치, 사내 공유) | swiss + graphite |
 | `talk` | 논문·보고서 기반 발표. 레이아웃 8종, 수식(KaTeX), 발표자 노트 → DOCX 대본 | academic + graphite |
 
 **발표 자료(슬라이드 PDF + 대본)를 만들 때는 먼저 `references/presentation.md`를 읽고 그 절차를 따른다.** 사용자가 자세한 요구사항을 주지 않았으면 `prompts/presentation.md`의 지침을 기본값으로 삼는다.
 
 ## 작업 순서
 
-1. **요청 해석**: 독자·결론·템플릿을 정한다. `references/design-rules.md`를 읽는다.
+1. **요청 해석**: 독자·결론·템플릿을 정한다. `references/design-rules.md`와 `references/anti-ai-design.md`를 읽는다.
    - 사용자가 디자인을 지정했으면 그 값을 쓴다. "색은 그대로, 스타일만 다르게"처럼 일부만 말했으면 **말한 축만** 바꾼다.
    - 지정이 없으면 작업 폴더의 `pdf-design.json`(저장된 취향)을 따른다. 그것도 없으면 템플릿 기본값이나 `references/styles.md`의 추천 조합을 쓰고, 무엇을 골랐는지 알린다.
 2. **템플릿 복사**:
@@ -77,8 +79,8 @@ CLI는 `python3 SKILL_DIR/scripts/pdfdesign.py <명령>` 형태로 실행한다.
    ```bash
    python3 SKILL_DIR/scripts/pdfdesign.py check ./out/talk.html        # --strict 를 붙이면 경고도 실패 처리
    ```
-   넘친 요소, 본문과 출처·쪽번호의 겹침, 잘린 내용, 작은 글씨, 깨지거나 흐린 이미지, 수식 오류, 노트·출처 누락을 찾는다.
-8. **시각 검수 (생략 금지)**: `<이름>_preview/page-N.png`를 **모든 페이지** 열어 `design-rules.md`의 체크리스트로 확인한다. `check`는 SVG·이미지 **안쪽**의 겹침(핀이 라벨을 가리는 경우 등)과 수치의 정확성은 판단하지 못한다. 문제가 있으면 고친 뒤 6번부터 다시 한다.
+   넘친 요소, 본문과 출처·쪽번호의 겹침, 잘린 내용, 작은 글씨, 깨지거나 흐린 이미지, 수식 오류, 노트·출처 누락, AI 티 패턴을 찾는다. "AI 티:" 경고도 모두 해결한다.
+8. **시각 검수 (생략 금지)**: `<이름>_preview/page-N.png`를 **모든 페이지** 열어 `design-rules.md`의 체크리스트로 확인한다. `check`는 SVG·이미지 **안쪽**의 겹침(핀이 라벨을 가리는 경우 등), 수치의 정확성, 강조색 과다·카드 반복 같은 전체 인상은 판단하지 못한다. 문제가 있으면 고친 뒤 6번부터 다시 한다.
 9. **발표 대본** (`deck`·`talk`):
    ```bash
    python3 SKILL_DIR/scripts/pdfdesign.py script ./out/talk.html       # talk_script.docx + 슬라이드별 예상 시간

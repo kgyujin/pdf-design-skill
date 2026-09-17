@@ -9,7 +9,7 @@ html[data-style="editorial"] {
   --font-label: var(--font-sans);
   --head-weight: 700;
   --head-tracking: -0.01em;
-  --label-tracking: 0.2em;
+  --label-tracking: 0.02em;
   --radius: 0pt;
   --leading: 1.75;
 }
@@ -26,10 +26,10 @@ html[data-style="editorial"] .kpi:first-child { border-left: 0; padding-left: 0;
 html[data-style="editorial"] .kpi-value { font-weight: 600; }
 
 html[data-style="editorial"] .card { border: 0; border-top: 1pt solid var(--ink); padding: var(--sp-3) 0 0; background: transparent; }
-html[data-style="editorial"] .card.hl { background: var(--accent); border-top-color: var(--ink); padding: var(--sp-3); }
-html[data-style="editorial"] .callout { background: transparent; border-left: 2pt solid var(--accent); padding: var(--sp-1) var(--sp-4); }
+html[data-style="editorial"] .card.hl { border: 0; border-top: 3pt solid var(--ink); }
+html[data-style="editorial"] .callout { background: transparent; border-top: 0.5pt solid var(--ink); border-bottom: 0.5pt solid var(--ink); border-radius: 0; padding: var(--sp-3) 0; }
 html[data-style="editorial"] .callout p { font-family: var(--font-head); font-size: var(--fs-md); color: var(--ink); }
-html[data-style="editorial"] .tag { background: transparent; border: 0.5pt solid var(--accent); }
+html[data-style="editorial"] .tag { border-radius: 0; }
 
 html[data-style="editorial"] .cover { background: var(--surface); text-align: center; align-items: center; padding: 26mm 26mm 24mm; }
 html[data-style="editorial"] .cover::before,

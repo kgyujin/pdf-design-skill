@@ -29,6 +29,7 @@
 - 2026-09-17 | 이름 변경 | pdf-kit → pdf-design, 스크립트 pdfkit.py → pdfdesign.py
 - 2026-09-17 | 발표 자료 모드 | talk 템플릿, check/script 명령, 스타일·색조 4종씩 추가
 - 2026-09-17 | 바탕체 규칙 | 바탕체(고운바탕)는 요청 시에만: font serif / serif-all
+- 2026-09-17 | AI 티 제거 | 기본 색조 graphite, check 에 AI 티 패턴 검사 추가
 """
 
 from __future__ import annotations
@@ -87,13 +88,13 @@ DESIGN_AXES = {
         "split": "좌우 면 분할 표지·굵은 포인트 바. 제안서·IR·마케팅",
     },
     "palette": {
-        "indigo": "중성 회색 + 인디고",
+        "graphite": "기본값. 흑백 중심 + 차분한 청회색 포인트",
+        "indigo": "중성 회색 + 차분한 인디고",
         "navy": "네이비. 공공·기업",
         "terracotta": "종이색 + 테라코타. 따뜻한 톤",
         "forest": "딥 그린. 지속가능성·헬스",
         "plum": "플럼 퍼플. 브랜딩·크리에이티브",
         "mono": "흑백. 흑백 인쇄·이력서",
-        "graphite": "흑백 중심 + 차분한 청회색 포인트. 연구 발표",
         "crimson": "진홍. 강한 메시지·경고·브랜딩",
         "teal": "청록. 헬스케어·핀테크·데이터",
         "sand": "베이지 종이 + 올리브. 인문·라이프스타일",
@@ -594,7 +595,7 @@ def run_layout_check(html_path: Path, wait_ms: int) -> list[dict]:
         probe_path.unlink(missing_ok=True)
     if result is None:
         raise PdfDesignError("검사 스크립트 결과를 받지 못했습니다. --wait-ms 를 늘려 다시 시도하세요.")
-    issues = list(result["issues"])
+    issues = list(result["issues"]) + deck_tools.audit_design(html_text)
     slides = deck_tools.parse_slides(html_text)
     if slides:
         issues += deck_tools.audit_slides(slides)

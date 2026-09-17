@@ -5,13 +5,13 @@
  * 주의사항:
  *  - 모든 팔레트는 같은 토큰 세트를 빠짐없이 정의해야 한다(tests/test_pdfdesign.py 가 검사).
  *  - inverse 계열은 어두운 표지·히어로 슬라이드·사이드바에 쓰인다. accent-on-inverse 는 어두운 면 위 대비용 밝은 포인트색.
- *  - 기본값(data-palette 미지정)은 indigo 와 같다.
+ *  - 기본값(data-palette 미지정)은 graphite 와 같다.
  * 변경사항 내역:
  * - 2026-09-17 | 최초 작성 | indigo, navy, terracotta, forest, plum, mono
  * - 2026-09-17 | 색조 추가 | graphite, crimson, teal, sand
+ * - 2026-09-17 | AI 티 제거 | 기본값을 graphite 로 변경, indigo 채도 낮춤
  */
 
-:root,
 html[data-palette="indigo"] {
   --ink: #16181d;
   --ink-2: #3d434f;
@@ -19,13 +19,13 @@ html[data-palette="indigo"] {
   --line: #e4e6eb;
   --surface: #ffffff;
   --surface-2: #f5f6f8;
-  --accent: #3b5bdb;
-  --accent-soft: #edf1ff;
+  --accent: #3a4c8c;
+  --accent-soft: #eceef6;
   --on-accent: #ffffff;
   --inverse: #16181d;
   --on-inverse: #ffffff;
   --on-inverse-muted: #a3a9b5;
-  --accent-on-inverse: #9db1ff;
+  --accent-on-inverse: #aab6de;
 }
 
 html[data-palette="navy"] {
@@ -108,7 +108,8 @@ html[data-palette="mono"] {
   --accent-on-inverse: #ffffff;
 }
 
-/* graphite: 흑백 중심 + 차분한 청회색 포인트. 연구·세미나 발표 기본값(강조는 Figure 이해에 필요한 곳만) */
+/* graphite: 흑백 중심 + 차분한 청회색 포인트. 모든 템플릿의 기본값(강조는 데이터·결론에만) */
+:root,
 html[data-palette="graphite"] {
   --ink: #111111;
   --ink-2: #333333;

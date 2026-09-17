@@ -5,6 +5,8 @@ HTML/CSS 템플릿에 내용을 채우고 Chrome으로 PDF를 렌더링합니다
 
 논문이나 보고서를 **발표용 슬라이드 PDF와 슬라이드별 발표 대본 DOCX**로 만드는 발표 자료 모드와, 넘침·작은 글씨·노트 누락을 잡는 자동 검수(`check`)도 들어 있습니다.
 
+기본 디자인은 흑백 중심(`graphite`)이고, 생성형 도구가 만든 문서에서 흔한 패턴(대문자 라벨 남발, `01` 번호, 장식 도형, 그라데이션, 포인트색 세로 바, 알약 태그 등)을 쓰지 않습니다. 기준은 [references/anti-ai-design.md](references/anti-ai-design.md)에 있고, `check`가 문서에서 이런 패턴을 찾아 경고합니다.
+
 ![스타일 9종 비교 (보고서, 1/2)](docs/styles-report-1.png)
 
 ## 디자인 축
@@ -44,15 +46,15 @@ HTML/CSS 템플릿에 내용을 채우고 Chrome으로 PDF를 렌더링합니다
 - **레이아웃 8종**: 핵심 포인트, Figure + 번호 설명, 수식 + 기호 설명, 절차·Algorithm, 비교, 표, 좌우 분할, 섹션 구분
 - **발표자 노트**: 슬라이드마다 `aside.notes`에 작성합니다. `script` 명령이 이를 슬라이드 썸네일과 함께 DOCX 대본으로 만들고, 대본 분량으로 발표 시간을 추정합니다.
 - **출처·해석 구분**: 모든 슬라이드 하단에 출처가 들어가고, 제작자 해석은 점선 박스(`.interp`)로 원본 주장과 구분합니다.
-- **자동 검수(`check`)**: 페이지 밖으로 넘친 요소, 출처·쪽번호와의 겹침, 10pt 미만 글자, 16pt 미만 본문, 작은 수식·Figure 글자, 깨지거나 흐린 이미지, 수식 오류, 노트·출처 누락을 찾습니다.
+- **자동 검수(`check`)**: 페이지 밖으로 넘친 요소, 출처·쪽번호와의 겹침, 10pt 미만 글자, 16pt 미만 본문, 작은 수식·Figure 글자, 깨지거나 흐린 이미지, 수식 오류, 노트·출처 누락, AI 티 패턴을 찾습니다.
 
 프롬프트 템플릿: [prompts/presentation.md](prompts/presentation.md). 원본 자료와 발표 조건을 채워 에이전트에게 붙여 넣으면 `talk.pdf`, `talk_script.docx`, 수정할 수 있는 `talk.html`이 만들어집니다. 예제는 [examples/talk-demo.html](examples/talk-demo.html)에 있습니다(수치는 모두 예시 데이터).
 
 ## 설치
 
 ```bash
-git clone https://github.com/kgyujin/pdf-design.git ~/workspace/pdf-design
-~/workspace/pdf-design/install.sh
+git clone https://github.com/kgyujin/pdf-design-skill.git ~/workspace/pdf-design-skill
+~/workspace/pdf-design-skill/install.sh
 ```
 
 `~/.claude/skills/pdf-design`과 `~/.codex/skills/pdf-design`에 심볼릭 링크가 만들어집니다. Codex 경로는 `CODEX_HOME`이 설정돼 있으면 그 값을 따릅니다. 저장소를 `git pull`하면 두 도구에 바로 반영되고, `./install.sh --uninstall`로 링크를 제거할 수 있습니다.
@@ -75,10 +77,10 @@ git clone https://github.com/kgyujin/pdf-design.git ~/workspace/pdf-design
 ## CLI 직접 사용
 
 ```bash
-K=~/workspace/pdf-design/scripts/pdfdesign.py
+K=~/workspace/pdf-design-skill/scripts/pdfdesign.py
 
 python3 $K options                                             # 선택지 보기
-python3 $K init report out/report.html --style bold --palette navy
+python3 $K init report out/report.html --style bold --palette navy   # 지정하지 않으면 swiss + graphite
 python3 $K gallery out/report.html --styles all                # 색조 유지, 스타일 9안 비교
 python3 $K gallery out/report.html --palettes all --pages 1    # 스타일 유지, 색조 10안 비교
 python3 $K set out/report.html --style editorial               # 스타일만 변경
@@ -108,7 +110,7 @@ assets/css/
   styles/*.css           스타일
   options.css            폰트·밀도·모서리
 templates/               report · onepager · deck · talk
-references/              디자인 규칙, 스타일 가이드, 컴포넌트, 발표 자료 절차, 확장 방법
+references/              디자인 규칙, AI 티 금지 기준, 스타일 가이드, 컴포넌트, 발표 자료 절차, 확장 방법
 examples/                예시 문서 (수치는 모두 예시 데이터)
 tests/                   unittest
 ```

@@ -9,6 +9,7 @@
 - 2026-09-17 | 최초 작성 | set 부분 변경, accent, prefs, CSS 축 정합성, 렌더 스모크
 - 2026-09-17 | 발표 자료 모드 | 노트 파서, 시간 추정, DOCX 구조, check 결함 탐지, talk 렌더·대본
 - 2026-09-17 | 바탕체 규칙 | 바탕체는 font 옵션에서만, 폰트는 고운바탕
+- 2026-09-17 | AI 티 검사 | audit_design 탐지·오탐 방지, 기본 CSS·템플릿에 AI 패턴이 없는지 검사
 """
 
 from __future__ import annotations
@@ -257,6 +258,49 @@ class DeckToolsTest(unittest.TestCase):
         self.assertEqual(deck_tools.extract_check_result(fake_dom), {"issues": [], "slides": 3})
 
 
+AI_TELL_DOC = """<html><head><style>
+  .hero { background: linear-gradient(90deg, #6366f1, #a855f7); box-shadow: 0 4px 20px rgba(0,0,0,.2); }
+  .label { text-transform: uppercase; letter-spacing: 0.2em; }
+  .card { border-left: 4px solid var(--accent); border-radius: 999px; }
+</style></head><body>
+<h1>🚀 Launch plan</h1>
+<p>We move fast — and we ship often.</p>
+<p>Quality matters — every single time.</p>
+<h2><span class="sec-num">01</span>Intro</h2>
+<div class="eyebrow">A</div><div class="eyebrow">B</div><div class="eyebrow">C</div>
+<div class="grid-3"><div class="card">1</div><div class="card">2</div><div class="card">3</div></div>
+</body></html>"""
+
+
+class AiTellAuditTest(unittest.TestCase):
+    def test_detects_common_patterns(self) -> None:
+        messages = " / ".join(issue["message"] for issue in deck_tools.audit_design(AI_TELL_DOC))
+        for expected in ("그라데이션", "그림자", "대문자 라벨", "넓은 자간", "왼쪽 굵은 세로 바", "알약", "HEX", "이모지", "줄표", "0을 붙인 번호", "라벨이 3개", "카드 3개"):
+            self.assertIn(expected, messages)
+        self.assertTrue(all(issue["message"].startswith(deck_tools.AI_TELL_PREFIX) for issue in deck_tools.audit_design(AI_TELL_DOC)))
+
+    def test_ignores_functional_markup(self) -> None:
+        clean = """<html><head><style>@page { size: A4; } #face { color: var(--ink); }</style>
+        <style id="pdf-design-accent">html[data-palette] { --accent: #123456; }</style></head><body>
+        <span class="pin" style="left: 40%; top: 12%">1</span><div class="bar"><span style="width:72%"></span></div>
+        <table><tr><td>—</td><td>▲ 42%</td></tr></table><p>A → B</p></body></html>"""
+        self.assertEqual(deck_tools.audit_design(clean), [])
+
+    def test_shipped_templates_and_examples_are_clean(self) -> None:
+        for html_path in [*pdfdesign.TEMPLATE_DIR.glob("*.html"), *(REPO_ROOT / "examples").glob("*.html")]:
+            self.assertEqual(deck_tools.audit_design(html_path.read_text(encoding="utf-8")), [], html_path.name)
+
+    def test_bundle_avoids_decorative_patterns(self) -> None:
+        bundle = re.sub(r"/\*.*?\*/", "", pdfdesign.build_css_bundle(), flags=re.DOTALL)
+        for pattern in ("decimal-leading-zero", "999px", "radial-gradient", "text-transform: uppercase", "box-shadow: 0 "):
+            self.assertNotIn(pattern, bundle)
+        self.assertIsNone(re.search(r"border-left:\s*[2-9](?:\.\d+)?pt solid var\(--accent\)", bundle))
+        # 원형은 Figure 위치 핀(.pin, .callouts 번호)에만 허용한다.
+        circle_rules = [rule for rule in re.findall(r"([^{}]+)\{[^}]*border-radius:\s*50%", bundle)]
+        self.assertTrue(all(".pin" in rule or ".callouts" in rule for rule in circle_rules), circle_rules)
+        self.assertIn(':root,\nhtml[data-palette="graphite"]', bundle, "기본 색조는 graphite")
+
+
 class DocxWriterTest(unittest.TestCase):
     def test_docx_parts_are_well_formed(self) -> None:
         with tempfile.TemporaryDirectory(prefix="pdf-design-docx-") as work_dir:
@@ -336,6 +380,7 @@ class RenderSmokeTest(unittest.TestCase):
                 exit_code, stdout, stderr = run_cli("check", str(doc))
                 self.assertEqual(exit_code, 0, stdout + stderr)
                 self.assertIn("오류 0건", stdout)
+                self.assertNotIn(deck_tools.AI_TELL_PREFIX, stdout)
 
     def test_check_detects_defects(self) -> None:
         with tempfile.TemporaryDirectory(prefix="pdf-design-check-") as work_dir:

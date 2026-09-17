@@ -1,6 +1,6 @@
 /*
- * 스타일: swiss — 그리드·굵은 룰·산세리프. 보고서·기술 문서의 기본값.
- * 표지: 연한 면 + 왼쪽 포인트 바 / 제목: 아래 굵은 룰 / KPI: 위 포인트 룰
+ * 스타일: swiss — 그리드·굵은 먹색 룰·산세리프. 보고서·기술 문서의 기본값.
+ * 표지: 연한 면 + 제목 위 굵은 룰 / 제목: 아래 굵은 룰 / KPI: 위 먹색 룰
  * 색은 토큰만 쓴다. 변경사항 내역: 2026-09-17 | 최초 작성 | pdf-design clean 테마를 스타일로 분리
  */
 html[data-style="swiss"] {
@@ -12,8 +12,8 @@ html[data-style="swiss"] {
 html[data-style="swiss"] h2 { border-bottom: 1.5pt solid var(--ink); }
 html[data-style="swiss"] th { border-bottom: 1.25pt solid var(--ink); }
 
-html[data-style="swiss"] .cover::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6mm; background: var(--accent); z-index: 0; }
+html[data-style="swiss"] .cover-body { border-top: 3pt solid var(--ink); padding-top: var(--sp-4); }
 
 html[data-style="swiss"] .slide.hero { background: var(--surface-2); }
-html[data-style="swiss"] .slide.hero::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 8mm; background: var(--accent); }
+html[data-style="swiss"] .slide.hero .eyebrow { border-top: 3pt solid var(--ink); padding-top: 4mm; width: 100%; }
 html[data-style="swiss"] .slide:not(.hero):not(.section) .slide-title { padding-bottom: 10pt; border-bottom: 2pt solid var(--ink); }
