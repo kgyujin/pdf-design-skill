@@ -1,0 +1,45 @@
+/*
+ * 스타일: academic — 연구·세미나 발표용 흑백 미니멀. 흰 배경, 장식 없음, 얇은 룰, 출처 표기 강조.
+ * 표지: 흰 면 + 제목·저자 블록 / 제목: 좌상단 고정 + 얇은 하단 룰 / 강조색은 Figure 이해에 필요한 곳에만
+ * 색은 토큰만 쓴다. 변경사항 내역: 2026-09-17 | 최초 작성 (발표 자료 모드 기본 스타일)
+ */
+html[data-style="academic"] {
+  --font-head: var(--font-sans);
+  --head-weight: 700;
+  --head-tracking: -0.015em;
+  --label-transform: none;
+  --label-tracking: 0.01em;
+  --radius: 2pt;
+}
+html[data-style="academic"] .eyebrow { color: var(--muted); font-weight: 600; }
+html[data-style="academic"] h2 { border-bottom: 0.75pt solid var(--ink); font-weight: 700; }
+html[data-style="academic"] .sec-num { color: var(--ink-2); }
+html[data-style="academic"] th { border-top: 1pt solid var(--ink); border-bottom: 0.75pt solid var(--ink); }
+html[data-style="academic"] tbody tr:last-child td { border-bottom: 1pt solid var(--ink); }
+html[data-style="academic"] .kpi { border-top: 0.75pt solid var(--ink); }
+html[data-style="academic"] .card { border-color: var(--line); background: var(--surface); }
+html[data-style="academic"] .card.soft { background: var(--surface-2); }
+html[data-style="academic"] .callout { background: var(--surface-2); border-left: 2pt solid var(--ink); border-radius: 0; }
+html[data-style="academic"] .callout-title { color: var(--ink); }
+html[data-style="academic"] .tag { background: transparent; border: 0.5pt solid var(--line); color: var(--ink-2); }
+
+html[data-style="academic"] .cover { background: var(--surface); padding: 30mm 24mm 26mm; }
+html[data-style="academic"] .cover-body { margin: auto 0; border-left: 1pt solid var(--ink); padding-left: 8mm; }
+html[data-style="academic"] .cover-title { font-weight: 700; font-size: calc(var(--fs-base) * 3.4); }
+html[data-style="academic"] .cover-foot { border-top-width: 0.5pt; }
+html[data-style="academic"] .side { background: var(--surface); border-right: 0.5pt solid var(--line); }
+
+html[data-style="academic"] .slide-head { padding-bottom: 4mm; border-bottom: 0.75pt solid var(--line); }
+html[data-style="academic"] .slide.hero .slide-head,
+html[data-style="academic"] .slide.section .slide-head { border-bottom: 0; }
+html[data-style="academic"] .slide.hero .slide-title { font-size: 40pt; font-weight: 700; }
+html[data-style="academic"] .slide.hero::before { content: ""; position: absolute; left: 22mm; right: 22mm; bottom: 17mm; border-top: 0.75pt solid var(--ink); }
+html[data-style="academic"] .slide.section .sec-big { color: var(--ink); font-weight: 300; }
+html[data-style="academic"] .l-steps .steps > li { background: var(--surface); border: 0.75pt solid var(--line); border-top: 2pt solid var(--ink); }
+html[data-style="academic"] .l-steps .steps.vertical > li { border-top: 0.75pt solid var(--line); border-left: 2pt solid var(--ink); }
+html[data-style="academic"] .l-steps .steps > li::before,
+html[data-style="academic"] .l-points .points > li::before { color: var(--ink-2); }
+html[data-style="academic"] .verdict { background: var(--surface-2); }
+html[data-style="academic"] .l-compare .col.pick > h3 { color: var(--ink); border-bottom-width: 3pt; }
+html[data-style="academic"] .equation { background: var(--surface); border-top: 0.75pt solid var(--line); border-bottom: 0.75pt solid var(--line); border-radius: 0; }
+html[data-style="academic"] .card.hl { background: var(--ink); border-color: var(--ink); }

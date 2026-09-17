@@ -44,4 +44,4 @@ html[data-style="tech"] .cover-foot { border-top-style: dashed; }
 
 html[data-style="tech"] .side { border-right: 0.75pt dashed var(--line); }
 html[data-style="tech"] .side h3::before { content: "# "; }
-html[data-style="tech"] .slide:not(.hero) .slide-title { padding-bottom: 10pt; border-bottom: 0.75pt dashed var(--ink-2); }
+html[data-style="tech"] .slide:not(.hero):not(.section) .slide-title { padding-bottom: 10pt; border-bottom: 0.75pt dashed var(--ink-2); }

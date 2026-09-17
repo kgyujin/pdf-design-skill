@@ -1,0 +1,45 @@
+/*
+ * 스타일: soft — 둥근 모서리·연한 포인트 면·부드러운 굵기. 교육·온보딩·서비스 소개용.
+ * 표지: 연한 포인트 면 + 큰 원형 블롭 / 제목: 알약 모양 번호 / 카드: 연한 포인트 배경
+ * 색은 토큰만 쓴다. 변경사항 내역: 2026-09-17 | 최초 작성
+ */
+html[data-style="soft"] {
+  --font-head: var(--font-sans);
+  --head-weight: 700;
+  --head-tracking: -0.02em;
+  --label-transform: none;
+  --label-tracking: 0.02em;
+  --radius: 14pt;
+}
+html[data-style="soft"] h2 { display: flex; align-items: center; gap: var(--sp-2); }
+html[data-style="soft"] h2 .sec-num { background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 2pt 9pt; font-size: var(--fs-sm); margin: 0; }
+html[data-style="soft"] .toc .sec-num { background: none; }
+html[data-style="soft"] th { background: var(--accent-soft); color: var(--accent); }
+html[data-style="soft"] th:first-child { border-radius: 8pt 0 0 8pt; }
+html[data-style="soft"] th:last-child { border-radius: 0 8pt 8pt 0; }
+html[data-style="soft"] td { border-bottom-style: dotted; }
+html[data-style="soft"] .kpi { border-top: 0; background: var(--accent-soft); border-radius: var(--radius); padding: var(--sp-3); }
+html[data-style="soft"] .kpi-value { color: var(--accent); }
+html[data-style="soft"] .card { border: 0; background: var(--surface-2); }
+html[data-style="soft"] .card.soft { background: var(--accent-soft); }
+html[data-style="soft"] .callout { border-radius: var(--radius); }
+html[data-style="soft"] .badge { border-radius: 999px; }
+
+html[data-style="soft"] :is(.cover, .slide.hero) { background: var(--accent-soft); }
+html[data-style="soft"] .cover::after,
+html[data-style="soft"] .slide.hero::after {
+  content: ""; position: absolute; border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 22%, var(--accent-soft)); z-index: 0;
+}
+html[data-style="soft"] .cover::after { width: 170mm; height: 170mm; right: -60mm; top: -50mm; }
+html[data-style="soft"] .slide.hero::after { width: 150mm; height: 150mm; right: -40mm; bottom: -60mm; }
+html[data-style="soft"] .cover-foot { border-top: 0; background: var(--surface); border-radius: var(--radius); padding: var(--sp-3) var(--sp-4); }
+html[data-style="soft"] .side { background: var(--accent-soft); }
+
+html[data-style="soft"] .slide.section .sec-big { background: var(--accent-soft); border-radius: 999px; width: max-content; padding: 0 12mm; }
+html[data-style="soft"] .l-steps .steps > li { border-top: 0; background: var(--accent-soft); border-radius: var(--radius); }
+html[data-style="soft"] .l-steps .steps.vertical > li { border-left: 0; }
+html[data-style="soft"] .equation { background: var(--accent-soft); }
+html[data-style="soft"] .l-compare .col { background: var(--surface-2); border-radius: var(--radius); padding: 5mm; }
+html[data-style="soft"] .l-compare .col.pick { background: var(--accent-soft); }
+html[data-style="soft"] .l-compare .col > h3 { border-bottom: 0; }

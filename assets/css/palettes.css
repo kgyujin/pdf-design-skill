@@ -8,6 +8,7 @@
  *  - 기본값(data-palette 미지정)은 indigo 와 같다.
  * 변경사항 내역:
  * - 2026-09-17 | 최초 작성 | indigo, navy, terracotta, forest, plum, mono
+ * - 2026-09-17 | 색조 추가 | graphite, crimson, teal, sand
  */
 
 :root,
@@ -105,4 +106,70 @@ html[data-palette="mono"] {
   --on-inverse: #ffffff;
   --on-inverse-muted: #a0a3a8;
   --accent-on-inverse: #ffffff;
+}
+
+/* graphite: 흑백 중심 + 차분한 청회색 포인트. 연구·세미나 발표 기본값(강조는 Figure 이해에 필요한 곳만) */
+html[data-palette="graphite"] {
+  --ink: #111111;
+  --ink-2: #333333;
+  --muted: #777777;
+  --line: #e1e1e1;
+  --surface: #ffffff;
+  --surface-2: #f4f4f4;
+  --accent: #2f5d8a;
+  --accent-soft: #eaf0f6;
+  --on-accent: #ffffff;
+  --inverse: #1a1a1a;
+  --on-inverse: #ffffff;
+  --on-inverse-muted: #a6a6a6;
+  --accent-on-inverse: #9cc0e4;
+}
+
+html[data-palette="crimson"] {
+  --ink: #1c1517;
+  --ink-2: #463a3d;
+  --muted: #7a6d70;
+  --line: #ebe1e3;
+  --surface: #ffffff;
+  --surface-2: #faf4f5;
+  --accent: #b3263e;
+  --accent-soft: #fbe9ec;
+  --on-accent: #ffffff;
+  --inverse: #2a1519;
+  --on-inverse: #ffffff;
+  --on-inverse-muted: #bfa6ab;
+  --accent-on-inverse: #f59aa9;
+}
+
+html[data-palette="teal"] {
+  --ink: #0f1f22;
+  --ink-2: #33474b;
+  --muted: #66797c;
+  --line: #dae6e7;
+  --surface: #ffffff;
+  --surface-2: #f0f6f6;
+  --accent: #0f7c80;
+  --accent-soft: #e2f3f3;
+  --on-accent: #ffffff;
+  --inverse: #0c2426;
+  --on-inverse: #ffffff;
+  --on-inverse-muted: #95b3b5;
+  --accent-on-inverse: #6fd3d6;
+}
+
+/* sand: 베이지 종이 + 올리브 포인트. 인문·여행·라이프스타일 */
+html[data-palette="sand"] {
+  --ink: #23201a;
+  --ink-2: #4d473c;
+  --muted: #857c6c;
+  --line: #e7e0d2;
+  --surface: #fbf8f1;
+  --surface-2: #f2ecdf;
+  --accent: #6b7a2e;
+  --accent-soft: #edefdc;
+  --on-accent: #ffffff;
+  --inverse: #2b2820;
+  --on-inverse: #fbf8f1;
+  --on-inverse-muted: #b5ad9c;
+  --accent-on-inverse: #c3d27a;
 }

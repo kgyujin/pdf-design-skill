@@ -15,7 +15,9 @@
 2. 색은 토큰만 쓴다. 어두운 면이 필요하면 `bold.css`처럼 `:is(.cover, .slide.hero, .side)`에 inverse 토큰을 다시 정의한다.
 3. 최소한 다음 요소의 모양을 정한다: `.cover`, `h2`(`.sec-num`), `th`/`td`, `.kpi`, `.card`(`.hl` 포함), `.callout`, `.slide.hero`, `.side`.
 4. `DESIGN_AXES["style"]`와 `references/styles.md`에 추가한다. 번들 순서는 `DESIGN_AXES`의 순서를 따른다.
-5. 검증: 테스트를 실행한 뒤 보고서·덱·원페이저 세 템플릿으로 갤러리를 만들어 모든 썸네일을 확인한다. 특히 `.card.hl`의 글자가 보이는지, 표 캡션이 표와 붙어 있는지 확인한다.
+5. 검증: 테스트를 실행한 뒤 보고서·talk·원페이저 템플릿으로 갤러리를 만들어 모든 썸네일을 확인한다. 특히 `.card.hl`의 글자가 보이는지, 표 캡션이 표와 붙어 있는지 확인한다.
+   갤러리 후보 폴더마다 `check`를 실행해 슬라이드에서 오류가 없는지 확인한다(`for d in talk_gallery/*/; do python3 scripts/pdfdesign.py check "$d/doc.html"; done`).
+   스타일 파일에서 `--fs-*` 토큰 대신 고정 pt를 쓰면 슬라이드(본문 18pt 기준)에서 글자가 작아질 수 있다.
 
 ## 규칙
 - `core.css`에는 모든 스타일이 공유하는 구조만 둔다. 특정 스타일에서만 쓰는 모양은 스타일 파일에 둔다.

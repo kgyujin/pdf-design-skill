@@ -1,0 +1,35 @@
+/*
+ * 스타일: split — 면 분할 구성. 표지·히어로를 좌우로 나누고, 제목 왼쪽에 굵은 포인트 바를 둔다.
+ * 마케팅 제안서·서비스 소개·IR 자료처럼 인상이 강해야 하는 문서용.
+ * 색은 토큰만 쓴다. 변경사항 내역: 2026-09-17 | 최초 작성
+ */
+html[data-style="split"] {
+  --font-head: var(--font-sans);
+  --head-weight: 800;
+  --head-tracking: -0.03em;
+  --radius: 0pt;
+}
+html[data-style="split"] h2 { border-left: 5pt solid var(--accent); padding: 1pt 0 1pt var(--sp-3); }
+html[data-style="split"] th { background: var(--accent); color: var(--on-accent); }
+html[data-style="split"] td { border-bottom-color: var(--line); }
+html[data-style="split"] .kpi { border-top: 0; border-left: 4pt solid var(--accent); padding: 0 0 0 var(--sp-3); }
+html[data-style="split"] .card { border: 0; border-left: 3pt solid var(--ink); background: var(--surface-2); }
+html[data-style="split"] .callout { border-left: 5pt solid var(--accent); }
+
+/* 표지: 왼쪽 58%는 포인트색 면, 오른쪽은 흰 면. 글자는 포인트 면 위에 놓인다. */
+html[data-style="split"] .cover { background: linear-gradient(90deg, var(--accent) 0 58%, var(--surface) 58% 100%); }
+html[data-style="split"] .cover > :is(.cover-top, .cover-body) { width: 52%; --ink: var(--on-accent); --ink-2: color-mix(in srgb, var(--on-accent) 82%, transparent); --muted: color-mix(in srgb, var(--on-accent) 70%, transparent); color: var(--on-accent); }
+html[data-style="split"] .cover .eyebrow { color: var(--on-accent); }
+html[data-style="split"] .cover-top { justify-content: flex-start; gap: 8mm; }
+html[data-style="split"] .cover-foot { margin-left: 62%; grid-template-columns: 1fr; border-top: 0; gap: var(--sp-2); }
+html[data-style="split"] .cover-sub { max-width: none; }
+html[data-style="split"] .side { background: var(--accent); --ink: var(--on-accent); --ink-2: color-mix(in srgb, var(--on-accent) 85%, transparent); --muted: color-mix(in srgb, var(--on-accent) 70%, transparent); --accent: var(--on-accent); --accent-soft: color-mix(in srgb, var(--on-accent) 18%, transparent); color: var(--on-accent); }
+
+html[data-style="split"] .slide.hero { background: linear-gradient(90deg, var(--accent) 0 55%, var(--surface) 55% 100%); }
+html[data-style="split"] .slide.hero > :not(.slide-foot) { width: 48%; --ink: var(--on-accent); --ink-2: color-mix(in srgb, var(--on-accent) 82%, transparent); --muted: color-mix(in srgb, var(--on-accent) 70%, transparent); color: var(--on-accent); }
+html[data-style="split"] .slide.hero .eyebrow { color: var(--on-accent); }
+html[data-style="split"] .slide-head { border-left: 6pt solid var(--accent); padding-left: 6mm; margin-left: -8mm; }
+html[data-style="split"] .slide.hero .slide-head, html[data-style="split"] .slide.section .slide-head { border-left: 0; padding-left: 0; margin-left: 0; }
+html[data-style="split"] .slide.section { background: linear-gradient(180deg, var(--surface) 0 62%, var(--accent-soft) 62% 100%); }
+html[data-style="split"] .l-steps .steps > li { border-top: 0; border-left: 4pt solid var(--accent); border-radius: 0; }
+html[data-style="split"] .l-compare .col.pick { background: var(--accent-soft); padding: 4mm; margin: -4mm; }

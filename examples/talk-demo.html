@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en" data-style="academic" data-palette="graphite" data-font="auto" data-density="normal" data-radius="auto">
+<head>
+<meta charset="utf-8">
+<title>Cache-aside cut read latency (sample)</title>
+<meta name="pdf-design:duration" content="3">
+<link rel="stylesheet" href="pdf-design.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}], ignoredClasses: ['notes'], throwOnError: false})"></script>
+<style>
+  @page { size: 338.67mm 190.5mm; margin: 0; }
+</style>
+</head>
+<body class="deck">
+
+<section class="slide hero">
+  <div class="eyebrow">Platform Ops Review · Sample data</div>
+  <div class="slide-title">A cache-aside layer<br>cut read latency by 42%</div>
+  <p>Why it worked, how to reason about it, and where it stops working</p>
+  <div class="meta">Platform Ops Team · 2026-09<br>Based on: August Ops Report (sample)</div>
+  <footer class="slide-foot"><span class="source"></span><span class="page"></span></footer>
+  <aside class="notes">
+    <h4>먼저 알아야 할 배경지식</h4>
+    <p><strong>Cache-aside</strong>(캐시 어사이드)는 애플리케이션이 캐시를 먼저 조회하고, 없을 때만 DB를 읽은 뒤 캐시에 채워 넣는 방식입니다.</p>
+    <div class="talk"><p>안녕하세요. 오늘은 8월에 도입한 캐시 계층이 읽기 지연을 어떻게 줄였는지, 그리고 그 효과를 식으로 어떻게 예측할 수 있는지 말씀드리겠습니다. 모든 수치는 예시 데이터입니다.</p></div>
+    <h4>다음 슬라이드 연결</h4>
+    <p>먼저 왜 캐시가 필요했는지부터 보겠습니다.</p>
+  </aside>
+</section>
+
+<section class="slide">
+  <header class="slide-head">
+    <div class="eyebrow">Problem</div>
+    <div class="slide-title">Reads, not writes, were saturating the database</div>
+    <p class="slide-msg">Peak DB CPU hit 85% while most queries repeated the same keys.</p>
+  </header>
+  <div class="slide-body l-points">
+    <ol class="points">
+      <li><strong>Read-heavy traffic</strong>Most API calls were product and profile lookups.</li>
+      <li><strong>Repeated keys</strong>The same records were fetched again within minutes.</li>
+      <li><strong>Latency followed DB load</strong>p95 rose whenever DB CPU peaked.</li>
+    </ol>
+  </div>
+  <footer class="slide-foot"><span class="source">Source: August Ops Report (sample), Sec. 1 · DB CPU from monitoring dashboard</span><span class="page"></span></footer>
+  <aside class="notes">
+    <h4>화면에서 먼저 가리킬 부분</h4>
+    <p>핵심 메시지의 “85%” → 1번 포인트 순서로 가리킵니다.</p>
+    <div class="talk">
+      <p>7월에는 피크 시간대 DB CPU가 85%까지 올라갔습니다. 쓰기가 많아서가 아니라, 같은 상품과 프로필을 계속 다시 읽고 있었기 때문입니다.</p>
+      <p>그래서 DB 부하가 올라가는 순간마다 응답시간 p95도 같이 올라갔습니다.</p>
+    </div>
+    <h4>헷갈리기 쉬운 점</h4>
+    <ul><li><strong>p95</strong>는 요청 100개 중 95번째로 느린 요청의 응답시간입니다. 평균과 다릅니다.</li></ul>
+  </aside>
+</section>
+
+<section class="slide">
+  <header class="slide-head">
+    <div class="eyebrow">Result</div>
+    <div class="slide-title">p95 dropped below the target within one week of rollout</div>
+  </header>
+  <div class="slide-body l-figure">
+    <figure class="fig">
+      <div class="fig-frame">
+        <svg class="chart" viewBox="0 0 480 250" role="img" aria-label="Weekly p95 latency">
+          <g class="grid"><line x1="44" y1="20" x2="470" y2="20"/><line x1="44" y1="70" x2="470" y2="70"/><line x1="44" y1="120" x2="470" y2="120"/><line x1="44" y1="170" x2="470" y2="170"/></g>
+          <text x="38" y="24" text-anchor="end">250</text><text x="38" y="74" text-anchor="end">200</text>
+          <text x="38" y="124" text-anchor="end">150</text><text x="38" y="174" text-anchor="end">100</text>
+          <line class="target" x1="44" y1="110" x2="470" y2="110"/>
+          <text x="50" y="104" style="fill:var(--good)">target 160 ms</text>
+          <line class="marker" x1="244" y1="14" x2="244" y2="190"/>
+          <text x="248" y="30">cache rollout</text>
+          <polyline class="series" points="64,49 114,45 164,53 214,41 264,104 314,127 364,133 414,139 464,142"/>
+          <g class="dot"><circle cx="64" cy="49" r="3.5"/><circle cx="214" cy="41" r="3.5"/><circle cx="464" cy="142" r="4.5"/></g>
+          <g text-anchor="middle"><text x="64" y="208">Jul W1</text><text x="164" y="208">Jul W3</text><text x="264" y="208">Aug W2</text><text x="364" y="208">Aug W4</text><text x="464" y="208">Sep W1</text></g>
+          <text x="9" y="95" text-anchor="middle" transform="rotate(-90 9 95)">p95 (ms)</text>
+          <text x="257" y="236" text-anchor="middle">week</text>
+        </svg>
+        <span class="pin" style="left: 45%; top: 12%">1</span>
+        <span class="pin" style="left: 96%; top: 64%">2</span>
+      </div>
+      <figcaption>Weekly API p95 latency (ms), all endpoints. Dashed green line: team target. (sample data)</figcaption>
+    </figure>
+    <ol class="callouts">
+      <li><strong>Before: about 220 ms</strong>Flat and above target for four weeks.</li>
+      <li><strong>After: 128 ms</strong>Stable below the 160 ms target.</li>
+    </ol>
+  </div>
+  <footer class="slide-foot"><span class="source">Source: August Ops Report (sample), Fig. 1 · APM dashboard, as of 2026-09-01</span><span class="page"></span></footer>
+  <aside class="notes">
+    <h4>Figure를 가리키는 순서</h4>
+    <ol><li>세로축: 주간 p95 응답시간(ms), 가로축: 주차</li><li>초록 점선: 목표 160ms</li><li>회색 세로 점선: 캐시 배포 시점</li><li>번호 1 → 2</li></ol>
+    <div class="talk">
+      <p>세로축은 주간 p95 응답시간이고, 초록 점선이 목표인 160밀리초입니다.</p>
+      <p>1번을 보시면 배포 전 4주 동안은 220밀리초 안팎에서 거의 움직이지 않았습니다. 회색 점선에서 캐시를 배포한 뒤 2번처럼 128밀리초까지 내려와 목표 아래에서 유지되고 있습니다.</p>
+    </div>
+    <h4>이 결과가 중요한 이유</h4>
+    <p>인프라 증설 없이 목표를 달성했다는 점입니다.</p>
+  </aside>
+</section>
+
+<section class="slide">
+  <header class="slide-head">
+    <div class="eyebrow">Model</div>
+    <div class="slide-title">Expected latency depends on the hit ratio, not on cache speed alone</div>
+  </header>
+  <div class="slide-body l-equation">
+    <div class="equation">$$ \mathbb{E}[T] = h\,t_c + (1-h)\,(t_c + t_{db}) = t_c + (1-h)\,t_{db} $$</div>
+    <dl class="symbols">
+      <div><dt>\(h\)</dt><dd>Cache hit ratio (0–1)</dd></div>
+      <div><dt>\(t_c\)</dt><dd>Cache lookup time</dd></div>
+      <div><dt>\(t_{db}\)</dt><dd>DB read time on a miss</dd></div>
+    </dl>
+  </div>
+  <footer class="slide-foot"><span class="source">Standard cache latency model (simplified view) · values in Appendix are sample data</span><span class="page"></span></footer>
+  <aside class="notes">
+    <h4>수식이 계산하는 것</h4>
+    <p>요청 하나의 <strong>평균</strong> 읽기 지연입니다. p95가 아니라 평균이라는 점을 먼저 말합니다.</p>
+    <h4>앞 항과 뒤 항의 의미</h4>
+    <ul><li>앞 항 h·t_c: 캐시에 있을 때(확률 h) 캐시 조회 시간만 든다.</li><li>뒤 항 (1−h)(t_c + t_db): 캐시에 없을 때 캐시를 먼저 보고 DB까지 읽는다.</li></ul>
+    <h4>단계별 유도</h4>
+    <ol><li>기대값 = Σ(경우의 확률 × 그 경우의 시간)에서 출발합니다.</li><li>두 항을 전개하면 h·t_c + t_c − h·t_c + (1−h)·t_db 입니다.</li><li>h·t_c가 상쇄되어 t_c + (1−h)·t_db 가 남습니다.</li></ol>
+    <div class="talk">
+      <p>이 식은 캐시를 붙였을 때 평균 읽기 지연을 계산합니다. 캐시에 있으면 캐시만 보고, 없으면 캐시를 본 뒤 DB까지 읽는다는 두 경우를 확률로 더한 것입니다.</p>
+      <p>정리하면 오른쪽처럼 됩니다. 캐시 조회 시간은 항상 들고, DB 시간은 캐시에 없을 때만 듭니다. 그래서 효과를 좌우하는 것은 캐시 속도보다 적중률 h입니다.</p>
+    </div>
+    <h4>헷갈리기 쉬운 점</h4>
+    <p>이 식은 평균만 설명합니다. p95 개선은 이 식에서 바로 나오지 않으므로 Figure 수치와 섞어 말하지 않습니다.</p>
+  </aside>
+</section>
+
+<section class="slide">
+  <header class="slide-head">
+    <div class="eyebrow">Procedure</div>
+    <div class="slide-title">The read path checks the cache first and fills it on a miss</div>
+  </header>
+  <div class="slide-body l-steps">
+    <ol class="steps">
+      <li><strong>Request key</strong>API receives a read for key k</li>
+      <li><strong>Look up cache</strong>GET k from Redis</li>
+      <li><strong>Hit or miss</strong><span class="cond">if value ≠ null</span> return it immediately</li>
+      <li><strong>On a miss</strong>Read DB, SET k with TTL, return</li>
+    </ol>
+  </div>
+  <footer class="slide-foot"><span class="source">Cache-aside read path (simplified view) · TTL policy in August Ops Report (sample), Sec. 2</span><span class="page"></span></footer>
+  <aside class="notes">
+    <h4>입력·반복·조건·출력</h4>
+    <ul><li>입력: 조회할 키 k</li><li>조건: 캐시 값이 있으면 바로 반환(적중), 없으면 DB 조회(미적중)</li><li>출력: 값, 그리고 미적중이었다면 캐시에 새로 채워진 항목</li></ul>
+    <h4>작은 예시</h4>
+    <p>상품 42번을 처음 읽으면 미적중 → DB에서 읽고 캐시에 저장. 1분 뒤 같은 요청은 적중 → 캐시에서 바로 반환.</p>
+    <div class="talk"><p>읽기 경로는 네 단계입니다. 캐시를 먼저 보고, 있으면 바로 돌려줍니다. 없을 때만 DB를 읽고, 다음 요청을 위해 캐시에 채워 둡니다. TTL은 캐시 항목의 유효기간입니다.</p></div>
+    <h4>다음 슬라이드 연결</h4>
+    <p>이 경로가 실제로 얼마나 자주 적중했는지 표로 보겠습니다.</p>
+  </aside>
+</section>
+
+<section class="slide">
+  <header class="slide-head">
+    <div class="eyebrow">Evidence</div>
+    <div class="slide-title">Hit ratio rose to 88% and DB CPU halved</div>
+  </header>
+  <div class="slide-body l-table">
+    <table>
+      <caption>Monthly averages, same traffic window (peak hours). Lower is better except hit ratio. (sample data)</caption>
+      <thead><tr><th>Metric</th><th class="num">July (before)</th><th class="num">August (after)</th><th class="num">Change</th></tr></thead>
+      <tbody>
+        <tr class="hl"><td>API p95 latency (ms)</td><td class="num">221</td><td class="num">128</td><td class="num">−42%</td></tr>
+        <tr><td>Cache hit ratio</td><td class="num">—</td><td class="num">88%</td><td class="num">—</td></tr>
+        <tr class="hl"><td>Peak DB CPU</td><td class="num">85%</td><td class="num">41%</td><td class="num">−44 %p</td></tr>
+        <tr><td>Incidents (S1–S2)</td><td class="num">4</td><td class="num">1</td><td class="num">−3</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <footer class="slide-foot"><span class="source">Source: August Ops Report (sample), Table 1 · hit ratio from Redis INFO stats</span><span class="page"></span></footer>
+  <aside class="notes">
+    <h4>화면에서 먼저 가리킬 부분</h4>
+    <p>강조된 두 행(p95, DB CPU)부터 가리킵니다.</p>
+    <div class="talk"><p>같은 피크 시간대를 비교한 월평균입니다. p95는 221에서 128밀리초로 42퍼센트 줄었고, DB CPU는 85에서 41퍼센트로 떨어졌습니다. 적중률은 월말 기준 88퍼센트입니다.</p></div>
+    <h4>주의점</h4>
+    <p>장애 건수 감소는 캐시만의 효과라고 원본에서 단정하지 않았습니다. 인과관계로 말하지 않습니다.</p>
+  </aside>
+</section>
+
+<section class="slide">
+  <header class="slide-head">
+    <div class="eyebrow">Design choice</div>
+    <div class="slide-title">Cache-aside fit a read-heavy API better than write-through</div>
+  </header>
+  <div class="slide-body l-compare">
+    <div class="col pick"><h3>Cache-aside (chosen)</h3><ul><li>Caches only keys that are actually read</li><li>DB stays the source of truth</li><li>First read of a key is a miss</li></ul></div>
+    <div class="col"><h3>Write-through</h3><ul><li>Every write also updates the cache</li><li>Fresh data on first read</li><li>Caches keys that may never be read</li></ul></div>
+    <div class="verdict">For read-heavy traffic with repeated keys, caching on demand used less memory for the same hit ratio.</div>
+  </div>
+  <footer class="slide-foot"><span class="source">Source: August Ops Report (sample), Sec. 2 design notes</span><span class="page"></span></footer>
+  <aside class="notes">
+    <div class="talk"><p>두 방식을 비교하면, 우리 트래픽은 읽기가 많고 같은 키가 반복되기 때문에 실제로 읽히는 키만 캐시에 올리는 cache-aside가 메모리 대비 효율이 좋았습니다.</p></div>
+    <h4>헷갈리기 쉬운 점</h4>
+    <p>write-through가 나쁜 방식이라는 뜻이 아닙니다. 첫 읽기부터 최신 값이 중요한 서비스에서는 더 적합할 수 있습니다.</p>
+  </aside>
+</section>
+
+<section class="slide section">
+  <div class="sec-big">02</div>
+  <div class="slide-title">Where the gain stops</div>
+  <p>Conditions and limits of the result</p>
+  <footer class="slide-foot"><span class="source"></span><span class="page"></span></footer>
+  <aside class="notes"><div class="talk"><p>이제 이 결과가 어디까지 유효한지 보겠습니다.</p></div></aside>
+</section>
+
+<section class="slide">
+  <header class="slide-head">
+    <div class="eyebrow">Limitations</div>
+    <div class="slide-title">The result holds only while keys repeat and data can be slightly stale</div>
+  </header>
+  <div class="slide-body l-split">
+    <div class="text">
+      <ul>
+        <li>Batch jobs read unique keys, so they barely hit the cache.</li>
+        <li>Price changes can be stale until the TTL expires.</li>
+        <li>A cold cache after restart temporarily brings back DB load.</li>
+      </ul>
+    </div>
+    <div class="interp"><p>By the model on slide 4, if the hit ratio fell back toward 70%, the mean latency gain would shrink by roughly half. This is our projection, not a measured result.</p></div>
+  </div>
+  <footer class="slide-foot"><span class="source">Source: August Ops Report (sample), Sec. 4 · projection is presenter's calculation</span><span class="page"></span></footer>
+  <aside class="notes">
+    <h4>주의점</h4>
+    <p>오른쪽 점선 박스는 원본 결과가 아니라 4번 슬라이드 식으로 계산한 <strong>발표자 추정</strong>입니다. 말할 때도 “제 계산으로는”이라고 구분합니다.</p>
+    <div class="talk">
+      <p>이 효과에는 조건이 있습니다. 같은 키가 반복되어야 하고, 약간 오래된 데이터를 허용할 수 있어야 합니다. 배치 작업처럼 매번 다른 키를 읽으면 캐시가 거의 도움이 되지 않습니다.</p>
+      <p>제 계산으로는 적중률이 70퍼센트 수준으로 떨어지면 평균 지연 개선 폭이 절반 정도로 줄어듭니다. 계산 과정은 부록에 있습니다.</p>
+    </div>
+  </aside>
+</section>
+
+<section class="slide appendix">
+  <header class="slide-head">
+    <div class="eyebrow">Worked example</div>
+    <div class="slide-title">Plugging in sample values shows why the hit ratio dominates</div>
+  </header>
+  <div class="slide-body l-equation">
+    <div class="equation">$$ \mathbb{E}[T] = t_c + (1-h)\,t_{db}, \quad t_c = 2\,\text{ms},\; t_{db} = 40\,\text{ms} $$</div>
+    <ol class="derive">
+      <li>\(h = 0.88\): \(2 + 0.12 \times 40 = 6.8\) ms<span class="why">August hit ratio (sample)</span></li>
+      <li>\(h = 0.71\): \(2 + 0.29 \times 40 = 13.6\) ms<span class="why">First week after rollout (sample)</span></li>
+      <li>\(h = 0\): \(2 + 40 = 42\) ms<span class="why">No hits: slightly slower than no cache (40 ms)</span></li>
+    </ol>
+  </div>
+  <footer class="slide-foot"><span class="source">Presenter's calculation with sample timings · model from slide 4</span><span class="page"></span></footer>
+  <aside class="notes">
+    <h4>숫자 예시</h4>
+    <p>캐시 조회 2ms, DB 조회 40ms로 두고 적중률만 바꿔 계산합니다.</p>
+    <div class="talk"><p>적중률이 0.88이면 평균 6.8밀리초, 0.71이면 13.6밀리초로 두 배가 됩니다. 적중률이 0이면 오히려 캐시가 없을 때보다 2밀리초 느립니다. 그래서 캐시 성능보다 적중률 관리가 중요합니다.</p></div>
+  </aside>
+</section>
+
+</body>
+</html>

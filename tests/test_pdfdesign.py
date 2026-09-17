@@ -7,6 +7,7 @@
   - 렌더링 테스트는 Chrome과 pdfinfo가 있을 때만 실행하고, 없으면 skip 한다.
 변경사항 내역:
 - 2026-09-17 | 최초 작성 | set 부분 변경, accent, prefs, CSS 축 정합성, 렌더 스모크
+- 2026-09-17 | 발표 자료 모드 | 노트 파서, 시간 추정, DOCX 구조, check 결함 탐지, talk 렌더·대본
 """
 
 from __future__ import annotations
@@ -19,12 +20,24 @@ import shutil
 import sys
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
+from xml.dom import minidom
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
+import deck_tools  # noqa: E402
 import pdfdesign  # noqa: E402
+from docx_writer import DocxBuilder  # noqa: E402
+
+HAS_RENDERER = bool(shutil.which("pdfinfo") and shutil.which("pdftoppm")) and any(
+    Path(path).exists() or shutil.which(path) for path in pdfdesign.CHROME_CANDIDATES
+)
+TINY_PNG = bytes.fromhex(
+    "89504e470d0a1a0a0000000d4948445200000002000000010806000000f478d4fa"
+    "0000000d49444154789c63f8cf00020c0c0001050101e1d6d1f70000000049454e44ae426082"
+)
 
 
 def run_cli(*argv: str) -> tuple[int, str, str]:
@@ -152,13 +165,138 @@ class CssAxisConsistencyTest(unittest.TestCase):
         self.assertTrue(without_comments.startswith("@import"))
 
 
-@unittest.skipUnless(
-    shutil.which("pdfinfo") and any(Path(path).exists() or shutil.which(path) for path in pdfdesign.CHROME_CANDIDATES),
-    "Chrome 또는 pdfinfo 가 없어 렌더링 테스트를 건너뜀",
-)
+SAMPLE_DECK = """
+<html><head><title>Deck</title><meta name="pdf-design:duration" content="2"></head><body class="deck">
+<section class="slide hero">
+  <div class="slide-title">Opening</div>
+  <footer class="slide-foot"><span class="source"></span><span class="page"></span></footer>
+  <aside class="notes"><div class="talk"><p>안녕하세요. 오늘 발표를 시작하겠습니다.</p></div></aside>
+</section>
+<section class="slide">
+  <header class="slide-head"><div class="eyebrow">Result</div><div class="slide-title">Latency <br>dropped 42%</div>
+  <p class="slide-msg">Key message here.</p></header>
+  <div class="slide-body l-points"><ol class="points"><li><strong>A</strong> text</li></ol></div>
+  <footer class="slide-foot"><span class="source">Source: Report, Fig. 1</span><span class="page"></span></footer>
+  <aside class="notes">
+    <h4>배경지식</h4>
+    <p><strong>p95</strong>는 느린 쪽 5% 경계입니다.</p>
+    <ul><li>첫째</li><li>둘째<ul><li>세부</li></ul></li></ul>
+    <div class="talk"><p>세로축은 응답시간입니다.</p><p>두 번째 문단입니다.</p></div>
+  </aside>
+</section>
+<section class="slide">
+  <header class="slide-head"><div class="slide-title">No notes here</div></header>
+  <footer class="slide-foot"><span class="source"></span><span class="page"></span></footer>
+</section>
+</body></html>
+"""
+
+
+class DeckToolsTest(unittest.TestCase):
+    def setUp(self) -> None:
+        self.slides = deck_tools.parse_slides(SAMPLE_DECK)
+
+    def test_parses_slide_fields(self) -> None:
+        self.assertEqual(len(self.slides), 3)
+        second = self.slides[1]
+        self.assertEqual(second.title, "Latency dropped 42%")
+        self.assertEqual(second.message, "Key message here.")
+        self.assertEqual(second.source, "Source: Report, Fig. 1")
+        self.assertEqual(self.slides[0].kinds, ["hero"])
+
+    def test_notes_blocks_keep_kind_bold_and_nesting(self) -> None:
+        blocks = self.slides[1].notes
+        self.assertEqual([block.kind for block in blocks], ["heading", "paragraph", "bullet", "bullet", "bullet", "talk", "talk"])
+        self.assertEqual(blocks[1].runs[0], ("p95", True))
+        self.assertEqual(blocks[4].level, 1, "중첩 목록은 level 1")
+        self.assertEqual(self.slides[1].talk_text, "세로축은 응답시간입니다. 두 번째 문단입니다.")
+
+    def test_audit_flags_missing_notes_and_source_but_not_on_hero(self) -> None:
+        issues = deck_tools.audit_slides(self.slides)
+        where_messages = [(issue["where"], issue["message"]) for issue in issues]
+        self.assertTrue(any(where == "slide 3" and "노트" in message for where, message in where_messages))
+        self.assertTrue(any(where == "slide 3" and "출처" in message for where, message in where_messages))
+        self.assertFalse(any(where in ("slide 1", "slide 2") for where, _ in where_messages))
+
+    def test_estimate_seconds(self) -> None:
+        korean = "가" * deck_tools.KOREAN_CHARS_PER_MINUTE
+        self.assertEqual(deck_tools.estimate_seconds(korean), 60)
+        english = " ".join(["word"] * deck_tools.ENGLISH_WORDS_PER_MINUTE * 2)
+        self.assertEqual(deck_tools.estimate_seconds(english), 120)
+        self.assertEqual(deck_tools.estimate_seconds("  "), 0)
+        self.assertEqual(deck_tools.read_target_minutes(SAMPLE_DECK), 2.0)
+        self.assertEqual(deck_tools.format_duration(75), "1분 15초")
+
+    def test_check_script_injected_before_body_end(self) -> None:
+        injected = deck_tools.inject_check_script(SAMPLE_DECK)
+        self.assertLess(injected.index("pdf-design-check-runner"), injected.rindex("</body>"))
+        fake_dom = '<html><body><script type="application/json" id="pdf-design-check-result">{"issues": [], "slides": 3}</script></body></html>'
+        self.assertEqual(deck_tools.extract_check_result(fake_dom), {"issues": [], "slides": 3})
+
+
+class DocxWriterTest(unittest.TestCase):
+    def test_docx_parts_are_well_formed(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="pdf-design-docx-") as work_dir:
+            image_path = Path(work_dir) / "thumb.png"
+            image_path.write_bytes(TINY_PNG)
+            builder = DocxBuilder(title="테스트 & <대본>")
+            builder.heading("제목", level=0)
+            builder.heading("슬라이드 1", level=1)
+            builder.paragraph([("굵게", True), (" 보통\x01", False)])
+            builder.bullet("글머리표", level=1)
+            builder.paragraph("대본 <문단>", style="Talk")
+            builder.table(["#", "제목"], [["1", "A & B"]], [1.0, 5.0])
+            builder.image(image_path, 5.0)
+            builder.page_break()
+            docx_path = builder.save(Path(work_dir) / "out.docx")
+
+            with zipfile.ZipFile(docx_path) as archive:
+                self.assertIsNone(archive.testzip())
+                names = set(archive.namelist())
+                for part in ("[Content_Types].xml", "word/document.xml", "word/styles.xml", "word/media/image1.png", "docProps/core.xml"):
+                    self.assertIn(part, names)
+                for part in ("word/document.xml", "word/styles.xml", "word/_rels/document.xml.rels", "docProps/core.xml"):
+                    minidom.parseString(archive.read(part))  # 잘못된 XML이면 예외
+                document_xml = archive.read("word/document.xml").decode("utf-8")
+            self.assertNotIn("\x01", document_xml, "제어 문자는 제거돼야 한다")
+            self.assertIn("대본 &lt;문단&gt;", document_xml)
+
+            try:
+                import docx  # python-docx 가 있으면 실제로 열리는지도 확인
+            except ImportError:
+                return
+            document = docx.Document(str(docx_path))
+            self.assertEqual(len(document.tables), 1)
+            self.assertEqual(len(document.inline_shapes), 1)
+            self.assertIn("Heading 1", {paragraph.style.name for paragraph in document.paragraphs})
+
+
+BROKEN_DECK = """<!doctype html>
+<html lang="en" data-style="academic" data-palette="graphite"><head><meta charset="utf-8"><title>Broken</title>
+<link rel="stylesheet" href="pdf-design.css"><style>@page { size: 338.67mm 190.5mm; margin: 0; }</style></head>
+<body class="deck">
+<section class="slide">
+  <header class="slide-head"><div class="slide-title">Overflowing body</div></header>
+  <div class="slide-body l-points"><ol class="points">
+    <li><strong>1</strong>x</li><li><strong>2</strong>x</li><li><strong>3</strong>x</li><li><strong>4</strong>x</li>
+    <li><strong>5</strong>x</li><li><strong>6</strong>x</li><li><strong>7</strong>x</li><li><strong>8</strong>x</li>
+  </ol></div>
+  <footer class="slide-foot"><span class="source">Source</span><span class="page"></span></footer>
+  <aside class="notes"><div class="talk"><p>대본</p></div></aside>
+</section>
+<section class="slide">
+  <header class="slide-head"><div class="slide-title">Tiny text and missing image</div></header>
+  <div class="slide-body"><p style="font-size: 8pt">too small</p><img src="missing.png" style="width: 40mm; height: 20mm"></div>
+  <footer class="slide-foot"><span class="source"></span><span class="page"></span></footer>
+</section>
+</body></html>
+"""
+
+
+@unittest.skipUnless(HAS_RENDERER, "Chrome 또는 Poppler 가 없어 렌더링 테스트를 건너뜀")
 class RenderSmokeTest(unittest.TestCase):
     def test_templates_render_expected_pages(self) -> None:
-        expected_pages = {"onepager": 1, "deck": 3}
+        expected_pages = {"onepager": 1, "deck": 3, "talk": 9}
         with tempfile.TemporaryDirectory(prefix="pdf-design-render-") as work_dir:
             for template, pages in expected_pages.items():
                 doc = Path(work_dir) / f"{template}.html"
@@ -166,6 +304,42 @@ class RenderSmokeTest(unittest.TestCase):
                 exit_code, _, stderr = run_cli("render", str(doc), "--expect-pages", str(pages))
                 self.assertEqual(exit_code, 0, stderr)
                 self.assertTrue(doc.with_suffix(".pdf").exists())
+
+    def test_check_passes_templates(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="pdf-design-check-") as work_dir:
+            for template in ("talk", "deck", "onepager"):
+                doc = Path(work_dir) / f"{template}.html"
+                run_cli("init", template, str(doc))
+                exit_code, stdout, stderr = run_cli("check", str(doc))
+                self.assertEqual(exit_code, 0, stdout + stderr)
+                self.assertIn("오류 0건", stdout)
+
+    def test_check_detects_defects(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="pdf-design-check-") as work_dir:
+            doc = Path(work_dir) / "broken.html"
+            doc.write_text(BROKEN_DECK, encoding="utf-8")
+            exit_code, stdout, _ = run_cli("check", str(doc))
+            self.assertEqual(exit_code, 1)
+            self.assertIn("[slide 1] 본문이 영역을 넘침", stdout)
+            self.assertIn("핵심 포인트가 8개", stdout)
+            self.assertIn("[slide 2] 글자가 너무 작음(8.0pt", stdout)
+            self.assertIn("이미지를 불러오지 못함: missing.png", stdout)
+            self.assertIn("[slide 2] 발표자 노트", stdout)
+            self.assertFalse((Path(work_dir) / ".broken.check.html").exists(), "검사용 사본은 지워져야 한다")
+
+    def test_script_builds_docx_with_thumbnails(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="pdf-design-script-") as work_dir:
+            doc = Path(work_dir) / "talk.html"
+            run_cli("init", "talk", str(doc))
+            exit_code, stdout, stderr = run_cli("script", str(doc), "--minutes", "20")
+            self.assertEqual(exit_code, 0, stderr)
+            docx_path = Path(work_dir) / "talk_script.docx"
+            self.assertTrue(docx_path.exists())
+            self.assertIn("썸네일 포함", stdout)
+            self.assertIn("목표 20분", stdout)
+            with zipfile.ZipFile(docx_path) as archive:
+                images = [name for name in archive.namelist() if name.startswith("word/media/")]
+            self.assertEqual(len(images), 9, "슬라이드 수만큼 썸네일이 들어가야 한다")
 
 
 if __name__ == "__main__":

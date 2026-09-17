@@ -1,0 +1,46 @@
+/*
+ * 스타일: classic — 전통 문서 조판. 세리프 제목·본문, 격자 표, 이중 테두리 표지, 작은 대문자 라벨.
+ * 공문·학위논문 요약·법무/금융 보고서처럼 격식 있는 문서용.
+ * 색은 토큰만 쓴다. 변경사항 내역: 2026-09-17 | 최초 작성
+ */
+html[data-style="classic"] {
+  --font-head: var(--font-serif);
+  --font-body: var(--font-serif);
+  --font-label: var(--font-serif);
+  --head-weight: 700;
+  --head-tracking: 0;
+  --label-transform: uppercase;
+  --label-tracking: 0.14em;
+  --radius: 0pt;
+  --leading: 1.8;
+}
+html[data-style="classic"] h1 { text-align: center; }
+html[data-style="classic"] main > .eyebrow { text-align: center; }
+html[data-style="classic"] .lead { text-align: center; }
+html[data-style="classic"] h2 { text-align: left; border-bottom: 0.5pt solid var(--ink); font-variant: small-caps; letter-spacing: 0.02em; }
+html[data-style="classic"] .sec-num { font-weight: 400; }
+html[data-style="classic"] table { border: 0.75pt solid var(--ink); }
+html[data-style="classic"] th, html[data-style="classic"] td { border: 0.5pt solid var(--ink-2); }
+html[data-style="classic"] th { background: var(--surface-2); text-align: center; }
+html[data-style="classic"] .kpi { border: 0.5pt solid var(--ink); border-top: 0.5pt solid var(--ink); padding: var(--sp-2); text-align: center; }
+html[data-style="classic"] .card { border-color: var(--ink); }
+html[data-style="classic"] .callout { background: transparent; border: 0.5pt solid var(--ink); outline: 0.5pt solid var(--ink); outline-offset: 2pt; }
+html[data-style="classic"] .callout-title { color: var(--ink); }
+html[data-style="classic"] .tag { border-radius: 0; background: transparent; border: 0.5pt solid var(--ink-2); color: var(--ink-2); }
+
+html[data-style="classic"] .cover { background: var(--surface); text-align: center; align-items: center; }
+html[data-style="classic"] .cover::before { content: ""; position: absolute; inset: 12mm; border: 3pt double var(--ink); }
+html[data-style="classic"] .cover-top { width: 100%; }
+html[data-style="classic"] .cover-title { font-size: calc(var(--fs-base) * 3.6); }
+html[data-style="classic"] .cover-sub { margin: 0 auto; font-style: italic; }
+html[data-style="classic"] .cover-foot { width: 100%; text-align: center; border-top: 0.5pt solid var(--ink); }
+html[data-style="classic"] .side { background: var(--surface); border-right: 3pt double var(--ink); }
+
+html[data-style="classic"] .slide-head { text-align: center; }
+html[data-style="classic"] .slide-title { font-size: 28pt; }
+html[data-style="classic"] .slide:not(.hero):not(.section) .slide-head::after { content: ""; display: block; width: 40mm; margin: 4mm auto 0; border-top: 0.75pt solid var(--ink); }
+html[data-style="classic"] .slide.hero, html[data-style="classic"] .slide.section { text-align: center; align-items: center; }
+html[data-style="classic"] .slide.hero::before { content: ""; position: absolute; inset: 9mm; border: 3pt double var(--ink); }
+html[data-style="classic"] .slide.section .sec-big { font-weight: 400; color: var(--ink); }
+html[data-style="classic"] .l-steps .steps > li { background: var(--surface); border: 0.5pt solid var(--ink); }
+html[data-style="classic"] .equation { background: var(--surface); border: 0.5pt solid var(--ink); }

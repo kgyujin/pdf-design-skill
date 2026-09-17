@@ -16,4 +16,4 @@ html[data-style="swiss"] .cover::before { content: ""; position: absolute; left:
 
 html[data-style="swiss"] .slide.hero { background: var(--surface-2); }
 html[data-style="swiss"] .slide.hero::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 8mm; background: var(--accent); }
-html[data-style="swiss"] .slide:not(.hero) .slide-title { padding-bottom: 10pt; border-bottom: 2pt solid var(--ink); }
+html[data-style="swiss"] .slide:not(.hero):not(.section) .slide-title { padding-bottom: 10pt; border-bottom: 2pt solid var(--ink); }

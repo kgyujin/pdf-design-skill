@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en" data-style="academic" data-palette="graphite" data-font="auto" data-density="normal" data-radius="auto">
+<head>
+<meta charset="utf-8">
+<title>Talk title</title>
+<!-- 목표 발표 시간(분). script 명령이 대본 분량과 비교한다. -->
+<meta name="pdf-design:duration" content="20">
+<link rel="stylesheet" href="pdf-design.css">
+<!-- 수식: $$...$$ (블록), \( ... \) (인라인). 네트워크가 없으면 수식이 렌더링되지 않으므로 check 로 확인한다. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}], ignoredClasses: ['notes'], throwOnError: false})"></script>
+<style>
+  /* 16:9. 슬라이드 1장 = PDF 1쪽. 쪽번호는 자동으로 매겨진다. */
+  @page { size: 338.67mm 190.5mm; margin: 0; }
+</style>
+</head>
+<body class="deck">
+
+<!--
+  슬라이드 작성 규칙
+  - section.slide 하나 = 한 장. 제목(.slide-title)만 이어 읽어도 논리가 이어지게 결론형 문장으로 쓴다.
+  - 본문 레이아웃은 .slide-body 에 l-points | l-figure | l-equation | l-steps | l-compare | l-table | l-split 중 하나.
+  - 하단 .source 에 원본 페이지·Figure 번호·출처를 적는다. .page 는 비워 두면 자동 번호.
+  - aside.notes = 발표자 노트(PDF에 안 보임). h4 소제목 + p/li 설명 + div.talk(실제로 읽을 대본).
+-->
+
+<section class="slide hero">
+  <div class="eyebrow">Venue or course · Date</div>
+  <div class="slide-title">Title that states<br>the main claim</div>
+  <p>One-line summary of what the audience will take away</p>
+  <div class="meta">Presenter name · Affiliation<br>Based on: Original source (Author, Year)</div>
+  <footer class="slide-foot"><span class="source"></span><span class="page"></span></footer>
+  <aside class="notes">
+    <h4>먼저 알아야 할 배경지식</h4>
+    <p>발표 주제를 한두 문장으로 요약한다.</p>
+    <div class="talk"><p>안녕하세요. 오늘은 원본 자료의 핵심 주장과 그 근거를 순서대로 설명드리겠습니다.</p></div>
+    <h4>다음 슬라이드 연결</h4>
+    <p>먼저 이 연구가 풀려는 문제부터 보겠습니다.</p>
+  </aside>
+</section>
+
+<section class="slide">
+  <header class="slide-head">
+    <div class="eyebrow">Problem</div>
+    <div class="slide-title">Slide titles read as a storyline</div>
+    <p class="slide-msg">One key message per slide, written as a full sentence.</p>
+  </header>
+  <div class="slide-body l-points">
+    <ol class="points">
+      <li><strong>First supporting point</strong>A short explanation, at most two lines.</li>
+      <li><strong>Second supporting point</strong>Keep three to five points per slide.</li>
+      <li><strong>Third supporting point</strong>Move details into the speaker notes.</li>
+    </ol>
+  </div>
+  <footer class="slide-foot"><span class="source">Source: Original source, p. 1</span><span class="page"></span></footer>
+  <aside class="notes">
+    <h4>화면에서 먼저 가리킬 부분</h4>
+    <p>제목 → 핵심 메시지 → 1번 포인트 순서로 가리킨다.</p>
+    <div class="talk"><p>이 슬라이드에서 말하고 싶은 것은 한 문장입니다. 첫 번째 근거부터 보겠습니다.</p></div>
+    <h4>헷갈리기 쉬운 점</h4>
+    <ul><li>비슷한 용어와의 차이를 짚는다.</li></ul>
+  </aside>
+</section>
+
+<section class="slide">
+  <header class="slide-head">
+    <div class="eyebrow">Result</div>
+    <div class="slide-title">A figure slide explains what to look at</div>
+  </header>
+  <div class="slide-body l-figure">
+    <figure class="fig">
+      <div class="fig-frame">
+        <svg class="chart" viewBox="0 0 480 250" role="img" aria-label="Example chart">
+          <g class="grid"><line x1="40" y1="20" x2="470" y2="20"/><line x1="40" y1="90" x2="470" y2="90"/><line x1="40" y1="160" x2="470" y2="160"/><line x1="40" y1="220" x2="470" y2="220"/></g>
+          <text x="34" y="24" text-anchor="end">100</text><text x="34" y="164" text-anchor="end">20</text>
+          <polyline class="series" points="60,200 160,170 260,120 360,70 460,40"/>
+          <g class="dot"><circle cx="60" cy="200" r="3.5"/><circle cx="460" cy="40" r="3.5"/></g>
+          <g text-anchor="middle"><text x="60" y="240">A</text><text x="160" y="240">B</text><text x="260" y="240">C</text><text x="360" y="240">D</text><text x="460" y="240">E</text></g>
+          <text x="255" y="252" text-anchor="middle">Condition (unit)</text>
+        </svg>
+        <span class="pin" style="left: 94%; top: 18%">1</span>
+        <span class="pin" style="left: 55%; top: 50%">2</span>
+      </div>
+      <figcaption>Figure N. Caption with axis meaning and unit. (Original source, Fig. N)</figcaption>
+    </figure>
+    <ol class="callouts">
+      <li><strong>What point 1 shows</strong>Short observation tied to the claim.</li>
+      <li><strong>What point 2 shows</strong>Trend or comparison to notice.</li>
+    </ol>
+  </div>
+  <footer class="slide-foot"><span class="source">Source: Original source, Fig. N (p. 5)</span><span class="page"></span></footer>
+  <aside class="notes">
+    <h4>Figure를 가리키는 순서</h4>
+    <ol><li>가로축과 세로축의 의미·단위</li><li>범례와 색</li><li>번호 1 → 2</li></ol>
+    <div class="talk"><p>가로축은 조건, 세로축은 측정값입니다. 1번 지점을 보시면 값이 가장 높습니다.</p></div>
+  </aside>
+</section>
+
+<section class="slide">
+  <header class="slide-head">
+    <div class="eyebrow">Method</div>
+    <div class="slide-title">An equation slide defines every symbol</div>
+  </header>
+  <div class="slide-body l-equation">
+    <div class="equation">$$ y = \alpha\,x + (1-\alpha)\,z $$</div>
+    <dl class="symbols">
+      <div><dt>\(y\)</dt><dd>What the equation computes</dd></div>
+      <div><dt>\(\alpha\)</dt><dd>Weight between 0 and 1</dd></div>
+      <div><dt>\(x, z\)</dt><dd>The two quantities being mixed</dd></div>
+    </dl>
+  </div>
+  <footer class="slide-foot"><span class="source">Source: Original source, Eq. (1)</span><span class="page"></span></footer>
+  <aside class="notes">
+    <h4>수식이 계산하는 것</h4>
+    <p>무엇을 계산하는지 먼저 말한다.</p>
+    <h4>단계별 유도</h4>
+    <ol><li>출발한 기본식과 가정</li><li>값 대입</li><li>최종식</li></ol>
+    <h4>숫자 예시</h4>
+    <p>α = 0.5, x = 10, z = 20 이면 y = 15.</p>
+    <div class="talk"><p>이 식은 두 값을 가중 평균한 것입니다. 알파가 1에 가까울수록 x의 영향이 커집니다.</p></div>
+  </aside>
+</section>
+
+<section class="slide">
+  <header class="slide-head">
+    <div class="eyebrow">Procedure</div>
+    <div class="slide-title">A process slide shows inputs, steps, and outputs</div>
+  </header>
+  <div class="slide-body l-steps">
+    <ol class="steps">
+      <li><strong>Input</strong>What the procedure starts from</li>
+      <li><strong>Repeat</strong>What each iteration processes</li>
+      <li><strong>Decide</strong>Condition <span class="cond">if score &gt; τ</span></li>
+      <li><strong>Output</strong>Final state or result</li>
+    </ol>
+  </div>
+  <footer class="slide-foot"><span class="source">Source: Original source, Algorithm 1 (simplified view)</span><span class="page"></span></footer>
+  <aside class="notes">
+    <h4>입력·반복·조건·출력</h4>
+    <ul><li>입력: …</li><li>반복: …</li><li>조건이 필요한 이유: …</li><li>출력: …</li></ul>
+    <div class="talk"><p>이 절차는 네 단계로 동작합니다. 작은 예시로 한 번 따라가 보겠습니다.</p></div>
+  </aside>
+</section>
+
+<section class="slide">
+  <header class="slide-head">
+    <div class="eyebrow">Comparison</div>
+    <div class="slide-title">A comparison slide ends with a verdict</div>
+  </header>
+  <div class="slide-body l-compare">
+    <div class="col"><h3>Option A</h3><ul><li>Property under the same condition</li><li>Cost or limitation</li></ul></div>
+    <div class="col pick"><h3>Option B</h3><ul><li>Property under the same condition</li><li>Why it is preferred</li></ul></div>
+    <div class="verdict">Under condition X, option B is preferred because …</div>
+  </div>
+  <footer class="slide-foot"><span class="source">Source: Original source, Table 2</span><span class="page"></span></footer>
+  <aside class="notes">
+    <div class="talk"><p>두 방법을 같은 조건에서 비교하면 차이는 한 가지로 요약됩니다.</p></div>
+  </aside>
+</section>
+
+<section class="slide">
+  <header class="slide-head">
+    <div class="eyebrow">Evidence</div>
+    <div class="slide-title">A table slide highlights the rows that matter</div>
+  </header>
+  <div class="slide-body l-table">
+    <table>
+      <caption>Table N. Metric (unit), condition, higher is better. (Original source, Table N)</caption>
+      <thead><tr><th>Method</th><th class="num">Metric 1</th><th class="num">Metric 2</th></tr></thead>
+      <tbody>
+        <tr><td>Baseline</td><td class="num">0.0</td><td class="num">0.0</td></tr>
+        <tr class="hl"><td>Proposed</td><td class="num">0.0</td><td class="num">0.0</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <footer class="slide-foot"><span class="source">Source: Original source, Table N (p. 7)</span><span class="page"></span></footer>
+  <aside class="notes">
+    <div class="talk"><p>강조한 행이 제안 방법입니다. 비교 조건과 단위를 먼저 말씀드리겠습니다.</p></div>
+  </aside>
+</section>
+
+<section class="slide section">
+  <div class="sec-big">02</div>
+  <div class="slide-title">Section title</div>
+  <p>What this part answers</p>
+  <footer class="slide-foot"><span class="source"></span><span class="page"></span></footer>
+  <aside class="notes"><div class="talk"><p>이제 두 번째 파트로 넘어가겠습니다.</p></div></aside>
+</section>
+
+<section class="slide">
+  <header class="slide-head">
+    <div class="eyebrow">Discussion</div>
+    <div class="slide-title">Limitations stay next to the claims they bound</div>
+  </header>
+  <div class="slide-body l-split">
+    <div class="text">
+      <ul><li>Condition under which the result holds</li><li>Known counterexample or limitation</li></ul>
+    </div>
+    <div class="interp"><p>Presenter's interpretation, clearly separated from the source's claims.</p></div>
+  </div>
+  <footer class="slide-foot"><span class="source">Source: Original source, Sec. 6</span><span class="page"></span></footer>
+  <aside class="notes">
+    <h4>주의점</h4>
+    <p>원본에서 확정하지 않은 해석은 “제 해석으로는”이라고 구분해서 말한다.</p>
+    <div class="talk"><p>이 결과는 특정 조건에서만 성립한다는 점을 짚고 넘어가겠습니다.</p></div>
+  </aside>
+</section>
+
+</body>
+</html>
