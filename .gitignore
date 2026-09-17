@@ -1,0 +1,19 @@
+# 렌더링 산출물
+*.pdf
+*_preview/
+*_gallery/
+pdf-kit.css
+pdf-kit.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 환경·OS
+.env
+.env.*
+.DS_Store
+.idea/
+.vscode/

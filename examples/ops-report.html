@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ko" data-style="swiss" data-palette="indigo" data-font="auto" data-density="normal" data-radius="auto">
+<head>
+<meta charset="utf-8">
+<title>8월 서비스 운영 리포트 (예시)</title>
+<link rel="stylesheet" href="pdf-kit.css">
+<style>
+  @page {
+    @top-right { content: "8월 서비스 운영 리포트 · 예시 데이터"; font-family: var(--font-label); font-size: 7.5pt; color: var(--muted); }
+    @bottom-right { content: counter(page) " / " counter(pages); font-family: var(--font-label); font-size: 7.5pt; color: var(--muted); }
+  }
+  @page cover { @top-right { content: none; } @bottom-right { content: none; } }
+</style>
+</head>
+<body>
+
+<section class="cover">
+  <div class="cover-top"><span>플랫폼 운영팀</span><span>2026. 09. 01</span></div>
+  <div class="cover-body">
+    <div class="eyebrow">Monthly Ops Report · 예시 데이터</div>
+    <div class="cover-title">응답 속도는 절반으로,<br>장애는 한 건으로</div>
+    <p class="cover-sub">캐시 계층 도입 후 8월 API p95 응답시간이 42% 줄었다. 남은 과제는 배치 작업의 야간 지연이다.</p>
+  </div>
+  <dl class="cover-foot">
+    <div><dt>기간</dt><dd>2026.08.01 – 08.31</dd></div>
+    <div><dt>대상</dt><dd>개발·운영 리드</dd></div>
+    <div><dt>버전</dt><dd>v1.0</dd></div>
+  </dl>
+</section>
+
+<main>
+  <div class="eyebrow">Executive Summary</div>
+  <h1>핵심 지표는 모두 목표를 넘었다</h1>
+  <p class="lead">p95 응답시간과 가용성은 목표를 달성했다. 반면 배치 작업 지연이 3주 연속 늘고 있어 9월 우선 과제로 올린다.</p>
+
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-label">API p95 응답시간</div><div class="kpi-value">128ms</div><div class="kpi-delta up">▲ 42% 개선</div></div>
+    <div class="kpi"><div class="kpi-label">월 가용성</div><div class="kpi-value">99.97%</div><div class="kpi-delta up">▲ 목표 초과</div></div>
+    <div class="kpi"><div class="kpi-label">장애 (S1–S2)</div><div class="kpi-value">1건</div><div class="kpi-delta up">▲ 7월 4건</div></div>
+    <div class="kpi"><div class="kpi-label">배치 평균 지연</div><div class="kpi-value">+18분</div><div class="kpi-delta down">▼ 3주 연속 증가</div></div>
+  </div>
+
+  <h2><span class="sec-num">01</span>응답시간 추이</h2>
+  <p>8월 12일 Redis 캐시 계층을 배포한 뒤 p95가 200ms대에서 130ms 안팎으로 내려와 유지되고 있다. 캐시 적중률은 배포 첫 주 71%에서 마지막 주 88%로 올랐다.</p>
+
+  <figure>
+    <svg class="chart" viewBox="0 0 480 170" width="100%" role="img" aria-label="주간 p95 응답시간 추이">
+      <g class="grid"><line x1="36" y1="20" x2="470" y2="20"/><line x1="36" y1="60" x2="470" y2="60"/><line x1="36" y1="100" x2="470" y2="100"/><line x1="36" y1="140" x2="470" y2="140"/></g>
+      <text x="30" y="23" text-anchor="end">250</text><text x="30" y="63" text-anchor="end">200</text>
+      <text x="30" y="103" text-anchor="end">150</text><text x="30" y="143" text-anchor="end">100</text>
+      <line class="target" x1="36" y1="92" x2="470" y2="92"/>
+      <text x="468" y="88" text-anchor="end" style="fill:var(--good)">목표 160ms</text>
+      <line class="marker" x1="236" y1="14" x2="236" y2="140"/>
+      <text x="240" y="30">캐시 배포 (8/12)</text>
+      <polyline class="series" points="56,44 106,40 156,48 206,36 256,90 306,108 356,114 406,116 456,117"/>
+      <g class="dot"><circle cx="56" cy="44" r="2.5"/><circle cx="106" cy="40" r="2.5"/><circle cx="156" cy="48" r="2.5"/><circle cx="206" cy="36" r="2.5"/><circle cx="256" cy="90" r="2.5"/><circle cx="306" cy="108" r="2.5"/><circle cx="356" cy="114" r="2.5"/><circle cx="406" cy="116" r="2.5"/><circle cx="456" cy="117" r="3.5"/></g>
+      <text class="strong" x="456" y="131" text-anchor="middle">128</text>
+      <g text-anchor="middle"><text x="56" y="158">7/1주</text><text x="106" y="158">7/2주</text><text x="156" y="158">7/3주</text><text x="206" y="158">7/4주</text><text x="256" y="158">8/2주</text><text x="306" y="158">8/3주</text><text x="356" y="158">8/4주</text><text x="406" y="158">8/5주</text><text x="456" y="158">9/1주</text></g>
+    </svg>
+    <figcaption>그림 1. 주간 API p95 응답시간(ms). 출처: APM 대시보드, 기준일 2026-09-01 (예시 데이터)</figcaption>
+  </figure>
+
+  <h2><span class="sec-num">02</span>서비스별 현황</h2>
+  <table>
+    <thead><tr><th>서비스</th><th>담당</th><th class="num">p95 (ms)</th><th class="num">에러율</th><th>목표 대비</th></tr></thead>
+    <tbody>
+      <tr><td><strong>주문 API</strong></td><td class="muted small">커머스팀</td><td class="num">112</td><td class="num">0.08%</td><td><div class="bar"><span style="width:94%"></span></div></td></tr>
+      <tr><td><strong>검색 API</strong></td><td class="muted small">검색팀</td><td class="num">146</td><td class="num">0.12%</td><td><div class="bar"><span style="width:86%"></span></div></td></tr>
+      <tr><td><strong>회원 API</strong></td><td class="muted small">계정팀</td><td class="num">97</td><td class="num">0.03%</td><td><div class="bar"><span style="width:98%"></span></div></td></tr>
+      <tr><td><strong>정산 배치</strong></td><td class="muted small">정산팀</td><td class="num">—</td><td class="num">0.40%</td><td><div class="bar"><span class="warn" style="width:58%"></span></div></td></tr>
+    </tbody>
+    <caption>표 1. 서비스별 8월 평균 지표 (예시 데이터)</caption>
+  </table>
+
+  <h2><span class="sec-num">03</span>장애 기록</h2>
+  <table>
+    <thead><tr><th>등급</th><th>일시</th><th>내용</th><th class="num">영향 시간</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge warn">S2</span></td><td>08.19 02:14</td><td>정산 배치 DB 커넥션 고갈로 작업 재시도 반복</td><td class="num">37분</td></tr>
+      <tr><td><span class="badge">S3</span></td><td>08.07 14:02</td><td>검색 인덱스 재빌드 중 일부 결과 누락</td><td class="num">12분</td></tr>
+      <tr><td><span class="badge">S3</span></td><td>08.26 10:40</td><td>외부 결제사 응답 지연으로 타임아웃 증가</td><td class="num">8분</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <div class="callout-title">배치 지연을 방치하면</div>
+    <p>현재 추세라면 10월 중순에 야간 배치가 오전 업무 시작(09:00) 이후까지 이어진다. 커넥션 풀 분리와 작업 병렬화를 9월 안에 끝내야 한다.</p>
+  </div>
+
+  <h2><span class="sec-num">04</span>9월 우선 과제</h2>
+  <div class="grid-3">
+    <div class="card"><div class="eyebrow">P0</div><h4>배치 커넥션 풀 분리</h4><p class="small">정산 배치 전용 풀을 두어 API 트래픽과 격리한다.</p></div>
+    <div class="card"><div class="eyebrow">P1</div><h4>캐시 무효화 규칙 정리</h4><p class="small">상품 가격 변경 시 캐시가 늦게 갱신되는 경로를 없앤다.</p></div>
+    <div class="card"><div class="eyebrow">P2</div><h4>외부 API 서킷브레이커</h4><p class="small">결제사 지연이 전체 타임아웃으로 번지지 않게 막는다.</p></div>
+  </div>
+</main>
+
+</body>
+</html>

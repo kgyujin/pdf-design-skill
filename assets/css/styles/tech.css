@@ -1,0 +1,47 @@
+/*
+ * 스타일: tech — 개발 문서·엔지니어링 리포트. 모노 라벨, 점선, 도트 그리드 표지.
+ * 표지: inverse + 도트 그리드 / 제목: [01] 번호 + 점선 / 카드: 점선 테두리
+ * 색은 토큰만 쓴다. 변경사항 내역: 2026-09-17 | 최초 작성
+ */
+html[data-style="tech"] {
+  --font-head: var(--font-sans);
+  --font-label: var(--font-mono);
+  --head-weight: 700;
+  --label-transform: none;
+  --label-tracking: 0;
+  --radius: 2pt;
+}
+html[data-style="tech"] h2 { border-bottom: 0.75pt dashed var(--ink-2); }
+html[data-style="tech"] .sec-num { font-family: var(--font-mono); font-weight: 600; }
+html[data-style="tech"] h2 .sec-num::before { content: "["; color: var(--muted); }
+html[data-style="tech"] h2 .sec-num::after { content: "]"; color: var(--muted); }
+html[data-style="tech"] .eyebrow::before { content: "// "; opacity: 0.6; }
+html[data-style="tech"] th { font-size: var(--fs-xs); border-bottom: 1pt solid var(--ink); }
+html[data-style="tech"] td { border-bottom-style: dashed; }
+
+html[data-style="tech"] .kpi { border: 0.75pt dashed var(--line); border-top: 2pt solid var(--accent); padding: var(--sp-2) var(--sp-3); }
+html[data-style="tech"] .card { border-style: dashed; border-color: color-mix(in srgb, var(--ink) 30%, transparent); }
+html[data-style="tech"] .card.soft { border: 0.75pt dashed var(--line); }
+html[data-style="tech"] .callout { background: var(--surface-2); border-left: 2pt solid var(--accent); border-radius: 0; }
+html[data-style="tech"] .callout-title::before { content: "> "; }
+html[data-style="tech"] .tag { border-radius: 2pt; font-family: var(--font-mono); }
+
+html[data-style="tech"] :is(.cover, .slide.hero) {
+  background-color: var(--inverse);
+  background-image: radial-gradient(color-mix(in srgb, var(--on-inverse) 16%, transparent) 0.6pt, transparent 0.8pt);
+  background-size: 5mm 5mm;
+  color: var(--on-inverse);
+  --ink: var(--on-inverse);
+  --ink-2: var(--on-inverse-muted);
+  --muted: var(--on-inverse-muted);
+  --accent: var(--accent-on-inverse);
+  --line: color-mix(in srgb, var(--on-inverse) 22%, transparent);
+}
+html[data-style="tech"] .cover::before,
+html[data-style="tech"] .slide.hero::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2mm; background: var(--accent-on-inverse); }
+html[data-style="tech"] .cover-top, html[data-style="tech"] .cover-foot { font-family: var(--font-mono); }
+html[data-style="tech"] .cover-foot { border-top-style: dashed; }
+
+html[data-style="tech"] .side { border-right: 0.75pt dashed var(--line); }
+html[data-style="tech"] .side h3::before { content: "# "; }
+html[data-style="tech"] .slide:not(.hero) .slide-title { padding-bottom: 10pt; border-bottom: 0.75pt dashed var(--ink-2); }

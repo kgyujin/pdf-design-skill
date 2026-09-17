@@ -1,0 +1,108 @@
+/*
+ * 작성자: Git 이력 참조
+ * 작성목적: pdf-kit 색조(palette) 축. 색 토큰만 정의하고 모양은 건드리지 않는다.
+ * 작성일: 2026-09-17
+ * 주의사항:
+ *  - 모든 팔레트는 같은 토큰 세트를 빠짐없이 정의해야 한다(tests/test_pdfkit.py 가 검사).
+ *  - inverse 계열은 어두운 표지·히어로 슬라이드·사이드바에 쓰인다. accent-on-inverse 는 어두운 면 위 대비용 밝은 포인트색.
+ *  - 기본값(data-palette 미지정)은 indigo 와 같다.
+ * 변경사항 내역:
+ * - 2026-09-17 | 최초 작성 | indigo, navy, terracotta, forest, plum, mono
+ */
+
+:root,
+html[data-palette="indigo"] {
+  --ink: #16181d;
+  --ink-2: #3d434f;
+  --muted: #6b7280;
+  --line: #e4e6eb;
+  --surface: #ffffff;
+  --surface-2: #f5f6f8;
+  --accent: #3b5bdb;
+  --accent-soft: #edf1ff;
+  --on-accent: #ffffff;
+  --inverse: #16181d;
+  --on-inverse: #ffffff;
+  --on-inverse-muted: #a3a9b5;
+  --accent-on-inverse: #9db1ff;
+}
+
+html[data-palette="navy"] {
+  --ink: #0f1c2e;
+  --ink-2: #33445c;
+  --muted: #64748b;
+  --line: #dbe2ea;
+  --surface: #ffffff;
+  --surface-2: #f1f5f9;
+  --accent: #0b3d91;
+  --accent-soft: #e6eef9;
+  --on-accent: #ffffff;
+  --inverse: #0f1c2e;
+  --on-inverse: #ffffff;
+  --on-inverse-muted: #9fb0c8;
+  --accent-on-inverse: #7fb0ff;
+}
+
+html[data-palette="terracotta"] {
+  --ink: #1f1b16;
+  --ink-2: #4a4238;
+  --muted: #7d7263;
+  --line: #e6dfd3;
+  --surface: #fffdf8;
+  --surface-2: #f6f1e7;
+  --accent: #b4532a;
+  --accent-soft: #f8ebe3;
+  --on-accent: #ffffff;
+  --inverse: #2a211b;
+  --on-inverse: #fffdf8;
+  --on-inverse-muted: #b8ab9a;
+  --accent-on-inverse: #f0a37c;
+}
+
+html[data-palette="forest"] {
+  --ink: #14201a;
+  --ink-2: #37483e;
+  --muted: #687a70;
+  --line: #dde6e0;
+  --surface: #ffffff;
+  --surface-2: #f2f6f3;
+  --accent: #2b7a4b;
+  --accent-soft: #e7f3ec;
+  --on-accent: #ffffff;
+  --inverse: #132a1e;
+  --on-inverse: #ffffff;
+  --on-inverse-muted: #9db8a8;
+  --accent-on-inverse: #7fd3a0;
+}
+
+html[data-palette="plum"] {
+  --ink: #1d1621;
+  --ink-2: #463b4d;
+  --muted: #766b7d;
+  --line: #e7e0eb;
+  --surface: #ffffff;
+  --surface-2: #f7f3f9;
+  --accent: #7b3fa0;
+  --accent-soft: #f3eaf8;
+  --on-accent: #ffffff;
+  --inverse: #221829;
+  --on-inverse: #ffffff;
+  --on-inverse-muted: #b3a4bd;
+  --accent-on-inverse: #d0a6ec;
+}
+
+html[data-palette="mono"] {
+  --ink: #111214;
+  --ink-2: #3a3d42;
+  --muted: #6e7278;
+  --line: #e2e3e5;
+  --surface: #ffffff;
+  --surface-2: #f3f3f4;
+  --accent: #111214;
+  --accent-soft: #ececed;
+  --on-accent: #ffffff;
+  --inverse: #111214;
+  --on-inverse: #ffffff;
+  --on-inverse-muted: #a0a3a8;
+  --accent-on-inverse: #ffffff;
+}

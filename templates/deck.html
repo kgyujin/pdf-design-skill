@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ko" data-style="swiss" data-palette="indigo" data-font="auto" data-density="normal" data-radius="auto">
+<head>
+<meta charset="utf-8">
+<title>발표 자료</title>
+<link rel="stylesheet" href="pdf-kit.css">
+<style>
+  /* 16:9. 슬라이드 1장 = PDF 1쪽. 슬라이드 수와 render --expect-pages 를 맞춘다. */
+  @page { size: 338.67mm 190.5mm; margin: 0; }
+</style>
+</head>
+<body class="deck">
+
+<section class="slide hero">
+  <div class="eyebrow">프로젝트명</div>
+  <div class="slide-title">한 문장으로 말하는<br>발표 제목</div>
+  <p>발표자 · 날짜</p>
+  <div class="slide-foot"><span>조직명</span><span>1</span></div>
+</section>
+
+<section class="slide">
+  <div class="eyebrow">문제</div>
+  <div class="slide-title">슬라이드 제목은 결론 문장으로 쓴다</div>
+  <div class="grid-3 center">
+    <div class="card soft"><h3>원인 1</h3><p>한두 줄 설명</p></div>
+    <div class="card soft"><h3>원인 2</h3><p>한두 줄 설명</p></div>
+    <div class="card hl"><h3>원인 3</h3><p>강조할 카드는 hl</p></div>
+  </div>
+  <div class="slide-foot"><span>프로젝트명</span><span>2</span></div>
+</section>
+
+<section class="slide">
+  <div class="eyebrow">결과</div>
+  <div class="slide-title">숫자 하나가 슬라이드를 끌고 간다</div>
+  <div class="compare center">
+    <div class="card soft"><div class="eyebrow">이전</div><div class="big-number muted">000</div><p>측정 조건</p></div>
+    <div class="card"><div class="eyebrow">이후</div><div class="big-number">000</div><p>측정 조건</p></div>
+  </div>
+  <div class="slide-foot"><span>프로젝트명</span><span>3</span></div>
+</section>
+
+</body>
+</html>

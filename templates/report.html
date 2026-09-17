@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko" data-style="swiss" data-palette="indigo" data-font="auto" data-density="normal" data-radius="auto">
+<head>
+<meta charset="utf-8">
+<title>보고서 제목</title>
+<link rel="stylesheet" href="pdf-kit.css">
+<style>
+  /* 러닝 헤더·쪽번호: 문구를 실제 문서 제목으로 바꾼다. 표지(page: cover)에는 표시하지 않는다. */
+  @page {
+    @top-right { content: "보고서 제목"; font-family: var(--font-label); font-size: 7.5pt; color: var(--muted); }
+    @bottom-right { content: counter(page) " / " counter(pages); font-family: var(--font-label); font-size: 7.5pt; color: var(--muted); }
+  }
+  @page cover { @top-right { content: none; } @bottom-right { content: none; } }
+</style>
+</head>
+<body>
+
+<!-- 표지: 제목·부제·메타만 둔다. 부제는 두 줄 이내. -->
+<section class="cover">
+  <div class="cover-top"><span>조직명</span><span>2026. 09</span></div>
+  <div class="cover-body">
+    <div class="eyebrow">문서 종류</div>
+    <div class="cover-title">결론을 담은 제목을<br>두 줄 이내로</div>
+    <p class="cover-sub">독자가 이 문서에서 얻을 결론을 한두 문장으로 적는다.</p>
+  </div>
+  <dl class="cover-foot">
+    <div><dt>작성</dt><dd>작성자</dd></div>
+    <div><dt>대상</dt><dd>독자</dd></div>
+    <div><dt>버전</dt><dd>v1.0</dd></div>
+  </dl>
+</section>
+
+<main>
+  <div class="eyebrow">Summary</div>
+  <h1>요약 제목도 결론 문장으로 쓴다</h1>
+  <p class="lead">핵심 결론을 먼저 말한다. 근거와 수치는 아래 KPI와 본문에서 뒷받침한다.</p>
+
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-label">지표 A</div><div class="kpi-value">000</div><div class="kpi-delta up">▲ 변화</div></div>
+    <div class="kpi"><div class="kpi-label">지표 B</div><div class="kpi-value">00%</div><div class="kpi-delta up">▲ 변화</div></div>
+    <div class="kpi"><div class="kpi-label">지표 C</div><div class="kpi-value">0건</div><div class="kpi-delta down">▼ 변화</div></div>
+  </div>
+
+  <ol class="toc">
+    <li><span class="sec-num">01</span><span>첫 번째 장</span></li>
+    <li><span class="sec-num">02</span><span>두 번째 장</span></li>
+    <li><span class="sec-num">03</span><span>세 번째 장</span></li>
+  </ol>
+
+  <h2><span class="sec-num">01</span>첫 번째 장</h2>
+  <p>문단은 3~5문장으로 짧게 유지한다. 한 문단에는 한 가지 주장만 담는다.</p>
+  <div class="callout">
+    <div class="callout-title">핵심 포인트</div>
+    <p>강조가 필요한 내용만 콜아웃으로 뺀다. 한 페이지에 한 개를 넘기지 않는다.</p>
+  </div>
+
+  <h2><span class="sec-num">02</span>두 번째 장</h2>
+  <table>
+    <thead><tr><th>항목</th><th>상태</th><th class="num">이전</th><th class="num">이후</th><th>목표 대비</th></tr></thead>
+    <tbody>
+      <tr><td><strong>항목 1</strong></td><td><span class="badge good">정상</span></td><td class="num">0</td><td class="num">0</td><td><div class="bar"><span style="width:90%"></span></div></td></tr>
+      <tr><td><strong>항목 2</strong></td><td><span class="badge warn">주의</span></td><td class="num">0</td><td class="num">0</td><td><div class="bar"><span class="warn" style="width:60%"></span></div></td></tr>
+    </tbody>
+    <caption>표 1. 출처와 기준일을 캡션에 적는다.</caption>
+  </table>
+
+  <h2><span class="sec-num">03</span>세 번째 장</h2>
+  <div class="grid-3">
+    <div class="card"><div class="eyebrow">P0</div><h4>조치 1</h4><p class="small">한두 줄 설명</p></div>
+    <div class="card"><div class="eyebrow">P1</div><h4>조치 2</h4><p class="small">한두 줄 설명</p></div>
+    <div class="card"><div class="eyebrow">P2</div><h4>조치 3</h4><p class="small">한두 줄 설명</p></div>
+  </div>
+</main>
+
+</body>
+</html>

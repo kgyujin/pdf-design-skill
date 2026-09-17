@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko" data-style="swiss" data-palette="indigo" data-font="auto" data-density="normal" data-radius="auto">
+<head>
+<meta charset="utf-8">
+<title>캐시 계층 도입 회고 (예시)</title>
+<link rel="stylesheet" href="pdf-kit.css">
+<style>
+  @page { size: 338.67mm 190.5mm; margin: 0; }
+</style>
+</head>
+<body class="deck">
+
+<section class="slide hero">
+  <div class="eyebrow">Platform Ops · 예시 데이터</div>
+  <div class="slide-title">캐시 하나로<br>응답시간 42% 단축</div>
+  <p>플랫폼 운영팀 · 2026.09</p>
+  <div class="slide-foot"><span>캐시 계층 도입 회고</span><span>1</span></div>
+</section>
+
+<section class="slide">
+  <div class="eyebrow">구조</div>
+  <div class="slide-title">읽기 요청의 88%는 DB까지 가지 않는다</div>
+  <div class="flow center">
+    <div class="card soft"><h3>API 서버</h3><p>요청 수신</p></div>
+    <div class="arrow">→</div>
+    <div class="card hl"><h3>Redis 캐시</h3><p>적중률 88%</p></div>
+    <div class="arrow">→</div>
+    <div class="card soft"><h3>PostgreSQL</h3><p>미적중 12%만 조회</p></div>
+  </div>
+  <div class="slide-foot"><span>캐시 계층 도입 회고</span><span>2</span></div>
+</section>
+
+<section class="slide">
+  <div class="eyebrow">결과</div>
+  <div class="slide-title">p95 응답시간이 목표선 아래로 내려왔다</div>
+  <div class="compare center">
+    <div class="card soft"><div class="eyebrow">7월 · 도입 전</div><div class="big-number muted">221ms</div><p>피크 시간대 DB CPU 85%</p></div>
+    <div class="card"><div class="eyebrow">8월 · 도입 후</div><div class="big-number">128ms</div><p>피크 시간대 DB CPU 41%</p></div>
+  </div>
+  <div class="slide-foot"><span>캐시 계층 도입 회고</span><span>3</span></div>
+</section>
+
+<section class="slide">
+  <div class="eyebrow">다음 단계</div>
+  <div class="slide-title">9월에는 배치 지연을 잡는다</div>
+  <div class="grid-3 center">
+    <div class="card soft"><div class="eyebrow">P0</div><h3>커넥션 풀 분리</h3><p>배치와 API 트래픽 격리</p></div>
+    <div class="card soft"><div class="eyebrow">P1</div><h3>캐시 무효화 정리</h3><p>가격 변경 즉시 반영</p></div>
+    <div class="card soft"><div class="eyebrow">P2</div><h3>서킷브레이커</h3><p>외부 결제사 지연 차단</p></div>
+  </div>
+  <div class="slide-foot"><span>캐시 계층 도입 회고</span><span>4</span></div>
+</section>
+
+</body>
+</html>
