@@ -2,8 +2,8 @@
 *.pdf
 *_preview/
 *_gallery/
-pdf-kit.css
-pdf-kit.json
+pdf-design.css
+pdf-design.json
 
 # Python
 __pycache__/

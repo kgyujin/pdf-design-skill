@@ -1,28 +1,29 @@
 #!/usr/bin/env python3
 """
 작성자: Git 이력 참조
-작성목적: pdf-kit 스킬 CLI. 템플릿 복사, 디자인 축(스타일·색조·폰트·밀도·모서리·포인트색) 설정,
+작성목적: pdf-design 스킬 CLI. 템플릿 복사, 디자인 축(스타일·색조·폰트·밀도·모서리·포인트색) 설정,
          HTML → PDF 렌더링, 여러 디자인 안을 한 번에 비교하는 갤러리 생성을 담당한다.
 작성일: 2026-09-17
 
-주요 입력: HTML 문서(<html data-style=... data-palette=...>), 선택적으로 같은 폴더의 pdf-kit.json
-주요 출력: pdf-kit.css(번들, 자동 생성), PDF, 페이지별 PNG 미리보기, <문서>_gallery/ 비교표
+주요 입력: HTML 문서(<html data-style=... data-palette=...>), 선택적으로 같은 폴더의 pdf-design.json
+주요 출력: pdf-design.css(번들, 자동 생성), PDF, 페이지별 PNG 미리보기, <문서>_gallery/ 비교표
 외부 의존성: Google Chrome/Chromium/Edge(필수), Poppler pdftoppm·pdfinfo(미리보기·갤러리), Python 3.9+ 표준 라이브러리
 주의사항:
-  - pdf-kit.css 는 assets/css 를 합쳐 만든 생성 파일이다. 직접 고치지 말고 문서의 <style>에서 덮어쓴다.
+  - pdf-design.css 는 assets/css 를 합쳐 만든 생성 파일이다. 직접 고치지 말고 문서의 <style>에서 덮어쓴다.
   - 디자인 축의 값 목록(DESIGN_AXES)은 assets/css 의 선택자와 일치해야 한다(tests 가 검사).
   - macOS Chrome은 PDF를 다 쓴 뒤에도 종료되지 않을 수 있어, 산출물 완성 여부로 완료를 판단한다.
 
 사용법:
-  python3 pdfkit.py options
-  python3 pdfkit.py init <report|onepager|deck> <dest.html> [--style S] [--palette P] [--font F] [--density D] [--radius R] [--accent #hex]
-  python3 pdfkit.py set <doc.html> [위 옵션 중 바꿀 것만] [--save]
-  python3 pdfkit.py render <doc.html> [out.pdf] [--preview] [--expect-pages N]
-  python3 pdfkit.py gallery <doc.html> [--styles all|a,b] [--palettes all|a,b] [--fonts ...] [--densities ...] [--radii ...] [--pages 2]
+  python3 pdfdesign.py options
+  python3 pdfdesign.py init <report|onepager|deck> <dest.html> [--style S] [--palette P] [--font F] [--density D] [--radius R] [--accent #hex]
+  python3 pdfdesign.py set <doc.html> [위 옵션 중 바꿀 것만] [--save]
+  python3 pdfdesign.py render <doc.html> [out.pdf] [--preview] [--expect-pages N]
+  python3 pdfdesign.py gallery <doc.html> [--styles all|a,b] [--palettes all|a,b] [--fonts ...] [--densities ...] [--radii ...] [--pages 2]
 
 변경사항 내역:
 - 2026-09-17 | 최초 작성 | init/render, 미리보기, 페이지 수 검증
-- 2026-09-17 | 디자인 축 분리 | options/set/gallery 추가, CSS 번들링, pdf-kit.json 기본값
+- 2026-09-17 | 디자인 축 분리 | options/set/gallery 추가, CSS 번들링, pdf-design.json 기본값
+- 2026-09-17 | 이름 변경 | pdf-kit → pdf-design, 스크립트 pdfkit.py → pdfdesign.py
 """
 
 from __future__ import annotations
@@ -48,8 +49,8 @@ from pathlib import Path
 SKILL_ROOT = Path(__file__).resolve().parent.parent
 TEMPLATE_DIR = SKILL_ROOT / "templates"
 CSS_DIR = SKILL_ROOT / "assets" / "css"
-BUNDLE_NAME = "pdf-kit.css"
-PREFS_NAME = "pdf-kit.json"
+BUNDLE_NAME = "pdf-design.css"
+PREFS_NAME = "pdf-design.json"
 
 RENDER_TIMEOUT_SEC = 120
 POLL_INTERVAL_SEC = 0.5
@@ -58,7 +59,7 @@ GALLERY_DPI = 60
 SHEET_DPI = 110
 GALLERY_MAX_VARIANTS = 36
 GALLERY_WORKERS = 4
-ACCENT_STYLE_ID = "pdfkit-accent"
+ACCENT_STYLE_ID = "pdf-design-accent"
 TEMPLATES = ("report", "onepager", "deck")
 
 # 축 이름 → {값: 설명}. 첫 번째 값이 기본값이며, 순서가 번들·도움말·갤러리 순서가 된다.
@@ -113,12 +114,12 @@ CHROME_CANDIDATES = (
 )
 
 
-class PdfKitError(Exception):
+class PdfDesignError(Exception):
     """사용자에게 그대로 보여줄 오류. main()에서 종료 코드 1로 변환한다."""
 
 
 def log(message: str) -> None:
-    print(f"[pdf-kit] {message}", flush=True)
+    print(f"[pdf-design] {message}", flush=True)
 
 
 # ---------------------------------------------------------------- CSS 번들
@@ -129,7 +130,7 @@ def css_sources() -> list[Path]:
 
 
 def build_css_bundle() -> str:
-    parts = ["/* pdf-kit.css — pdf-kit 스킬이 생성한 파일. 직접 수정하지 말고 문서의 <style>에서 덮어쓴다. */\n"]
+    parts = ["/* pdf-design.css — pdf-design 스킬이 생성한 파일. 직접 수정하지 말고 문서의 <style>에서 덮어쓴다. */\n"]
     for source in css_sources():
         parts.append(f"\n/* ===== {source.relative_to(CSS_DIR).as_posix()} ===== */\n")
         parts.append(source.read_text(encoding="utf-8"))
@@ -162,12 +163,12 @@ def validate_design(changes: dict[str, str]) -> None:
     for axis, chosen in changes.items():
         if axis == "accent":
             if chosen != "none" and not HEX_COLOR_PATTERN.match(chosen):
-                raise PdfKitError(f"--accent 는 #RRGGBB 형식이거나 none 이어야 합니다: {chosen}")
+                raise PdfDesignError(f"--accent 는 #RRGGBB 형식이거나 none 이어야 합니다: {chosen}")
             continue
         if axis not in DESIGN_AXES:
-            raise PdfKitError(f"알 수 없는 디자인 축입니다: {axis}")
+            raise PdfDesignError(f"알 수 없는 디자인 축입니다: {axis}")
         if chosen not in DESIGN_AXES[axis]:
-            raise PdfKitError(f"{axis} 값 '{chosen}' 은 지원하지 않습니다. 가능: {', '.join(DESIGN_AXES[axis])}")
+            raise PdfDesignError(f"{axis} 값 '{chosen}' 은 지원하지 않습니다. 가능: {', '.join(DESIGN_AXES[axis])}")
 
 
 def accent_block(accent: str) -> str:
@@ -183,7 +184,7 @@ def apply_design(html_text: str, changes: dict[str, str]) -> str:
     validate_design(changes)
     tag_match = HTML_TAG_PATTERN.search(html_text)
     if not tag_match:
-        raise PdfKitError("<html> 태그를 찾지 못했습니다.")
+        raise PdfDesignError("<html> 태그를 찾지 못했습니다.")
     tag = tag_match.group(0)
     for axis in DESIGN_AXES:
         if axis not in changes:
@@ -200,7 +201,7 @@ def apply_design(html_text: str, changes: dict[str, str]) -> str:
         if changes["accent"] != "none":
             head_end = html_text.lower().find("</head>")
             if head_end < 0:
-                raise PdfKitError("</head> 를 찾지 못해 포인트색을 넣을 수 없습니다.")
+                raise PdfDesignError("</head> 를 찾지 못해 포인트색을 넣을 수 없습니다.")
             html_text = html_text[:head_end].rstrip() + accent_block(changes["accent"]) + "\n" + html_text[head_end:]
     return html_text
 
@@ -212,7 +213,7 @@ def load_prefs(folder: Path) -> dict[str, str]:
     try:
         prefs = json.loads(prefs_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as error:
-        raise PdfKitError(f"{prefs_path} 를 읽을 수 없습니다: {error}") from error
+        raise PdfDesignError(f"{prefs_path} 를 읽을 수 없습니다: {error}") from error
     allowed_keys = set(DESIGN_AXES) | {"accent"}
     return {key: str(value) for key, value in prefs.items() if key in allowed_keys}
 
@@ -241,7 +242,7 @@ def find_chrome() -> str:
         resolved = candidate if Path(candidate).exists() else shutil.which(candidate)
         if resolved:
             return resolved
-    raise PdfKitError("Chrome/Chromium을 찾지 못했습니다. CHROME_PATH 환경변수로 경로를 지정하세요.")
+    raise PdfDesignError("Chrome/Chromium을 찾지 못했습니다. CHROME_PATH 환경변수로 경로를 지정하세요.")
 
 
 def is_pdf_complete(pdf_path: Path, last_size: int) -> tuple[bool, int]:
@@ -288,7 +289,7 @@ def render_pdf(html_path: Path, pdf_path: Path, wait_ms: int) -> None:
     pdf_path.parent.mkdir(parents=True, exist_ok=True)
     if pdf_path.exists():
         pdf_path.unlink()
-    with tempfile.TemporaryDirectory(prefix="pdf-kit-") as profile_dir:
+    with tempfile.TemporaryDirectory(prefix="pdf-design-") as profile_dir:
         command = [
             find_chrome(),
             "--headless",
@@ -305,7 +306,7 @@ def render_pdf(html_path: Path, pdf_path: Path, wait_ms: int) -> None:
         if sys.platform.startswith("linux"):
             command.insert(1, "--no-sandbox")
         if not run_chrome_until_pdf(command, pdf_path):
-            raise PdfKitError(f"렌더링 실패: {RENDER_TIMEOUT_SEC}초 안에 PDF가 완성되지 않았습니다 ({html_path}).")
+            raise PdfDesignError(f"렌더링 실패: {RENDER_TIMEOUT_SEC}초 안에 PDF가 완성되지 않았습니다 ({html_path}).")
 
 
 def count_pages(pdf_path: Path) -> int | None:
@@ -342,7 +343,7 @@ def png_size(png_path: Path) -> tuple[int, int]:
 def require_file(raw_path: str) -> Path:
     path = Path(raw_path).resolve()
     if not path.exists():
-        raise PdfKitError(f"파일이 없습니다: {path}")
+        raise PdfDesignError(f"파일이 없습니다: {path}")
     return path
 
 
@@ -360,10 +361,10 @@ def cmd_options(_: argparse.Namespace) -> None:
 def cmd_init(args: argparse.Namespace) -> None:
     dest_path = Path(args.dest).resolve()
     if dest_path.exists() and not args.force:
-        raise PdfKitError(f"이미 존재합니다: {dest_path} (덮어쓰려면 --force)")
+        raise PdfDesignError(f"이미 존재합니다: {dest_path} (덮어쓰려면 --force)")
     dest_path.parent.mkdir(parents=True, exist_ok=True)
 
-    # 우선순위: CLI 옵션 > 폴더의 pdf-kit.json > 템플릿 기본값
+    # 우선순위: CLI 옵션 > 폴더의 pdf-design.json > 템플릿 기본값
     design = {**load_prefs(dest_path.parent), **changes_from_args(args)}
     html_text = (TEMPLATE_DIR / f"{args.template}.html").read_text(encoding="utf-8")
     html_text = apply_design(html_text, design)
@@ -405,7 +406,7 @@ def cmd_render(args: argparse.Namespace) -> None:
         if previews:
             log(f"미리보기: {previews[0].parent} ({len(previews)}장)")
     if args.expect_pages is not None and pages != args.expect_pages:
-        raise PdfKitError(f"페이지 수 불일치: 기대 {args.expect_pages}쪽, 실제 {pages}쪽 → 넘친 내용이나 빈 페이지를 확인하세요.")
+        raise PdfDesignError(f"페이지 수 불일치: 기대 {args.expect_pages}쪽, 실제 {pages}쪽 → 넘친 내용이나 빈 페이지를 확인하세요.")
 
 
 def parse_axis_values(axis: str, raw_value: str | None, current: str) -> list[str]:
@@ -445,7 +446,7 @@ def build_gallery_sheet(source_name: str, current: dict[str, str], variants: lis
         cards.append(f'<figure><div class="thumbs">{thumbs}</div><figcaption><b>{variant["label"]}</b>{chips}</figcaption></figure>')
     current_summary = ", ".join(f"{axis}={current[axis]}" for axis in DESIGN_AXES)
     return f"""<!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><title>pdf-kit gallery</title>
+<html lang="ko"><head><meta charset="utf-8"><title>pdf-design gallery</title>
 <style>
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
 @page {{ size: A4 landscape; margin: 12mm; }}
@@ -475,9 +476,9 @@ def cmd_gallery(args: argparse.Namespace) -> None:
     axis_values = {axis: parse_axis_values(axis, getattr(args, plural), current[axis]) for plural, axis in AXIS_PLURALS.items()}
     combos = list(itertools.product(*(axis_values[axis] for axis in DESIGN_AXES)))
     if len(combos) == 1:
-        raise PdfKitError("비교할 후보가 1개뿐입니다. --styles all 처럼 바꿔 볼 축을 지정하세요.")
+        raise PdfDesignError("비교할 후보가 1개뿐입니다. --styles all 처럼 바꿔 볼 축을 지정하세요.")
     if len(combos) > GALLERY_MAX_VARIANTS:
-        raise PdfKitError(f"후보가 {len(combos)}개로 너무 많습니다(최대 {GALLERY_MAX_VARIANTS}). 축 값을 줄이세요.")
+        raise PdfDesignError(f"후보가 {len(combos)}개로 너무 많습니다(최대 {GALLERY_MAX_VARIANTS}). 축 값을 줄이세요.")
 
     out_dir = Path(args.out).resolve() if args.out else html_path.parent / f"{html_path.stem}_gallery"
     if out_dir.exists():
@@ -532,7 +533,7 @@ def add_design_arguments(parser: argparse.ArgumentParser) -> None:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="pdfkit", description="pdf-kit: 디자인을 골라 쓰는 HTML/CSS → PDF")
+    parser = argparse.ArgumentParser(prog="pdfdesign", description="pdf-design: 디자인을 골라 쓰는 HTML/CSS → PDF")
     sub = parser.add_subparsers(dest="command", required=True)
 
     options_parser = sub.add_parser("options", help="선택 가능한 디자인 축과 값 목록")
@@ -574,8 +575,8 @@ def main(argv: list[str] | None = None) -> int:
     parsed = build_parser().parse_args(argv)
     try:
         parsed.func(parsed)
-    except PdfKitError as error:
-        print(f"[pdf-kit] {error}", file=sys.stderr)
+    except PdfDesignError as error:
+        print(f"[pdf-design] {error}", file=sys.stderr)
         return 1
     return 0
 

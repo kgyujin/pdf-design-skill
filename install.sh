@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 작성자: Git 이력 참조
-# 작성목적: pdf-kit 저장소를 Claude Code·Codex 스킬 폴더에 심볼릭 링크로 연결한다.
+# 작성목적: pdf-design 저장소를 Claude Code·Codex 스킬 폴더에 심볼릭 링크로 연결한다.
 # 작성일: 2026-09-17
 # 주의사항:
 #   - 링크 방식이라 저장소를 수정하거나 git pull 하면 두 도구에 즉시 반영된다.
@@ -11,7 +11,7 @@
 # - 2026-09-17 | 최초 작성 | Claude Code·Codex 링크 설치/제거
 set -euo pipefail
 
-SKILL_NAME="pdf-kit"
+SKILL_NAME="pdf-design"
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TARGET_ROOTS=(
   "${HOME}/.claude/skills"

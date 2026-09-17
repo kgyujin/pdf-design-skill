@@ -1,9 +1,9 @@
 /*
  * 작성자: Git 이력 참조
- * 작성목적: pdf-kit 색조(palette) 축. 색 토큰만 정의하고 모양은 건드리지 않는다.
+ * 작성목적: pdf-design 색조(palette) 축. 색 토큰만 정의하고 모양은 건드리지 않는다.
  * 작성일: 2026-09-17
  * 주의사항:
- *  - 모든 팔레트는 같은 토큰 세트를 빠짐없이 정의해야 한다(tests/test_pdfkit.py 가 검사).
+ *  - 모든 팔레트는 같은 토큰 세트를 빠짐없이 정의해야 한다(tests/test_pdfdesign.py 가 검사).
  *  - inverse 계열은 어두운 표지·히어로 슬라이드·사이드바에 쓰인다. accent-on-inverse 는 어두운 면 위 대비용 밝은 포인트색.
  *  - 기본값(data-palette 미지정)은 indigo 와 같다.
  * 변경사항 내역:

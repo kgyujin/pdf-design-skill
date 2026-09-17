@@ -1,4 +1,4 @@
-# pdf-kit
+# pdf-design
 
 Claude Code와 Codex에서 함께 쓰는 **디자인 선택형 PDF 제작 스킬**입니다.
 HTML/CSS 템플릿에 내용을 채우고 Chrome으로 PDF를 렌더링합니다. 디자인은 여러 축으로 나뉘어 있어서, 한 축만 바꿔도 나머지 설정과 내용은 그대로 유지됩니다. 예를 들어 "스타일만 바꾸고 색조는 유지"가 가능합니다.
@@ -28,11 +28,11 @@ HTML/CSS 템플릿에 내용을 채우고 Chrome으로 PDF를 렌더링합니다
 ## 설치
 
 ```bash
-git clone https://github.com/kgyujin/pdf-kit.git ~/workspace/pdf-kit
-~/workspace/pdf-kit/install.sh
+git clone https://github.com/kgyujin/pdf-design.git ~/workspace/pdf-design
+~/workspace/pdf-design/install.sh
 ```
 
-`~/.claude/skills/pdf-kit`와 `~/.codex/skills/pdf-kit`에 심볼릭 링크가 만들어집니다. Codex 경로는 `CODEX_HOME`이 설정돼 있으면 그 값을 따릅니다. 저장소를 `git pull`하면 두 도구에 바로 반영되고, `./install.sh --uninstall`로 링크를 제거할 수 있습니다.
+`~/.claude/skills/pdf-design`과 `~/.codex/skills/pdf-design`에 심볼릭 링크가 만들어집니다. Codex 경로는 `CODEX_HOME`이 설정돼 있으면 그 값을 따릅니다. 저장소를 `git pull`하면 두 도구에 바로 반영되고, `./install.sh --uninstall`로 링크를 제거할 수 있습니다.
 
 필요한 프로그램:
 - Google Chrome, Chromium, Edge 중 하나(필수). 다른 위치에 있으면 `CHROME_PATH`로 지정합니다.
@@ -45,12 +45,12 @@ git clone https://github.com/kgyujin/pdf-kit.git ~/workspace/pdf-kit
 - "B안으로 하고, 색은 지금 그대로 둬"
 - "스타일은 editorial로 바꾸고 포인트색만 #e8590c로"
 - "촘촘하게 해서 2쪽 안에 들어가게 해줘"
-- "앞으로 이 폴더 문서는 이 디자인으로 만들어줘" → `pdf-kit.json`에 저장
+- "앞으로 이 폴더 문서는 이 디자인으로 만들어줘" → `pdf-design.json`에 저장
 
 ## CLI 직접 사용
 
 ```bash
-K=~/workspace/pdf-kit/scripts/pdfkit.py
+K=~/workspace/pdf-design/scripts/pdfdesign.py
 
 python3 $K options                                             # 선택지 보기
 python3 $K init report out/report.html --style bold --palette navy
@@ -67,7 +67,7 @@ python3 $K render out/report.html --preview                    # PDF + 페이지
 
 ```
 SKILL.md                 에이전트용 작업 절차
-scripts/pdfkit.py        CLI (options · init · set · render · gallery)
+scripts/pdfdesign.py     CLI (options · init · set · render · gallery)
 assets/css/
   core.css               공통 구조·컴포넌트 (토큰만 사용)
   palettes.css           색조
@@ -79,7 +79,7 @@ examples/                예시 문서 (수치는 모두 예시 데이터)
 tests/                   unittest
 ```
 
-`init`·`set`·`render`는 CSS를 합친 `pdf-kit.css`를 문서 옆에 생성합니다. 이 파일은 생성물이므로 직접 수정하지 말고, 문서별 수정은 문서의 `<style>`에 적습니다.
+`init`·`set`·`render`는 CSS를 합친 `pdf-design.css`를 문서 옆에 생성합니다. 이 파일은 생성물이므로 직접 수정하지 말고, 문서별 수정은 문서의 `<style>`에 적습니다.
 
 ## 개발
 

@@ -2,12 +2,12 @@
 
 ## 새 색조
 1. `assets/css/palettes.css`에 `html[data-palette="이름"] { ... }` 블록을 추가한다. 기존 팔레트와 **같은 토큰 13개**를 모두 정의한다.
-2. `scripts/pdfkit.py`의 `DESIGN_AXES["palette"]`에 이름과 설명을 추가한다.
+2. `scripts/pdfdesign.py`의 `DESIGN_AXES["palette"]`에 이름과 설명을 추가한다.
 3. `references/styles.md`의 색조 표에 추가한다.
 4. 검증:
    ```bash
    python3 -m unittest discover -s tests
-   python3 scripts/pdfkit.py gallery examples/ops-report.html --palettes keep,이름
+   python3 scripts/pdfdesign.py gallery examples/ops-report.html --palettes keep,이름
    ```
 
 ## 새 스타일
