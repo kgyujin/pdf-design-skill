@@ -13,10 +13,12 @@ HTML/CSS 템플릿에 내용을 채우고 Chrome으로 PDF를 렌더링합니다
 |---|---|---|
 | 스타일 | `--style` | `swiss` · `editorial` · `bold` · `minimal` · `tech` · `academic` · `soft` · `classic` · `split` |
 | 색조 | `--palette` | `indigo` · `navy` · `terracotta` · `forest` · `plum` · `mono` · `graphite` · `crimson` · `teal` · `sand` |
-| 폰트 | `--font` | `auto` · `sans` · `serif` · `mono` |
+| 폰트 | `--font` | `auto` · `sans` · `serif` · `serif-all` · `mono` |
 | 밀도 | `--density` | `normal` · `compact` · `airy` |
 | 모서리 | `--radius` | `auto` · `sharp` · `soft` · `round` |
 | 포인트색 | `--accent` | `#RRGGBB` · `none` |
+
+기본 폰트는 모든 스타일에서 고딕(Pretendard)입니다. 바탕체·명조체는 요청할 때만 쓰며(`serif`: 제목만, `serif-all`: 본문까지), 폰트는 [고운바탕](https://fonts.google.com/specimen/Gowun+Batang)입니다.
 
 | 템플릿 | 용도 |
 |---|---|
@@ -31,6 +33,7 @@ HTML/CSS 템플릿에 내용을 채우고 Chrome으로 PDF를 렌더링합니다
 ![스타일 9종 비교 (발표 자료, 1/2)](docs/styles-talk-1.png)
 ![스타일 9종 비교 (발표 자료, 2/2)](docs/styles-talk-2.png)
 ![색조 10종 비교](docs/palettes.png)
+![폰트 옵션 비교: auto(Pretendard) · serif(제목 고운바탕) · serif-all(본문까지 고운바탕)](docs/fonts.png)
 
 </details>
 

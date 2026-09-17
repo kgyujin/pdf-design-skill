@@ -8,15 +8,17 @@
  *  - print-color-adjust: exact 가 없으면 배경색이 인쇄에서 빠진다.
  * 변경사항 내역:
  * - 2026-09-17 | 최초 작성 | pdf-design base.css를 스타일·색조 축으로 분리
+ * - 2026-09-17 | 바탕체 규칙 | 세리프를 고운바탕으로 교체, 스타일 기본값에서 세리프 제외
  */
 
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
-@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=JetBrains+Mono:wght@400;600;700&display=swap");
 
 /* ---------- 1. 토큰 기본값 ---------- */
 :root {
   --font-sans: "Pretendard", "Pretendard Variable", -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
-  --font-serif: "Noto Serif KR", "AppleMyungjo", "Nanum Myeongjo", "Batang", serif;
+  /* 바탕(명조)체는 사용자가 요청할 때만 data-font="serif|serif-all" 로 쓴다. 고운바탕은 400·700 두 굵기만 있다. */
+  --font-serif: "Gowun Batang", "AppleMyungjo", "Nanum Myeongjo", "Batang", serif;
   /* 모노 폰트에는 한글 글리프가 없어서 Pretendard로 글자 단위 대체되게 둔다 */
   --font-mono: "JetBrains Mono", "SF Mono", Menlo, "Pretendard", monospace;
 

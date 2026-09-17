@@ -16,12 +16,14 @@ CLI는 `python3 SKILL_DIR/scripts/pdfdesign.py <명령>` 형태로 실행한다.
 |---|---|---|
 | 스타일(조판·표지·제목·표·카드 모양) | `--style` | `swiss` `editorial` `bold` `minimal` `tech` `academic` `soft` `classic` `split` |
 | 색조 | `--palette` | `indigo` `navy` `terracotta` `forest` `plum` `mono` `graphite` `crimson` `teal` `sand` |
-| 폰트 조합 | `--font` | `auto` `sans` `serif` `mono` |
+| 폰트 조합 | `--font` | `auto` `sans` `serif` `serif-all` `mono` |
 | 밀도 | `--density` | `normal` `compact` `airy` |
 | 모서리 | `--radius` | `auto` `sharp` `soft` `round` |
 | 포인트색만 교체 | `--accent` | `#RRGGBB` / `none` |
 
 각 값의 설명은 `pdfdesign.py options`로 확인한다. 스타일별 특징과 추천 조합은 `references/styles.md`에 있다.
+
+**폰트 규칙**: 기본 폰트는 모든 스타일에서 Pretendard다(제목·본문·라벨 모두). 코드(`code`, `pre`)만 모노 폰트를 쓰고, 라벨을 모노로 바꾸는 `--font mono`도 요청할 때만 쓴다. 바탕체·명조체(세리프)는 **사용자가 명시적으로 요청했을 때만** 쓴다. 그때는 `--font serif`(제목만) 또는 `--font serif-all`(본문까지)을 지정하며, 폰트는 고운바탕(Gowun Batang)이다. "격식 있게", "클래식하게", "잡지처럼" 같은 요청만으로는 바탕체를 쓰지 않는다. 문서 `<style>`에서 다른 세리프 폰트를 직접 지정하지 않는다.
 
 ## 템플릿
 
@@ -87,6 +89,6 @@ CLI는 `python3 SKILL_DIR/scripts/pdfdesign.py <명령>` 형태로 실행한다.
 ## 요구 사항·주의
 - Chrome, Chromium, Edge 중 하나가 필요하다(`CHROME_PATH`로 경로 지정 가능). 미리보기·갤러리·대본 썸네일에는 Poppler(`pdftoppm`, `pdfinfo`)가 필요하다. DOCX 생성에는 추가 패키지가 필요 없다.
 - Chrome을 직접 호출하지 않는다. macOS Chrome은 작업을 끝낸 뒤에도 종료되지 않을 수 있는데, 스크립트가 이를 처리한다.
-- 폰트(Pretendard, Noto Serif KR, JetBrains Mono)와 수식(KaTeX)은 로컬에 없으면 CDN에서 받는다. 오프라인이면 폰트는 OS 한글 폰트로 대체되고 수식은 렌더링되지 않는다(`check`가 오류로 알려준다).
+- 폰트(Pretendard, 고운바탕, JetBrains Mono)와 수식(KaTeX)은 로컬에 없으면 CDN에서 받는다. 오프라인이면 폰트는 OS 한글 폰트로 대체되고 수식은 렌더링되지 않는다(`check`가 오류로 알려준다).
 - 사용자가 주지 않은 수치나 사실을 지어내지 않는다. 데모가 필요하면 문서에 "예시 데이터"라고 표시한다.
 - 새 스타일이나 색조를 추가할 때는 `references/extending.md`를 따른다.

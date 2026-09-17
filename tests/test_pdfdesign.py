@@ -8,6 +8,7 @@
 변경사항 내역:
 - 2026-09-17 | 최초 작성 | set 부분 변경, accent, prefs, CSS 축 정합성, 렌더 스모크
 - 2026-09-17 | 발표 자료 모드 | 노트 파서, 시간 추정, DOCX 구조, check 결함 탐지, talk 렌더·대본
+- 2026-09-17 | 바탕체 규칙 | 바탕체는 font 옵션에서만, 폰트는 고운바탕
 """
 
 from __future__ import annotations
@@ -158,6 +159,28 @@ class CssAxisConsistencyTest(unittest.TestCase):
             self.assertIsNotNone(block, name)
             defined = set(re.findall(r"(--[a-z0-9-]+):", block.group(1)))
             self.assertEqual(defined, set(self.PALETTE_TOKENS), f"{name} 팔레트 토큰 불일치")
+
+    def test_serif_is_opt_in_and_uses_gowun_batang(self) -> None:
+        # 바탕(명조)체는 사용자가 요청할 때만 font 옵션으로 켠다. 스타일·템플릿·예제가 직접 쓰면 안 된다.
+        self.assertIn('--font-serif: "Gowun Batang"', self.bundle)
+        self.assertIn("family=Gowun+Batang", self.bundle)
+        self.assertNotIn("Noto Serif", self.bundle)
+        # 기본 폰트는 Pretendard. 스타일 파일은 세리프·모노 폰트를 직접 지정하지 않는다(옵션 축이 담당).
+        allowed = {pdfdesign.CSS_DIR / "core.css", pdfdesign.CSS_DIR / "options.css"}
+        for source in pdfdesign.css_sources():
+            if source not in allowed:
+                style_css = source.read_text(encoding="utf-8")
+                self.assertNotIn("--font-serif", style_css, source.name)
+                self.assertNotIn("--font-mono", style_css, source.name)
+        self.assertIn('--font-sans: "Pretendard"', self.bundle)
+        for html_path in [*pdfdesign.TEMPLATE_DIR.glob("*.html"), *(REPO_ROOT / "examples").glob("*.html")]:
+            text = html_path.read_text(encoding="utf-8")
+            self.assertNotIn("--font-serif", text, html_path.name)
+            self.assertNotRegex(text, r'data-font="serif', html_path.name)
+        options_css = (pdfdesign.CSS_DIR / "options.css").read_text(encoding="utf-8")
+        for value in ("serif", "serif-all"):
+            rule = re.search(rf'html\[data-font="{value}"\] \{{([^}}]*)\}}', options_css).group(1)
+            self.assertIn("--head-weight: 700", rule, "고운바탕은 700까지만 있어 제목 굵기를 고정해야 한다")
 
     def test_import_rules_stay_at_top_of_bundle(self) -> None:
         # @import 는 주석 외 다른 규칙보다 앞에 있어야 브라우저가 무시하지 않는다.

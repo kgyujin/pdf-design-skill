@@ -1,10 +1,11 @@
 /*
- * 스타일: editorial — 잡지·에세이 조판. 세리프 제목, 가운데 정렬 표지, 가는 이중 룰.
- * 표지: 종이색 면 + 가운데 정렬 / 제목: 위 가는 룰 + 세리프 / KPI: 세로 구분선
+ * 스타일: editorial — 잡지·에세이 조판. 가운데 정렬 표지, 가는 이중 룰, 큰 리드 문단.
+ * 표지: 종이색 면 + 가운데 정렬 / 제목: 위 가는 룰 / KPI: 세로 구분선
+ * 바탕체는 기본으로 쓰지 않는다(요청 시 data-font="serif"). 강조 문단도 --font-head 를 따라가게 둔다.
  * 색은 토큰만 쓴다. 변경사항 내역: 2026-09-17 | 최초 작성
  */
 html[data-style="editorial"] {
-  --font-head: var(--font-serif);
+  --font-head: var(--font-sans);
   --font-label: var(--font-sans);
   --head-weight: 700;
   --head-tracking: -0.01em;
@@ -12,10 +13,10 @@ html[data-style="editorial"] {
   --radius: 0pt;
   --leading: 1.75;
 }
-html[data-style="editorial"] h1 { font-weight: 900; }
+html[data-style="editorial"] h1 { font-weight: var(--head-weight); }
 html[data-style="editorial"] h2 { border-top: 0.5pt solid var(--ink); padding-top: var(--sp-3); padding-bottom: 0; font-weight: 700; }
-html[data-style="editorial"] .sec-num { font-family: var(--font-serif); font-style: italic; font-weight: 400; }
-html[data-style="editorial"] .lead { font-family: var(--font-serif); font-size: calc(var(--fs-base) * 1.35); color: var(--ink); }
+html[data-style="editorial"] .sec-num { font-family: var(--font-head); font-weight: 400; }
+html[data-style="editorial"] .lead { font-family: var(--font-head); font-size: calc(var(--fs-base) * 1.35); color: var(--ink); }
 html[data-style="editorial"] th { border-top: 1pt solid var(--ink); border-bottom: 0.5pt solid var(--ink); font-weight: 600; }
 html[data-style="editorial"] tbody tr:last-child td { border-bottom: 1pt solid var(--ink); }
 
@@ -27,7 +28,7 @@ html[data-style="editorial"] .kpi-value { font-weight: 600; }
 html[data-style="editorial"] .card { border: 0; border-top: 1pt solid var(--ink); padding: var(--sp-3) 0 0; background: transparent; }
 html[data-style="editorial"] .card.hl { background: var(--accent); border-top-color: var(--ink); padding: var(--sp-3); }
 html[data-style="editorial"] .callout { background: transparent; border-left: 2pt solid var(--accent); padding: var(--sp-1) var(--sp-4); }
-html[data-style="editorial"] .callout p { font-family: var(--font-serif); font-size: var(--fs-md); color: var(--ink); }
+html[data-style="editorial"] .callout p { font-family: var(--font-head); font-size: var(--fs-md); color: var(--ink); }
 html[data-style="editorial"] .tag { background: transparent; border: 0.5pt solid var(--accent); }
 
 html[data-style="editorial"] .cover { background: var(--surface); text-align: center; align-items: center; padding: 26mm 26mm 24mm; }
@@ -36,8 +37,8 @@ html[data-style="editorial"] .cover::after { content: ""; position: absolute; le
 html[data-style="editorial"] .cover::before { top: 16mm; }
 html[data-style="editorial"] .cover::after { bottom: 16mm; }
 html[data-style="editorial"] .cover-top { width: 100%; }
-html[data-style="editorial"] .cover-title { font-size: calc(var(--fs-base) * 4.4); font-weight: 900; }
-html[data-style="editorial"] .cover-sub { font-family: var(--font-serif); font-style: italic; margin: 0 auto; }
+html[data-style="editorial"] .cover-title { font-size: calc(var(--fs-base) * 4.4); }
+html[data-style="editorial"] .cover-sub { font-family: var(--font-head); margin: 0 auto; }
 html[data-style="editorial"] .cover-foot { width: 100%; border-top: 0.5pt solid var(--ink); text-align: center; }
 
 html[data-style="editorial"] .side { background: var(--surface); border-right: 0.5pt solid var(--ink); }
