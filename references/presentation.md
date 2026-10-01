@@ -1,65 +1,49 @@
-# 발표 자료 모드 (슬라이드 PDF + 대본 DOCX)
+# 발표 자료 제작 절차
 
-논문·보고서 같은 원본 자료로 발표용 슬라이드와 발표 대본을 만들 때의 절차다.
-사용자가 준 프롬프트가 없으면 `prompts/presentation.md`의 지침을 기본 요구사항으로 삼는다.
+발표용 PDF와 PowerPoint에서 수정할 PPTX를 만드는 절차다. 디자인만 요청한 경우 원문 글·주장·수치를 유지한다. 사용자가 준 지시가 기본값보다 우선한다.
 
-## 1. 준비
-1. 입력을 확인한다: 원본 자료, 참고 발표 자료, 발표 시간, 목표 슬라이드 수, 청중, 언어, 디자인.
-   - 빠진 항목은 원본 자료의 성격에 맞게 정하고, 무엇으로 정했는지 보고한다.
-   - 슬라이드 수가 없으면 발표 시간 1.5~2분당 1장을 기준으로 한다.
-2. 원본을 끝까지 읽고 다음 목록을 먼저 만든다(작업 메모). 이 목록이 누락 검수의 기준이 된다.
-   - 핵심 주장과 결론, 조건
-   - Figure / Table / 수식 / Algorithm / 사례 번호와 쪽
-   - 결과 수치(비교 대상·조건·단위 포함), 한계와 반례
-3. 슬라이드 제목만으로 스토리라인을 먼저 쓴다(결론형 문장). 슬라이드마다 레이아웃을 정한다.
+## 1. 참고 자료를 전체로 읽기
 
-## 2. Figure 추출
-원본이 PDF이면 Poppler로 추출한다. 결과는 작업 폴더의 `figures/`에 둔다.
+`visual-storytelling.md`를 읽고 참고 PDF의 전 페이지를 렌더링해 본다. 전체 축소판으로 제목·여백·색·밀도 변화·반복 프레임을 파악하고 대표 페이지를 실제 크기로 확인한다. 그림 종류만 목록화하지 말고 화면의 주영역과 보조영역이 어떻게 연결되는지 기록한다.
+
+시각 스토리보드는 `페이지 | 초점 | 영역 비율 | 자산 | 밀도 | 편집 방식`으로 만든다. 제공된 그림은 본편·부록·미사용으로 구분하되 모든 그림을 넣기 위해 글자를 줄이지 않는다. 자산 파일과 원본 페이지는 별도 제작 메타데이터에서 연결한다.
+
+## 2. 표지와 팔레트
+
+표지는 제목·부제·팀/발표자·날짜·주제 이미지만으로 낮은 밀도를 유지한다. 결론·KPI·발표 순서·설명 문단을 자동으로 넣지 않는다. 2조 표지의 넓은 여백과 제목 위계, 3조 표지의 제목과 대상 이미지 균형을 참고한다. 주제 이미지는 결과 설명 도식과 구분한다.
+
+`palettes.md`의 조합을 사용한다. 명시 설정 > 저장 선호 > 주제 자동 선택 > neutral 순으로 적용하며 기존 문서의 색 유지 요청을 우선한다. 동일 그룹 색과 강조의 의미를 전 페이지에서 유지한다.
+
+## 3. 편집 원본 제작
+
+PowerPoint 편집 경로는 `editable-presentations.md`를 따른다. `examples/visual-analysis.json`을 읽고 네이티브 차트·표·도형과 편집 가능한 텍스트를 사용한다. 같은 PPTX에서 PDF를 출력한다. 차트 데이터가 없는 이미지는 데이터 편집이 안 된다는 점을 구분한다.
+
+HTML이 필요한 경우:
 ```bash
-pdfimages -list source.pdf                          # 내장 이미지 목록(쪽·크기)
-pdfimages -png -f 5 -l 5 source.pdf figures/p5      # 5쪽의 내장 이미지 추출
-pdftoppm -png -r 300 -f 5 -l 5 source.pdf figures/p5-page   # 벡터 Figure는 쪽 전체를 300dpi로 렌더링
+python3 SKILL_DIR/scripts/pdfdesign.py init talk ./presentation/talk.html --topic "과학 분석"
 ```
-- 벡터 Figure는 쪽 전체를 렌더링한 뒤 필요한 영역만 잘라낸다. 이때 축·범례·단위·캡션이 잘리지 않게 여유를 둔다.
-  잘라내기는 `pdftoppm -x -y -W -H`(픽셀 좌표)로 한다. 좌표는 렌더링한 쪽 이미지를 열어 확인한다.
-- 추출한 이미지는 반드시 열어서 내용이 맞는지 확인한다. 파일 이름에 원본 Figure 번호를 넣는다(예: `fig3_p5.png`).
-- HTML에서는 상대경로로 참조한다: `<div class="fig-frame"><img src="figures/fig3_p5.png" alt="..."></div>`.
 
-## 3. 작성
+- 필요한 레이아웃을 복제하고 쓰지 않는 예시는 삭제한다.
+- 제목·본문 정렬축과 외곽 여백은 고정하고 본문 영역은 자산에 맞게 바꾼다.
+- 표지에 본문 `.source`나 결과 상자를 복사하지 않는다. 요청 없는 ‘출처’ 표시를 어느 페이지에도 자동 추가하지 않는다.
+- 표·차트의 단위, 범례, 비교 기준은 원래 의미를 유지한다.
+- 수식은 KaTeX, 부록은 `section.slide.appendix`를 사용한다.
+- `presentation-rhythm`은 간단한 텍스트 레이아웃 예제이며 풍부한 분석 디자인의 기본 틀이 아니다.
+
+## 4. 시안과 검수
+
+표지·대표 본문·마무리의 같은 내용으로 구조 A/B를 비교한다. 단순 팔레트 교체가 아닌 주영역 비율·차트와 표의 정렬·밀도 차이를 검토한다. 선택 요청이 없으면 더 잘 읽히는 안으로 진행하고 판단 근거를 기록한다.
+
+HTML 경로의 검사:
 ```bash
-python3 SKILL_DIR/scripts/pdfdesign.py init talk ./presentation/talk.html                  # academic + graphite
-python3 SKILL_DIR/scripts/pdfdesign.py init talk ./presentation/talk.html --style bold --palette navy
+python3 SKILL_DIR/scripts/pdfdesign.py render ./presentation/talk.html --preview --expect-pages N
+python3 SKILL_DIR/scripts/pdfdesign.py check ./presentation/talk.html --strict
 ```
-- 템플릿에는 레이아웃별 예시 슬라이드가 들어 있다. 필요한 것을 복제해 쓰고, 쓰지 않는 예시는 지운다.
-- 구조: `section.slide > header.slide-head + div.slide-body.l-* + footer.slide-foot + aside.notes`
-- 레이아웃과 클래스는 `components.md`의 "슬라이드" 절을 따른다.
-- 수식은 KaTeX 문법이다. 블록 수식은 `$$ ... $$`, 인라인 수식은 `\( ... \)`. 노트 안의 수식은 일반 텍스트로 쓴다(DOCX로 옮겨지므로).
-- 제작자 해석은 `.interp`, 다시 그린 도식은 `.fig-label`("adapted from …" / "simplified view")로 구분한다.
-- 부록은 `section.slide.appendix`로 표시한다.
-- 노트 작성법은 `prompts/presentation.md` 5절을 따른다. 읽을 대본은 반드시 `div.talk` 안의 `p`로 쓴다.
 
-## 4. 검수 순서
-```bash
-python3 SKILL_DIR/scripts/pdfdesign.py render talk.html --preview --expect-pages N
-python3 SKILL_DIR/scripts/pdfdesign.py check talk.html          # 오류 0건이 될 때까지 수정
-python3 SKILL_DIR/scripts/pdfdesign.py script talk.html         # talk_script.docx + 발표 시간 추정
-```
-1. `check` 오류는 모두 고친다. 경고는 원인을 확인하고, 의도한 것이면 보고에 적는다.
-2. 미리보기 PNG를 모든 슬라이드 열어 `check`가 못 잡는 문제를 본다: SVG·이미지 안의 겹침, 핀 위치, 흐림, 의미 왜곡.
-3. 1단계에서 만든 목록과 대조해 빠진 Figure·수식·Algorithm·결과가 없는지 확인한다. 슬라이드 수치를 원본과 한 번 더 대조한다.
-4. `script` 결과의 예상 시간이 목표와 ±15% 넘게 차이 나면 대본 분량을 조정하고 다시 실행한다.
-5. DOCX가 열리는지 확인한다. macOS는 `textutil -convert txt -stdout talk_script.docx | head`, python-docx가 있으면 `python3 -c "import docx; docx.Document('talk_script.docx')"`.
+PPTX는 PPTX 검증과 같은 원본의 PDF 렌더를 사용한다. 자동 검수 뒤 전체 축소판과 모든 개별 페이지를 확인한다. 그래프 내부 글씨·비례 왜곡·라벨 겹침·의미 없는 빈 공간·같은 상자 반복을 본다. 동일 레이아웃의 연속은 같은 비교를 위한 것인지 판단하며 무조건 금지하지 않는다.
 
-## 5. 디자인 바꾸기
-발표 자료도 보고서와 같은 디자인 축을 쓴다. 기본값은 흑백 미니멀(`academic` + `graphite`)이다.
-```bash
-python3 SKILL_DIR/scripts/pdfdesign.py gallery talk.html --styles all --pages 3
-python3 SKILL_DIR/scripts/pdfdesign.py set talk.html --style soft          # 색조 유지
-```
-디자인을 바꾼 뒤에는 `check`를 다시 실행한다. 스타일마다 여백과 글자 굵기가 달라 넘침이 새로 생길 수 있다.
+PPTX 텍스트·차트 데이터·표 셀을 실제로 수정하고 재출력 가능성을 확인한다. PowerPoint를 실행하지 않았다면 PowerPoint 직접 검증으로 보고하지 않는다.
 
-## 6. 보고 형식
-- PDF, DOCX, HTML 경로
-- 슬라이드 수(본편/부록), 예상 발표 시간과 목표 시간
-- 원본에서 가져온 주요 Figure·표(번호)
-- 검수 결과: `check` 오류·경고 건수, 직접 확인한 항목, 확인하지 못한 항목(예: 오프라인이라 수식 미확인)
+## 5. 전달
+
+PDF, PPTX, 간단한 편집 방법, 페이지 수, 팔레트 선택 근거, 검사 결과와 미검증 범위를 전달한다. 원본 자산 추적 기록은 별도 파일로 두며 사용자 요청 없는 표시용 출처 페이지를 만들지 않는다.

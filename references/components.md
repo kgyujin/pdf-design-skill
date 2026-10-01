@@ -43,11 +43,7 @@
     <p class="slide-msg">핵심 메시지 한 문장(선택)</p>
   </header>
   <div class="slide-body l-points"> … </div>
-  <footer class="slide-foot"><span class="source">Source: 원본, Fig. 3 (p. 5)</span><span class="page"></span></footer>
-  <aside class="notes">                     <!-- PDF에는 안 보이고 script 명령이 DOCX로 옮긴다 -->
-    <h4>화면에서 먼저 가리킬 부분</h4><p>…</p>
-    <div class="talk"><p>실제로 읽을 대본</p></div>
-  </aside>
+  <footer class="slide-foot"><span class="page"></span></footer>
 </section>
 ```
 

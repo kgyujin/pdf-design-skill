@@ -235,8 +235,7 @@ figure img, figure svg { display: block; max-width: 100%; height: auto; border-r
 
 /* ---------- 9. 슬라이드 (deck) ----------
  * 글자 크기 기준(발표 화면 가독성): 제목 30pt, 핵심 메시지 22pt, 본문 18pt, 캡션·출처 10~11pt.
- * 구조: section.slide > header.slide-head(.eyebrow .slide-title .slide-msg) + .slide-body.l-* + footer.slide-foot(.source .page)
- * aside.notes 는 발표자 노트다. PDF에는 표시되지 않고 script 명령이 DOCX 대본으로 옮긴다.
+ * 구조: section.slide > header.slide-head(.eyebrow .slide-title .slide-msg) + .slide-body.l-* + footer.slide-foot(.page)
  */
 /* 파생 토큰(--fs-xs 등)은 :root 에서 계산된 값이 상속되므로, 기준값을 바꾸는 곳에서 다시 계산해야 슬라이드 크기에 맞춰진다. */
 .deck {
@@ -283,8 +282,8 @@ figure img, figure svg { display: block; max-width: 100%; height: auto; border-r
   font-size: 10pt; color: var(--muted); font-family: var(--font-label);
 }
 .slide-foot .source { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.slide-foot .page { margin-left: auto; }
 .slide-foot .page::after { content: counter(slide); font-variant-numeric: tabular-nums; }
-aside.notes { display: none; }
 
 /* 표지(히어로)·섹션 구분 슬라이드 */
 .slide.hero { justify-content: center; }

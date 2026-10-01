@@ -7,8 +7,7 @@
 
 주요 입력: HTML 문서(<html data-style=... data-palette=...>), 선택적으로 같은 폴더의 pdf-design.json
 주요 출력: pdf-design.css(번들, 자동 생성), PDF, 페이지별 PNG 미리보기, <문서>_gallery/ 비교표
-외부 의존성: Google Chrome/Chromium/Edge(필수), Poppler pdftoppm·pdfinfo(미리보기·갤러리·대본 썸네일), Python 3.9+ 표준 라이브러리
-         같은 폴더의 deck_tools.py(노트 파싱·검사), docx_writer.py(DOCX 생성)를 사용한다.
+         같은 폴더의 deck_tools.py(슬라이드 파싱·검사)를 사용한다.
 주의사항:
   - pdf-design.css 는 assets/css 를 합쳐 만든 생성 파일이다. 직접 고치지 말고 문서의 <style>에서 덮어쓴다.
   - 디자인 축의 값 목록(DESIGN_AXES)은 assets/css 의 선택자와 일치해야 한다(tests 가 검사).
@@ -20,14 +19,13 @@
   python3 pdfdesign.py set <doc.html> [위 옵션 중 바꿀 것만] [--save]
   python3 pdfdesign.py render <doc.html> [out.pdf] [--preview] [--expect-pages N]
   python3 pdfdesign.py gallery <doc.html> [--styles all|a,b] [--palettes all|a,b] [--fonts ...] [--densities ...] [--radii ...] [--pages 2]
-  python3 pdfdesign.py check <doc.html>                      # 넘침·겹침·작은 글씨·깨진 이미지·노트/출처 누락 검사
-  python3 pdfdesign.py script <deck.html> [out.docx] [--minutes 40]   # 발표자 노트 → DOCX 대본 + 발표 시간 추정
+  python3 pdfdesign.py check <doc.html>                      # 넘침·겹침·작은 글씨·깨진 이미지 검사
 
 변경사항 내역:
 - 2026-09-17 | 최초 작성 | init/render, 미리보기, 페이지 수 검증
 - 2026-09-17 | 디자인 축 분리 | options/set/gallery 추가, CSS 번들링, pdf-design.json 기본값
 - 2026-09-17 | 이름 변경 | pdf-kit → pdf-design, 스크립트 pdfkit.py → pdfdesign.py
-- 2026-09-17 | 발표 자료 모드 | talk 템플릿, check/script 명령, 스타일·색조 4종씩 추가
+- 2026-09-17 | 발표 자료 모드 | talk 템플릿, check 명령, 스타일·색조 4종씩 추가
 - 2026-09-17 | 바탕체 규칙 | 바탕체(고운바탕)는 요청 시에만: font serif / serif-all
 - 2026-09-17 | AI 티 제거 | 기본 색조 graphite, check 에 AI 티 패턴 검사 추가
 """
@@ -53,7 +51,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import deck_tools
-from docx_writer import DocxBuilder
+import presentation_palette
 
 SKILL_ROOT = Path(__file__).resolve().parent.parent
 TEMPLATE_DIR = SKILL_ROOT / "templates"
@@ -70,9 +68,6 @@ GALLERY_MAX_VARIANTS = 60
 GALLERY_WORKERS = 4
 ACCENT_STYLE_ID = "pdf-design-accent"
 TEMPLATES = ("report", "onepager", "deck", "talk")
-SCRIPT_THUMB_DPI = 50
-SCRIPT_THUMB_WIDTH_CM = 11.5
-DURATION_TOLERANCE = 0.15
 
 # 축 이름 → {값: 설명}. 첫 번째 값이 기본값이며, 순서가 번들·도움말·갤러리 순서가 된다.
 DESIGN_AXES = {
@@ -118,6 +113,8 @@ DESIGN_AXES = {
         "round": "14pt",
     },
 }
+DESIGN_AXES["palette"].update({name: preset["label"] for name, preset in presentation_palette.catalog().items()})
+
 AXIS_PLURALS = {"styles": "style", "palettes": "palette", "fonts": "font", "densities": "density", "radii": "radius"}
 HEX_COLOR_PATTERN = re.compile(r"^#[0-9a-fA-F]{6}$")
 HTML_TAG_PATTERN = re.compile(r"<html\b[^>]*>", re.IGNORECASE)
@@ -420,6 +417,10 @@ def cmd_init(args: argparse.Namespace) -> None:
 
     # 우선순위: CLI 옵션 > 폴더의 pdf-design.json > 템플릿 기본값
     design = {**load_prefs(dest_path.parent), **changes_from_args(args)}
+    if args.template in ("deck", "talk") or getattr(args, "topic", None):
+        chosen, reason = presentation_palette.choose_palette(getattr(args, "topic", "") or "", getattr(args, "palette", None), load_prefs(dest_path.parent).get("palette"))
+        design["palette"] = chosen
+        log(f"발표 팔레트: {chosen} ({reason})")
     html_text = (TEMPLATE_DIR / f"{args.template}.html").read_text(encoding="utf-8")
     html_text = apply_design(html_text, design)
     dest_path.write_text(html_text, encoding="utf-8")
@@ -603,14 +604,14 @@ def run_layout_check(html_path: Path, wait_ms: int) -> list[dict]:
 
 
 def print_issues(issues: list[dict]) -> None:
-    order = {"error": 0, "warn": 1}
+    order = {"error": 0, "warn": 1, "info": 2}
 
     def sort_key(issue: dict) -> tuple:
         number = re.search(r"\d+", issue["where"])
         return (issue["where"].split()[0], int(number.group()) if number else 0, order.get(issue["level"], 2))
 
     for issue in sorted(issues, key=sort_key):
-        mark = "✗" if issue["level"] == "error" else "!"
+        mark = "✗" if issue["level"] == "error" else "i" if issue["level"] == "info" else "!"
         print(f"  {mark} [{issue['where']}] {issue['message']}")
 
 
@@ -618,101 +619,51 @@ def cmd_check(args: argparse.Namespace) -> None:
     html_path = require_file(args.input)
     issues = run_layout_check(html_path, args.wait_ms)
     errors = [issue for issue in issues if issue["level"] == "error"]
-    warnings = [issue for issue in issues if issue["level"] != "error"]
-    log(f"검사: 오류 {len(errors)}건, 경고 {len(warnings)}건")
+    warnings = [issue for issue in issues if issue["level"] == "warn"]
+    log(f"구조 검사: 오류 {len(errors)}건, 경고 {len(warnings)}건")
+    log("수치 정확성·이미지 내부 가독성·전체 디자인은 별도 수동 검수 대상입니다.")
     print_issues(issues)
     if errors or (args.strict and warnings):
         raise PdfDesignError("검사를 통과하지 못했습니다. 위 항목을 고친 뒤 다시 검사하세요.")
 
 
-def build_script_docx(html_path: Path, docx_path: Path, pdf_path: Path | None, target_minutes: float | None) -> dict:
-    html_text = html_path.read_text(encoding="utf-8")
-    slides = deck_tools.parse_slides(html_text)
-    if not slides:
-        raise PdfDesignError("section.slide 가 없습니다. 발표 자료(deck/talk) 문서에서만 대본을 만들 수 있습니다.")
-    title_match = re.search(r"<title>(.*?)</title>", html_text, re.DOTALL | re.IGNORECASE)
-    deck_title = html.unescape(title_match.group(1).strip()) if title_match else html_path.stem
-    target_minutes = target_minutes or deck_tools.read_target_minutes(html_text)
-    seconds = [deck_tools.estimate_seconds(slide.talk_text) for slide in slides]
-    total_seconds = sum(seconds)
+# ------------------------------------------------------ Editable presentations
 
-    thumbs: list[Path] = []
-    thumb_dir = None
-    if pdf_path and pdf_path.exists() and shutil.which("pdftoppm"):
-        thumb_dir = Path(tempfile.mkdtemp(prefix="pdf-design-thumbs-"))
-        thumbs = make_preview(pdf_path, thumb_dir, SCRIPT_THUMB_DPI)
-        if len(thumbs) != len(slides):
-            log(f"PDF 쪽수({len(thumbs)})와 슬라이드 수({len(slides)})가 달라 썸네일을 넣지 않습니다. 먼저 render 하세요.")
-            thumbs = []
-
-    doc = DocxBuilder(title=f"발표 대본 · {deck_title}")
-    doc.heading(f"발표 대본 · {deck_title}", level=0)
-    summary = f"슬라이드 {len(slides)}장 · 대본 기준 예상 발표 시간 {deck_tools.format_duration(total_seconds)}"
-    if target_minutes:
-        summary += f" (목표 {target_minutes:g}분)"
-    doc.paragraph(summary)
-    doc.caption(f"원본: {html_path.name} · 생성: {time.strftime('%Y-%m-%d %H:%M')} · 예상 시간은 한국어 분당 {deck_tools.KOREAN_CHARS_PER_MINUTE}자, 영어 분당 {deck_tools.ENGLISH_WORDS_PER_MINUTE}단어 기준")
-    doc.table(
-        ["#", "슬라이드 제목", "예상 시간"],
-        [[str(slide.index), slide.title or "(제목 없음)", deck_tools.format_duration(seconds[slide.index - 1])] for slide in slides],
-        [1.2, 12.3, 3.0],
-    )
-
-    for slide in slides:
-        doc.page_break()
-        doc.heading(f"슬라이드 {slide.index}. {slide.title or '(제목 없음)'}", level=1)
-        if thumbs:
-            doc.image(thumbs[slide.index - 1], SCRIPT_THUMB_WIDTH_CM)
-        if slide.message:
-            doc.paragraph([("핵심 메시지  ", True), (slide.message, False)], style="KeyMessage")
-        doc.caption(f"예상 시간 {deck_tools.format_duration(seconds[slide.index - 1])}" + (f" · 출처: {slide.source}" if slide.source else ""))
-        if not slide.notes:
-            doc.paragraph([("노트 없음", True), (" — 슬라이드에 aside.notes 를 추가하세요.", False)])
-        previous_kind = None
-        for block in slide.notes:
-            if block.kind == "heading":
-                doc.heading(block.text, level=3)
-            elif block.kind == "bullet":
-                doc.bullet(block.runs, level=block.level)
-            elif block.kind == "talk":
-                if previous_kind != "talk" and (previous_kind is None or previous_kind != "heading"):
-                    doc.heading("발표 대본", level=3)
-                doc.paragraph(block.runs, style="Talk")
-            else:
-                doc.paragraph(block.runs)
-            previous_kind = block.kind
-    doc.save(docx_path)
-    if thumb_dir:
-        shutil.rmtree(thumb_dir, ignore_errors=True)
-    return {"slides": len(slides), "seconds": seconds, "total_seconds": total_seconds, "target_minutes": target_minutes, "has_thumbs": bool(thumbs)}
+def cmd_pptx(args: argparse.Namespace) -> None:
+    from native_pptx import export_pptx
+    source = Path(args.input).resolve()
+    output = Path(args.output).resolve() if args.output else source.with_suffix(".pptx")
+    if output.suffix.lower() != ".pptx":
+        raise PdfDesignError("출력 확장자는 .pptx여야 합니다.")
+    if output.exists():
+        raise PdfDesignError("기존 PPTX를 덮어쓰지 않습니다. 새 출력 경로를 지정하세요.")
+    try:
+        scene = json.loads(source.read_text(encoding="utf-8"))
+        scene, chosen, reason = presentation_palette.apply_scene_palette(
+            scene, topic=getattr(args, "topic", None), explicit=getattr(args, "palette", None),
+            stored=load_prefs(source.parent).get("palette"))
+        log(f"발표 팔레트: {chosen} ({reason}; 직접 지정한 RGB 색은 유지)")
+        export_pptx(scene, output, base_dir=source.parent)
+    except (ValueError, OSError, KeyError, TypeError) as error:
+        raise PdfDesignError(str(error)) from error
+    log(f"편집용 PPTX: {output} ({len(scene['slides'])}쪽)")
+    log("텍스트·표·도형·지원 차트는 네이티브 개체입니다. 대상 앱에서 열기·수정·PDF 출력 검수가 필요합니다.")
 
 
-def cmd_script(args: argparse.Namespace) -> None:
-    html_path = require_file(args.input)
-    docx_path = Path(args.output).resolve() if args.output else html_path.with_name(f"{html_path.stem}_script.docx")
-    pdf_path = html_path.with_suffix(".pdf")
-    if not args.no_thumbs and (not pdf_path.exists() or pdf_path.stat().st_mtime < html_path.stat().st_mtime):
-        write_bundle(html_path.parent)
-        render_pdf(html_path, pdf_path, args.wait_ms)
-        log(f"썸네일용 PDF를 새로 렌더링했습니다: {pdf_path}")
-    report = build_script_docx(html_path, docx_path, None if args.no_thumbs else pdf_path, args.minutes)
-
-    log(f"대본 DOCX: {docx_path} (슬라이드 {report['slides']}장, 썸네일 {'포함' if report['has_thumbs'] else '없음'})")
-    for index, seconds in enumerate(report["seconds"], start=1):
-        print(f"  {index:>3}  {deck_tools.format_duration(seconds):>8}")
-    total = report["total_seconds"]
-    log(f"예상 발표 시간: {deck_tools.format_duration(total)}")
-    target = report["target_minutes"]
-    if target:
-        gap = total / 60 - target
-        if abs(gap) > target * DURATION_TOLERANCE:
-            log(f"목표 {target:g}분과 {abs(gap):.1f}분 차이가 납니다 → 대본을 {'줄이세요' if gap > 0 else '보강하세요'}.")
-        else:
-            log(f"목표 {target:g}분 대비 ±{int(DURATION_TOLERANCE * 100)}% 이내입니다.")
-    missing = [issue for issue in deck_tools.audit_slides(deck_tools.parse_slides(html_path.read_text(encoding="utf-8"))) if "노트" in issue["message"] or "대본" in issue["message"]]
-    if missing:
-        log("노트·대본 누락:")
-        print_issues(missing)
+def cmd_render_pptx(args: argparse.Namespace) -> None:
+    from pptx_render import render_pptx
+    source = Path(args.input).resolve()
+    output = Path(args.output).resolve() if args.output else source.with_suffix(".pdf")
+    try:
+        render_pptx(source, output, Path(args.app))
+    except (ValueError, OSError, subprocess.TimeoutExpired) as error:
+        raise PdfDesignError(str(error)) from error
+    log(f"PPTX에서 출력한 PDF: {output}")
+    if args.preview:
+        preview = output.with_name(output.stem + "_preview")
+        preview.mkdir(exist_ok=True)
+        subprocess.run(["pdftoppm", "-scale-to", "1440", "-png", str(output), str(preview / "page")], check=True, capture_output=True)
+        log(f"미리보기: {preview}")
 
 
 # ---------------------------------------------------------------- CLI
@@ -724,7 +675,7 @@ def add_design_arguments(parser: argparse.ArgumentParser) -> None:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="pdfdesign", description="pdf-design: 디자인을 골라 쓰는 HTML/CSS → PDF")
+    parser = argparse.ArgumentParser(prog="pdfdesign", description="pdf-design: 주제별 디자인과 편집용 PPTX·PDF 제작")
     sub = parser.add_subparsers(dest="command", required=True)
 
     options_parser = sub.add_parser("options", help="선택 가능한 디자인 축과 값 목록")
@@ -733,6 +684,7 @@ def build_parser() -> argparse.ArgumentParser:
     init_parser = sub.add_parser("init", help="템플릿을 작업 폴더로 복사")
     init_parser.add_argument("template", choices=TEMPLATES)
     init_parser.add_argument("dest")
+    init_parser.add_argument("--topic", help="새 문서 주제: 선별된 발표 팔레트 자동 선택")
     add_design_arguments(init_parser)
     init_parser.add_argument("--force", action="store_true")
     init_parser.set_defaults(func=cmd_init)
@@ -759,19 +711,24 @@ def build_parser() -> argparse.ArgumentParser:
     gallery_parser.add_argument("--out", help="출력 폴더 (기본: <문서명>_gallery)")
     gallery_parser.add_argument("--wait-ms", type=int, default=8000)
     gallery_parser.set_defaults(func=cmd_gallery)
-    check_parser = sub.add_parser("check", help="넘침·겹침·작은 글씨·깨진 이미지·노트/출처 누락 검사")
+    check_parser = sub.add_parser("check", help="넘침·겹침·작은 글씨·깨진 이미지 검사")
     check_parser.add_argument("input")
     check_parser.add_argument("--strict", action="store_true", help="경고도 실패로 처리")
     check_parser.add_argument("--wait-ms", type=int, default=8000)
     check_parser.set_defaults(func=cmd_check)
 
-    script_parser = sub.add_parser("script", help="발표자 노트를 DOCX 대본으로 만들고 발표 시간을 추정")
-    script_parser.add_argument("input")
-    script_parser.add_argument("output", nargs="?", help="기본: <문서명>_script.docx")
-    script_parser.add_argument("--minutes", type=float, help="목표 발표 시간(분). 없으면 <meta name=\"pdf-design:duration\">")
-    script_parser.add_argument("--no-thumbs", action="store_true", help="슬라이드 썸네일을 넣지 않음")
-    script_parser.add_argument("--wait-ms", type=int, default=8000)
-    script_parser.set_defaults(func=cmd_script)
+    pptx_parser = sub.add_parser("pptx", help="구조화된 장면 JSON을 네이티브 편집용 PPTX로 생성")
+    pptx_parser.add_argument("input")
+    pptx_parser.add_argument("output", nargs="?")
+    pptx_parser.add_argument("--topic", help="팔레트 자동 선택용 주제. 미지정 시 scene topic/title 사용")
+    pptx_parser.add_argument("--palette", choices=list(DESIGN_AXES["palette"]), help="주제 자동 선택보다 우선하는 색조")
+    pptx_parser.set_defaults(func=cmd_pptx)
+    pptx_render_parser = sub.add_parser("render-pptx", help="PPTX 원본을 Keynote에서 열어 PDF로 출력(macOS)")
+    pptx_render_parser.add_argument("input")
+    pptx_render_parser.add_argument("output", nargs="?")
+    pptx_render_parser.add_argument("--app", required=True, help="설치된 Keynote.app의 절대 경로")
+    pptx_render_parser.add_argument("--preview", action="store_true")
+    pptx_render_parser.set_defaults(func=cmd_render_pptx)
     return parser
 
 

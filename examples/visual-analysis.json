@@ -1,0 +1,1576 @@
+{
+  "title": "배송 지연을 줄이는 순서 · 가상 분석 예제",
+  "width": 1280,
+  "height": 720,
+  "font": "Pretendard",
+  "slides": [
+    {
+      "title": "배송 운영 분석",
+      "elements": [
+        {
+          "type": "rect",
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 720,
+          "fill": "@paper",
+          "name": "rect 1"
+        },
+        {
+          "type": "rect",
+          "x": 56,
+          "y": 67,
+          "w": 56,
+          "h": 7,
+          "fill": "@accent",
+          "name": "rect 2"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 112,
+          "w": 600,
+          "h": 35,
+          "text": "운영 데이터 분석",
+          "fontSize": 24,
+          "color": "@accent",
+          "bold": true,
+          "align": "left",
+          "name": "운영 데이터 분석 3"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 181,
+          "w": 665,
+          "h": 190,
+          "text": "배송 운영\n분석",
+          "fontSize": 76,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "배송 지연을 4"
+        },
+        {
+          "type": "text",
+          "x": 60,
+          "y": 412,
+          "w": 630,
+          "h": 82,
+          "text": "주문 시간대와 출고 과정",
+          "fontSize": 29,
+          "color": "@muted",
+          "bold": false,
+          "align": "left",
+          "name": "시간대와 출고 과정을 함께 살펴본 5"
+        },
+        {
+          "type": "text",
+          "x": 60,
+          "y": 611,
+          "w": 730,
+          "h": 53,
+          "text": "발표 디자인 예제 · 가상 자료",
+          "fontSize": 19,
+          "color": "@muted",
+          "bold": false,
+          "align": "left",
+          "name": "표지 메타데이터"
+        }
+      ],
+      "role": "cover"
+    },
+    {
+      "title": "분석 범위와 지연의 기준",
+      "elements": [
+        {
+          "type": "text",
+          "x": 56,
+          "y": 32,
+          "w": 800,
+          "h": 28,
+          "text": "01  데이터 이해",
+          "fontSize": 18,
+          "color": "@accent",
+          "bold": true,
+          "align": "left",
+          "name": "01  데이터 이해 1"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 79,
+          "w": 1168,
+          "h": 64,
+          "text": "분석 범위와 지연의 기준",
+          "fontSize": 42,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "분석 범위와 지연의 기준 2"
+        },
+        {
+          "type": "line",
+          "x": 56,
+          "y": 162,
+          "w": 1168,
+          "h": 0,
+          "color": "@line",
+          "width": 1,
+          "name": "line 3"
+        },
+        {
+          "type": "line",
+          "x": 56,
+          "y": 659,
+          "w": 1168,
+          "h": 0,
+          "color": "@line",
+          "width": 1,
+          "name": "line 4"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 675,
+          "w": 1000,
+          "h": 24,
+          "text": "설명용 가상 데이터 · 실제 물류 운영 결과가 아닙니다",
+          "fontSize": 15,
+          "color": "@muted",
+          "bold": false,
+          "align": "left",
+          "name": "설명용 가상 데이터 · 실제 물류 운영 결과가 아닙니다 5"
+        },
+        {
+          "type": "text",
+          "x": 1150,
+          "y": 675,
+          "w": 74,
+          "h": 24,
+          "text": "02",
+          "fontSize": 17,
+          "color": "@muted",
+          "bold": false,
+          "align": "right",
+          "name": "02 6"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 197,
+          "w": 670,
+          "h": 38,
+          "text": "같은 기준으로 비교할 주문",
+          "fontSize": 28,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "같은 기준으로 비교할 주문 7"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 248,
+          "w": 660,
+          "h": 72,
+          "text": "서로 다른 창고와 시간대를\n동일한 지연 기준으로 묶어 비교",
+          "fontSize": 29,
+          "color": "@muted",
+          "bold": false,
+          "align": "left",
+          "name": "서로 다른 창고와 시간대를 8"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 363,
+          "w": 215,
+          "h": 74,
+          "text": "2,400건",
+          "fontSize": 48,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "2,400건 9"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 442,
+          "w": 210,
+          "h": 30,
+          "text": "주문 수",
+          "fontSize": 21,
+          "color": "@muted",
+          "bold": false,
+          "align": "left",
+          "name": "주문 수 10"
+        },
+        {
+          "type": "text",
+          "x": 282,
+          "y": 363,
+          "w": 215,
+          "h": 74,
+          "text": "4주",
+          "fontSize": 48,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "4주 11"
+        },
+        {
+          "type": "text",
+          "x": 282,
+          "y": 442,
+          "w": 210,
+          "h": 30,
+          "text": "관찰 기간",
+          "fontSize": 21,
+          "color": "@muted",
+          "bold": false,
+          "align": "left",
+          "name": "관찰 기간 12"
+        },
+        {
+          "type": "text",
+          "x": 508,
+          "y": 363,
+          "w": 215,
+          "h": 74,
+          "text": "2곳",
+          "fontSize": 48,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "2곳 13"
+        },
+        {
+          "type": "text",
+          "x": 508,
+          "y": 442,
+          "w": 210,
+          "h": 30,
+          "text": "출고 창고",
+          "fontSize": 21,
+          "color": "@muted",
+          "bold": false,
+          "align": "left",
+          "name": "출고 창고 14"
+        },
+        {
+          "type": "rect",
+          "x": 786,
+          "y": 190,
+          "w": 438,
+          "h": 422,
+          "fill": "@paper",
+          "name": "rect 15"
+        },
+        {
+          "type": "chart",
+          "x": 835,
+          "y": 222,
+          "w": 336,
+          "h": 235,
+          "chartType": "doughnut",
+          "categories": [
+            "정시",
+            "지연"
+          ],
+          "series": [
+            {
+              "name": "주문",
+              "values": [
+                2040,
+                360
+              ],
+              "color": "@secondary",
+              "colors": [
+                "@secondary",
+                "@accent"
+              ]
+            }
+          ],
+          "legend": true,
+          "name": "doughnut 16"
+        },
+        {
+          "type": "text",
+          "x": 819,
+          "y": 472,
+          "w": 362,
+          "h": 53,
+          "text": "15.0%",
+          "fontSize": 45,
+          "color": "@accent",
+          "bold": true,
+          "align": "center",
+          "name": "15.0% 17"
+        },
+        {
+          "type": "text",
+          "x": 819,
+          "y": 535,
+          "w": 362,
+          "h": 58,
+          "text": "지연 360건 / 전체 2,400건\n지연 기준: 약속일 이후 도착",
+          "fontSize": 22,
+          "color": "@muted",
+          "bold": false,
+          "align": "center",
+          "name": "지연 360건 / 전체 2,400건 18"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 557,
+          "w": 675,
+          "h": 46,
+          "text": "접수 시각 → 출고 완료 → 실제 도착일",
+          "fontSize": 24,
+          "color": "@secondary",
+          "bold": true,
+          "align": "left",
+          "name": "접수 시각 → 출고 완료 → 실제 도착일 19"
+        }
+      ]
+    },
+    {
+      "title": "창고보다 주문 시간대의 차이",
+      "elements": [
+        {
+          "type": "text",
+          "x": 56,
+          "y": 32,
+          "w": 800,
+          "h": 28,
+          "text": "02  패턴 비교",
+          "fontSize": 18,
+          "color": "@accent",
+          "bold": true,
+          "align": "left",
+          "name": "02  패턴 비교 1"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 79,
+          "w": 1168,
+          "h": 64,
+          "text": "창고보다 주문 시간대의 차이",
+          "fontSize": 42,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "창고보다 주문 시간대의 차이 2"
+        },
+        {
+          "type": "line",
+          "x": 56,
+          "y": 162,
+          "w": 1168,
+          "h": 0,
+          "color": "@line",
+          "width": 1,
+          "name": "line 3"
+        },
+        {
+          "type": "line",
+          "x": 56,
+          "y": 659,
+          "w": 1168,
+          "h": 0,
+          "color": "@line",
+          "width": 1,
+          "name": "line 4"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 675,
+          "w": 1000,
+          "h": 24,
+          "text": "설명용 가상 데이터 · 실제 물류 운영 결과가 아닙니다",
+          "fontSize": 15,
+          "color": "@muted",
+          "bold": false,
+          "align": "left",
+          "name": "설명용 가상 데이터 · 실제 물류 운영 결과가 아닙니다 5"
+        },
+        {
+          "type": "text",
+          "x": 1150,
+          "y": 675,
+          "w": 74,
+          "h": 24,
+          "text": "03",
+          "fontSize": 17,
+          "color": "@muted",
+          "bold": false,
+          "align": "right",
+          "name": "03 6"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 199,
+          "w": 542,
+          "h": 34,
+          "text": "A 창고",
+          "fontSize": 28,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "A 창고 7"
+        },
+        {
+          "type": "text",
+          "x": 682,
+          "y": 199,
+          "w": 542,
+          "h": 34,
+          "text": "B 창고",
+          "fontSize": 28,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "B 창고 8"
+        },
+        {
+          "type": "chart",
+          "x": 48,
+          "y": 254,
+          "w": 567,
+          "h": 277,
+          "chartType": "column",
+          "categories": [
+            "오전",
+            "낮",
+            "오후",
+            "저녁"
+          ],
+          "series": [
+            {
+              "name": "지연율",
+              "values": [
+                0.08,
+                0.1,
+                0.12,
+                0.2
+              ],
+              "color": "@muted",
+              "colors": [
+                "@muted/55",
+                "@muted/55",
+                "@muted/55",
+                "@accent"
+              ]
+            }
+          ],
+          "min": 0,
+          "max": 0.3,
+          "numberFormat": "0.0%",
+          "dataLabels": true,
+          "majorUnit": 0.1,
+          "name": "column 9"
+        },
+        {
+          "type": "chart",
+          "x": 674,
+          "y": 254,
+          "w": 567,
+          "h": 277,
+          "chartType": "column",
+          "categories": [
+            "오전",
+            "낮",
+            "오후",
+            "저녁"
+          ],
+          "series": [
+            {
+              "name": "지연율",
+              "values": [
+                0.1,
+                0.12,
+                0.16,
+                0.2533333333
+              ],
+              "color": "@muted",
+              "colors": [
+                "@muted/55",
+                "@muted/55",
+                "@muted/55",
+                "@accent"
+              ]
+            }
+          ],
+          "min": 0,
+          "max": 0.3,
+          "numberFormat": "0.0%",
+          "dataLabels": true,
+          "majorUnit": 0.1,
+          "name": "column 10"
+        },
+        {
+          "type": "text",
+          "x": 65,
+          "y": 546,
+          "w": 555,
+          "h": 31,
+          "text": "시간대별 150건 · 전체 600건",
+          "fontSize": 20,
+          "color": "@muted",
+          "bold": false,
+          "align": "left",
+          "name": "시간대별 150건 · 전체 600건 11"
+        },
+        {
+          "type": "text",
+          "x": 691,
+          "y": 546,
+          "w": 533,
+          "h": 31,
+          "text": "시간대별 450건 · 전체 1,800건",
+          "fontSize": 20,
+          "color": "@muted",
+          "bold": false,
+          "align": "left",
+          "name": "시간대별 450건 · 전체 1,800건 12"
+        },
+        {
+          "type": "rect",
+          "x": 56,
+          "y": 599,
+          "w": 1168,
+          "h": 42,
+          "fill": "@paper",
+          "name": "rect 13"
+        },
+        {
+          "type": "text",
+          "x": 74,
+          "y": 605,
+          "w": 1120,
+          "h": 30,
+          "text": "두 창고 모두 저녁 주문의 지연율이 높음  /  같은 0~30% 축으로 비교",
+          "fontSize": 22,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "두 창고 모두 저녁 주문의 지연율이 높음  /  같은 0~30% 14"
+        }
+      ]
+    },
+    {
+      "title": "출고 소요시간의 긴 꼬리",
+      "elements": [
+        {
+          "type": "text",
+          "x": 56,
+          "y": 32,
+          "w": 800,
+          "h": 28,
+          "text": "03  분포 확인",
+          "fontSize": 18,
+          "color": "@accent",
+          "bold": true,
+          "align": "left",
+          "name": "03  분포 확인 1"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 79,
+          "w": 1168,
+          "h": 64,
+          "text": "출고 소요시간의 긴 꼬리",
+          "fontSize": 42,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "출고 소요시간의 긴 꼬리 2"
+        },
+        {
+          "type": "line",
+          "x": 56,
+          "y": 162,
+          "w": 1168,
+          "h": 0,
+          "color": "@line",
+          "width": 1,
+          "name": "line 3"
+        },
+        {
+          "type": "line",
+          "x": 56,
+          "y": 659,
+          "w": 1168,
+          "h": 0,
+          "color": "@line",
+          "width": 1,
+          "name": "line 4"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 675,
+          "w": 1000,
+          "h": 24,
+          "text": "설명용 가상 데이터 · 실제 물류 운영 결과가 아닙니다",
+          "fontSize": 15,
+          "color": "@muted",
+          "bold": false,
+          "align": "left",
+          "name": "설명용 가상 데이터 · 실제 물류 운영 결과가 아닙니다 5"
+        },
+        {
+          "type": "text",
+          "x": 1150,
+          "y": 675,
+          "w": 74,
+          "h": 24,
+          "text": "04",
+          "fontSize": 17,
+          "color": "@muted",
+          "bold": false,
+          "align": "right",
+          "name": "04 6"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 194,
+          "w": 750,
+          "h": 38,
+          "text": "주문 접수부터 출고 완료까지",
+          "fontSize": 27,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "주문 접수부터 출고 완료까지 7"
+        },
+        {
+          "type": "chart",
+          "x": 45,
+          "y": 244,
+          "w": 790,
+          "h": 339,
+          "chartType": "column",
+          "categories": [
+            "0–3",
+            "3–6",
+            "6–12",
+            "12–24",
+            "24 이상"
+          ],
+          "series": [
+            {
+              "name": "주문 수",
+              "values": [
+                840,
+                720,
+                360,
+                300,
+                180
+              ],
+              "color": "@secondary"
+            }
+          ],
+          "min": 0,
+          "max": 1000,
+          "dataLabels": true,
+          "majorUnit": 250,
+          "name": "column 8"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 596,
+          "w": 760,
+          "h": 26,
+          "text": "출고 소요시간 (시간)  ·  전체 주문 2,400건",
+          "fontSize": 19,
+          "color": "@muted",
+          "bold": false,
+          "align": "left",
+          "name": "출고 소요시간 (시간)  ·  전체 주문 2,400건 9"
+        },
+        {
+          "type": "rect",
+          "x": 875,
+          "y": 195,
+          "w": 349,
+          "h": 411,
+          "fill": "@accentSoft",
+          "name": "rect 10"
+        },
+        {
+          "type": "text",
+          "x": 902,
+          "y": 225,
+          "w": 290,
+          "h": 37,
+          "text": "12시간 이상",
+          "fontSize": 25,
+          "color": "@accent",
+          "bold": true,
+          "align": "left",
+          "name": "12시간 이상 11"
+        },
+        {
+          "type": "text",
+          "x": 896,
+          "y": 290,
+          "w": 301,
+          "h": 84,
+          "text": "20.0%",
+          "fontSize": 67,
+          "color": "@accent",
+          "bold": true,
+          "align": "left",
+          "name": "20.0% 12"
+        },
+        {
+          "type": "text",
+          "x": 902,
+          "y": 387,
+          "w": 285,
+          "h": 82,
+          "text": "480건이 긴 출고\n구간에 분포",
+          "fontSize": 28,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "480건이 긴 출고 13"
+        },
+        {
+          "type": "text",
+          "x": 902,
+          "y": 512,
+          "w": 285,
+          "h": 63,
+          "text": "평균만 보면 놓치는\n오래 걸린 주문을 확인",
+          "fontSize": 22,
+          "color": "@muted",
+          "bold": false,
+          "align": "left",
+          "name": "평균만 보면 놓치는 14"
+        }
+      ]
+    },
+    {
+      "title": "저녁 주문과 출고 지연의 조합",
+      "elements": [
+        {
+          "type": "text",
+          "x": 56,
+          "y": 32,
+          "w": 800,
+          "h": 28,
+          "text": "04  조건을 함께 보기",
+          "fontSize": 18,
+          "color": "@accent",
+          "bold": true,
+          "align": "left",
+          "name": "04  조건을 함께 보기 1"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 79,
+          "w": 1168,
+          "h": 64,
+          "text": "저녁 주문과 출고 지연의 조합",
+          "fontSize": 42,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "저녁 주문과 출고 지연의 조합 2"
+        },
+        {
+          "type": "line",
+          "x": 56,
+          "y": 162,
+          "w": 1168,
+          "h": 0,
+          "color": "@line",
+          "width": 1,
+          "name": "line 3"
+        },
+        {
+          "type": "line",
+          "x": 56,
+          "y": 659,
+          "w": 1168,
+          "h": 0,
+          "color": "@line",
+          "width": 1,
+          "name": "line 4"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 675,
+          "w": 1000,
+          "h": 24,
+          "text": "설명용 가상 데이터 · 실제 물류 운영 결과가 아닙니다",
+          "fontSize": 15,
+          "color": "@muted",
+          "bold": false,
+          "align": "left",
+          "name": "설명용 가상 데이터 · 실제 물류 운영 결과가 아닙니다 5"
+        },
+        {
+          "type": "text",
+          "x": 1150,
+          "y": 675,
+          "w": 74,
+          "h": 24,
+          "text": "05",
+          "fontSize": 17,
+          "color": "@muted",
+          "bold": false,
+          "align": "right",
+          "name": "05 6"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 198,
+          "w": 680,
+          "h": 38,
+          "text": "시간대 × 출고 소요시간별 지연율",
+          "fontSize": 28,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "시간대 × 출고 소요시간별 지연율 7"
+        },
+        {
+          "type": "text",
+          "x": 274,
+          "y": 258,
+          "w": 212,
+          "h": 32,
+          "text": "12시간 미만",
+          "fontSize": 23,
+          "color": "@muted",
+          "bold": true,
+          "align": "center",
+          "name": "12시간 미만 8"
+        },
+        {
+          "type": "text",
+          "x": 507,
+          "y": 258,
+          "w": 212,
+          "h": 32,
+          "text": "12시간 이상",
+          "fontSize": 23,
+          "color": "@muted",
+          "bold": true,
+          "align": "center",
+          "name": "12시간 이상 9"
+        },
+        {
+          "type": "text",
+          "x": 62,
+          "y": 321,
+          "w": 172,
+          "h": 40,
+          "text": "오전",
+          "fontSize": 26,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "오전 10"
+        },
+        {
+          "type": "rect",
+          "x": 270,
+          "y": 307,
+          "w": 219,
+          "h": 60,
+          "fill": "@accent/8",
+          "name": "rect 11"
+        },
+        {
+          "type": "text",
+          "x": 270,
+          "y": 317,
+          "w": 219,
+          "h": 40,
+          "text": "5.6%",
+          "fontSize": 27,
+          "color": "@ink",
+          "bold": true,
+          "align": "center",
+          "name": "5.6% 12"
+        },
+        {
+          "type": "rect",
+          "x": 503,
+          "y": 307,
+          "w": 219,
+          "h": 60,
+          "fill": "@accent/35",
+          "name": "rect 13"
+        },
+        {
+          "type": "text",
+          "x": 503,
+          "y": 317,
+          "w": 219,
+          "h": 40,
+          "text": "25.0%",
+          "fontSize": 27,
+          "color": "@ink",
+          "bold": true,
+          "align": "center",
+          "name": "25.0% 14"
+        },
+        {
+          "type": "text",
+          "x": 62,
+          "y": 390,
+          "w": 172,
+          "h": 40,
+          "text": "낮",
+          "fontSize": 26,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "낮 15"
+        },
+        {
+          "type": "rect",
+          "x": 270,
+          "y": 376,
+          "w": 219,
+          "h": 60,
+          "fill": "@accent/12",
+          "name": "rect 16"
+        },
+        {
+          "type": "text",
+          "x": 270,
+          "y": 386,
+          "w": 219,
+          "h": 40,
+          "text": "6.9%",
+          "fontSize": 27,
+          "color": "@ink",
+          "bold": true,
+          "align": "center",
+          "name": "6.9% 17"
+        },
+        {
+          "type": "rect",
+          "x": 503,
+          "y": 376,
+          "w": 219,
+          "h": 60,
+          "fill": "@accent/45",
+          "name": "rect 18"
+        },
+        {
+          "type": "text",
+          "x": 503,
+          "y": 386,
+          "w": 219,
+          "h": 40,
+          "text": "30.0%",
+          "fontSize": 27,
+          "color": "@ink",
+          "bold": true,
+          "align": "center",
+          "name": "30.0% 19"
+        },
+        {
+          "type": "text",
+          "x": 62,
+          "y": 459,
+          "w": 172,
+          "h": 40,
+          "text": "오후",
+          "fontSize": 26,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "오후 20"
+        },
+        {
+          "type": "rect",
+          "x": 270,
+          "y": 445,
+          "w": 219,
+          "h": 60,
+          "fill": "@accent/20",
+          "name": "rect 21"
+        },
+        {
+          "type": "text",
+          "x": 270,
+          "y": 455,
+          "w": 219,
+          "h": 40,
+          "text": "8.8%",
+          "fontSize": 27,
+          "color": "@ink",
+          "bold": true,
+          "align": "center",
+          "name": "8.8% 22"
+        },
+        {
+          "type": "rect",
+          "x": 503,
+          "y": 445,
+          "w": 219,
+          "h": 60,
+          "fill": "@accent/60",
+          "name": "rect 23"
+        },
+        {
+          "type": "text",
+          "x": 503,
+          "y": 455,
+          "w": 219,
+          "h": 40,
+          "text": "40.0%",
+          "fontSize": 27,
+          "color": "@ink",
+          "bold": true,
+          "align": "center",
+          "name": "40.0% 24"
+        },
+        {
+          "type": "text",
+          "x": 62,
+          "y": 528,
+          "w": 172,
+          "h": 40,
+          "text": "저녁",
+          "fontSize": 26,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "저녁 25"
+        },
+        {
+          "type": "rect",
+          "x": 270,
+          "y": 514,
+          "w": 219,
+          "h": 60,
+          "fill": "@accent/28",
+          "name": "rect 26"
+        },
+        {
+          "type": "text",
+          "x": 270,
+          "y": 524,
+          "w": 219,
+          "h": 40,
+          "text": "15.0%",
+          "fontSize": 27,
+          "color": "@ink",
+          "bold": true,
+          "align": "center",
+          "name": "15.0% 27"
+        },
+        {
+          "type": "rect",
+          "x": 503,
+          "y": 514,
+          "w": 219,
+          "h": 60,
+          "fill": "@accent",
+          "name": "rect 28"
+        },
+        {
+          "type": "text",
+          "x": 503,
+          "y": 524,
+          "w": 219,
+          "h": 40,
+          "text": "60.0%",
+          "fontSize": 27,
+          "color": "@white",
+          "bold": true,
+          "align": "center",
+          "name": "60.0% 29"
+        },
+        {
+          "type": "text",
+          "x": 796,
+          "y": 203,
+          "w": 428,
+          "h": 41,
+          "text": "최댓값보다 조건 확인",
+          "fontSize": 27,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "최댓값보다 조건 확인 30"
+        },
+        {
+          "type": "text",
+          "x": 796,
+          "y": 274,
+          "w": 428,
+          "h": 64,
+          "text": "60.0%",
+          "fontSize": 55,
+          "color": "@accent",
+          "bold": true,
+          "align": "left",
+          "name": "60.0% 31"
+        },
+        {
+          "type": "text",
+          "x": 797,
+          "y": 349,
+          "w": 422,
+          "h": 62,
+          "text": "저녁 + 출고 12시간 이상\n72건 / 120건",
+          "fontSize": 27,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "저녁 + 출고 12시간 이상 32"
+        },
+        {
+          "type": "line",
+          "x": 797,
+          "y": 441,
+          "w": 427,
+          "h": 0,
+          "color": "@line",
+          "width": 1,
+          "name": "line 33"
+        },
+        {
+          "type": "text",
+          "x": 797,
+          "y": 470,
+          "w": 422,
+          "h": 116,
+          "text": "같은 시간대 안에서도 차이\n출고 지연과 주문 특성을\n함께 확인할 필요",
+          "fontSize": 25,
+          "color": "@muted",
+          "bold": false,
+          "align": "left",
+          "name": "같은 시간대 안에서도 차이 34"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 611,
+          "w": 684,
+          "h": 29,
+          "text": "셀별 분모: 미만 480건 / 이상 120건",
+          "fontSize": 19,
+          "color": "@muted",
+          "bold": false,
+          "align": "left",
+          "name": "셀별 분모: 미만 480건 / 이상 120건 35"
+        }
+      ]
+    },
+    {
+      "title": "주문 기록으로 돌아가 확인",
+      "elements": [
+        {
+          "type": "text",
+          "x": 56,
+          "y": 32,
+          "w": 800,
+          "h": 28,
+          "text": "05  사례와 확인 순서",
+          "fontSize": 18,
+          "color": "@accent",
+          "bold": true,
+          "align": "left",
+          "name": "05  사례와 확인 순서 1"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 79,
+          "w": 1168,
+          "h": 64,
+          "text": "주문 기록으로 돌아가 확인",
+          "fontSize": 42,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "주문 기록으로 돌아가 확인 2"
+        },
+        {
+          "type": "line",
+          "x": 56,
+          "y": 162,
+          "w": 1168,
+          "h": 0,
+          "color": "@line",
+          "width": 1,
+          "name": "line 3"
+        },
+        {
+          "type": "line",
+          "x": 56,
+          "y": 659,
+          "w": 1168,
+          "h": 0,
+          "color": "@line",
+          "width": 1,
+          "name": "line 4"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 675,
+          "w": 1000,
+          "h": 24,
+          "text": "설명용 가상 데이터 · 실제 물류 운영 결과가 아닙니다",
+          "fontSize": 15,
+          "color": "@muted",
+          "bold": false,
+          "align": "left",
+          "name": "설명용 가상 데이터 · 실제 물류 운영 결과가 아닙니다 5"
+        },
+        {
+          "type": "text",
+          "x": 1150,
+          "y": 675,
+          "w": 74,
+          "h": 24,
+          "text": "06",
+          "fontSize": 17,
+          "color": "@muted",
+          "bold": false,
+          "align": "right",
+          "name": "06 6"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 195,
+          "w": 1168,
+          "h": 43,
+          "text": "통계로 좁힌 구간을 실제 기록에서 확인",
+          "fontSize": 30,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "통계로 좁힌 구간을 실제 기록에서 확인 7"
+        },
+        {
+          "type": "rect",
+          "x": 56,
+          "y": 285,
+          "w": 363,
+          "h": 124,
+          "fill": "@paper",
+          "name": "rect 8"
+        },
+        {
+          "type": "text",
+          "x": 78,
+          "y": 308,
+          "w": 320,
+          "h": 38,
+          "text": "접수",
+          "fontSize": 31,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "접수 9"
+        },
+        {
+          "type": "text",
+          "x": 78,
+          "y": 360,
+          "w": 320,
+          "h": 30,
+          "text": "주문 시각 · 마감 시간",
+          "fontSize": 22,
+          "color": "@muted",
+          "bold": false,
+          "align": "left",
+          "name": "주문 시각 · 마감 시간 10"
+        },
+        {
+          "type": "line",
+          "x": 421,
+          "y": 347,
+          "w": 36,
+          "h": 0,
+          "color": "@muted",
+          "width": 2,
+          "name": "line 11"
+        },
+        {
+          "type": "rect",
+          "x": 458,
+          "y": 285,
+          "w": 363,
+          "h": 124,
+          "fill": "@accentSoft",
+          "name": "rect 12"
+        },
+        {
+          "type": "text",
+          "x": 480,
+          "y": 308,
+          "w": 320,
+          "h": 38,
+          "text": "출고 대기",
+          "fontSize": 31,
+          "color": "@accent",
+          "bold": true,
+          "align": "left",
+          "name": "출고 대기 13"
+        },
+        {
+          "type": "text",
+          "x": 480,
+          "y": 360,
+          "w": 320,
+          "h": 30,
+          "text": "주문량 · 인력 · 재고",
+          "fontSize": 22,
+          "color": "@muted",
+          "bold": false,
+          "align": "left",
+          "name": "주문량 · 인력 · 재고 14"
+        },
+        {
+          "type": "line",
+          "x": 823,
+          "y": 347,
+          "w": 36,
+          "h": 0,
+          "color": "@muted",
+          "width": 2,
+          "name": "line 15"
+        },
+        {
+          "type": "rect",
+          "x": 860,
+          "y": 285,
+          "w": 363,
+          "h": 124,
+          "fill": "@paper",
+          "name": "rect 16"
+        },
+        {
+          "type": "text",
+          "x": 882,
+          "y": 308,
+          "w": 320,
+          "h": 38,
+          "text": "운송",
+          "fontSize": 31,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "운송 17"
+        },
+        {
+          "type": "text",
+          "x": 882,
+          "y": 360,
+          "w": 320,
+          "h": 30,
+          "text": "지역 · 배송사 · 휴일",
+          "fontSize": 22,
+          "color": "@muted",
+          "bold": false,
+          "align": "left",
+          "name": "지역 · 배송사 · 휴일 18"
+        },
+        {
+          "type": "line",
+          "x": 639,
+          "y": 411,
+          "w": 0,
+          "h": 53,
+          "color": "@accent",
+          "width": 2,
+          "name": "line 19"
+        },
+        {
+          "type": "text",
+          "x": 362,
+          "y": 483,
+          "w": 570,
+          "h": 43,
+          "text": "우선 확인: 저녁 주문의 출고 대기",
+          "fontSize": 30,
+          "color": "@accent",
+          "bold": true,
+          "align": "center",
+          "name": "우선 확인: 저녁 주문의 출고 대기 20"
+        },
+        {
+          "type": "text",
+          "x": 221,
+          "y": 553,
+          "w": 838,
+          "h": 62,
+          "text": "관찰된 차이 → 기록 대조 → 가능한 설명 비교\n지연율만으로 인력 부족을 원인으로 단정하지 않음",
+          "fontSize": 25,
+          "color": "@muted",
+          "bold": false,
+          "align": "center",
+          "name": "관찰된 차이 → 기록 대조 → 가능한 설명 비교 21"
+        }
+      ]
+    },
+    {
+      "title": "개선 전에 확인할 세 가지",
+      "elements": [
+        {
+          "type": "text",
+          "x": 56,
+          "y": 32,
+          "w": 800,
+          "h": 28,
+          "text": "06  결론과 다음 행동",
+          "fontSize": 18,
+          "color": "@accent",
+          "bold": true,
+          "align": "left",
+          "name": "06  결론과 다음 행동 1"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 79,
+          "w": 1168,
+          "h": 64,
+          "text": "개선 전에 확인할 세 가지",
+          "fontSize": 42,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "개선 전에 확인할 세 가지 2"
+        },
+        {
+          "type": "line",
+          "x": 56,
+          "y": 162,
+          "w": 1168,
+          "h": 0,
+          "color": "@line",
+          "width": 1,
+          "name": "line 3"
+        },
+        {
+          "type": "line",
+          "x": 56,
+          "y": 659,
+          "w": 1168,
+          "h": 0,
+          "color": "@line",
+          "width": 1,
+          "name": "line 4"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 675,
+          "w": 1000,
+          "h": 24,
+          "text": "설명용 가상 데이터 · 실제 물류 운영 결과가 아닙니다",
+          "fontSize": 15,
+          "color": "@muted",
+          "bold": false,
+          "align": "left",
+          "name": "설명용 가상 데이터 · 실제 물류 운영 결과가 아닙니다 5"
+        },
+        {
+          "type": "text",
+          "x": 1150,
+          "y": 675,
+          "w": 74,
+          "h": 24,
+          "text": "07",
+          "fontSize": 17,
+          "color": "@muted",
+          "bold": false,
+          "align": "right",
+          "name": "07 6"
+        },
+        {
+          "type": "table",
+          "x": 56,
+          "y": 211,
+          "w": 1168,
+          "h": 276,
+          "rows": [
+            [
+              "발견",
+              "다음 확인",
+              "판단 기준"
+            ],
+            [
+              "저녁 주문의 높은 지연율",
+              "시간대별 작업량·처리 인원",
+              "주문량 대비 처리량"
+            ],
+            [
+              "출고시간이 긴 주문 20%",
+              "특수 주문·재고·대기 단계",
+              "유형별 소요시간 분포"
+            ],
+            [
+              "두 조건이 겹친 구간의 차이",
+              "같은 주문 유형 안에서 비교",
+              "조건을 맞춘 지연율"
+            ]
+          ],
+          "columnWidths": [
+            0.33,
+            0.38,
+            0.29
+          ],
+          "fontSize": 23,
+          "headerFill": "@ink",
+          "fill": "@paper",
+          "color": "@ink",
+          "name": "table 7",
+          "cellPadding": 16
+        },
+        {
+          "type": "line",
+          "x": 56,
+          "y": 538,
+          "w": 60,
+          "h": 0,
+          "color": "@accent",
+          "width": 5,
+          "name": "line 8"
+        },
+        {
+          "type": "text",
+          "x": 56,
+          "y": 560,
+          "w": 1168,
+          "h": 69,
+          "text": "차이가 큰 구간부터 확인하고, 원인은 비교 실험으로 판단",
+          "fontSize": 33,
+          "color": "@ink",
+          "bold": true,
+          "align": "left",
+          "name": "차이가 큰 구간부터 확인하고, 원인은 비교 실험으로 판단 9"
+        }
+      ]
+    }
+  ],
+  "topic": "물류 운영 배송 분석"
+}

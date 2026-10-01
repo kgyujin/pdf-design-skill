@@ -1,0 +1,156 @@
+{
+  "scientific": {
+    "label": "연구·의료·화학",
+    "keywords": [
+      "독성",
+      "분자",
+      "화학",
+      "의료",
+      "생명",
+      "실험",
+      "연구",
+      "과학",
+      "toxicity",
+      "molecule",
+      "medical",
+      "science"
+    ],
+    "colors": {
+      "ink": "20282D",
+      "muted": "59656D",
+      "paper": "F3F5F5",
+      "line": "D7DFE1",
+      "accent": "B63E4C",
+      "secondary": "246D82",
+      "accentSoft": "F8E9EC",
+      "white": "FFFFFF",
+      "onAccent": "FFFFFF"
+    }
+  },
+  "technology": {
+    "label": "기술·소프트웨어·AI",
+    "keywords": [
+      "소프트웨어",
+      "개발",
+      "클라우드",
+      "서버",
+      "인공지능",
+      "기술",
+      "시스템",
+      "software",
+      "cloud",
+      "AI",
+      "API",
+      "technology"
+    ],
+    "colors": {
+      "ink": "202735",
+      "muted": "566476",
+      "paper": "F1F4F8",
+      "line": "D7DEE8",
+      "accent": "315CBD",
+      "secondary": "0B766E",
+      "accentSoft": "EAF0FC",
+      "white": "FFFFFF",
+      "onAccent": "FFFFFF"
+    }
+  },
+  "business": {
+    "label": "비즈니스·운영·금융",
+    "keywords": [
+      "경영",
+      "운영",
+      "금융",
+      "매출",
+      "사업",
+      "물류",
+      "배송",
+      "시장",
+      "투자",
+      "business",
+      "finance",
+      "logistics",
+      "sales"
+    ],
+    "colors": {
+      "ink": "242B32",
+      "muted": "5B6570",
+      "paper": "F5F4F1",
+      "line": "DEDCD6",
+      "accent": "225CA8",
+      "secondary": "A75420",
+      "accentSoft": "E9F0FA",
+      "white": "FFFFFF",
+      "onAccent": "FFFFFF"
+    }
+  },
+  "nature": {
+    "label": "환경·에너지·지속가능성",
+    "keywords": [
+      "환경",
+      "생태",
+      "탄소",
+      "에너지",
+      "자연",
+      "기후",
+      "지속가능",
+      "environment",
+      "climate",
+      "energy",
+      "nature"
+    ],
+    "colors": {
+      "ink": "23332C",
+      "muted": "59675F",
+      "paper": "F2F5F0",
+      "line": "D5DFD4",
+      "accent": "2D6E52",
+      "secondary": "936324",
+      "accentSoft": "E7F1E9",
+      "white": "FFFFFF",
+      "onAccent": "FFFFFF"
+    }
+  },
+  "education": {
+    "label": "교육·문화·인문",
+    "keywords": [
+      "교육",
+      "학습",
+      "문화",
+      "인문",
+      "역사",
+      "강의",
+      "수업",
+      "교육과정",
+      "education",
+      "learning",
+      "culture"
+    ],
+    "colors": {
+      "ink": "302936",
+      "muted": "655E6C",
+      "paper": "F6F3F6",
+      "line": "E0D8E3",
+      "accent": "744885",
+      "secondary": "326D88",
+      "accentSoft": "F0E8F3",
+      "white": "FFFFFF",
+      "onAccent": "FFFFFF"
+    }
+  },
+  "neutral": {
+    "label": "일반·주제 미지정",
+    "keywords": [],
+    "colors": {
+      "ink": "252B2C",
+      "muted": "5F6969",
+      "paper": "F2F3F1",
+      "line": "D7DCD8",
+      "accent": "3F6174",
+      "secondary": "94553E",
+      "accentSoft": "EAF0F3",
+      "white": "FFFFFF",
+      "onAccent": "FFFFFF"
+    }
+  }
+}

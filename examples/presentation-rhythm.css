@@ -1,0 +1,36 @@
+/* 가상 업무 사례: 밝은 표지, 비교 색면, 큰 근거, 행동 연결의 재사용 예시. */
+@page { size: 338.67mm 190.5mm; margin: 0; }
+.rhythm-demo .slide { padding: 16mm 19mm 14mm; background: var(--surface); }
+.rhythm-demo .slide-title { font-size: 30pt; font-weight: 750; line-height: 1.2; }
+.rhythm-demo .slide-msg { font-size: 17pt; margin-top: 5mm; }
+.rhythm-demo .slide-body { margin-top: 8mm; font-size: 19pt; }
+.rhythm-demo h3 { font-size: 23pt; margin: 0 0 6mm; }
+.rhythm-demo h2:not(.slide-title) { font-size: 23pt; margin: 0 0 8mm; }
+.rhythm-cover-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 15mm; align-items: center; }
+.rhythm-lead { font-size: 35pt; line-height: 1.35; font-weight: 750; margin: 0 0 7mm; }
+.rhythm-panel { background: var(--accent-soft); padding: 9mm; border-radius: 3mm; }
+.rhythm-neutral { background: var(--surface-2); }
+.rhythm-row { display: flex; gap: 6mm; padding: 5mm 0; border-bottom: 1px solid var(--line); }
+.rhythm-row strong { color: var(--accent); }
+.rhythm-demo .rhythm-small { font-size: 13pt; line-height: 1.5; margin-top: 6mm; }
+.rhythm-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12mm; }
+.rhythm-compare ol { margin: 0; padding-left: 9mm; line-height: 2; }
+.rhythm-compare .rhythm-panel > p { border-top: 1px solid var(--line); margin-top: 7mm; padding-top: 5mm; font-weight: 650; }
+.rhythm-evidence { display: grid; grid-template-columns: 1.45fr 1fr; gap: 15mm; align-items: start; }
+.rhythm-barline { display: grid; grid-template-columns: 18mm 1fr; align-items: center; margin-top: 8mm; }
+.rhythm-bar { height: 17mm; display: flex; align-items: center; padding-left: 5mm; }
+.rhythm-bar-old { width: 100%; background: var(--surface-2); }
+.rhythm-bar-new { width: 66.666%; background: var(--accent-soft); }
+.rhythm-result { border-top: 3px solid var(--accent); padding-top: 5mm; }
+.rhythm-result > p { margin: 0; }
+.rhythm-big { font-size: 50pt; line-height: 1.2; color: var(--accent); }
+.rhythm-demo table { width: 100%; border-collapse: collapse; margin-top: 4mm; font-size: 18pt; }
+.rhythm-demo th, .rhythm-demo td { padding: 5mm 4mm; border-bottom: 1px solid var(--line); text-align: left; }
+.rhythm-demo th { background: var(--surface-2); }
+.rhythm-demo .rhythm-priority td { background: var(--accent-soft); font-weight: 650; }
+.rhythm-closing { font-size: 24pt; font-weight: 700; margin-top: 12mm; }
+.rhythm-demo .slide-foot { left: 19mm; right: 19mm; font-size: 11pt; }
+.rhythm-demo .slide-body .rhythm-lead { font-size: 35pt; line-height: 1.35; }
+.rhythm-demo .slide-body .rhythm-small { font-size: 16pt; line-height: 1.35; }
+.rhythm-demo .rhythm-actions th, .rhythm-demo .rhythm-actions td { padding: 4mm; }
+.rhythm-demo .slide-body .rhythm-closing { font-size: 22pt; margin-top: 5mm; line-height: 1.3; }

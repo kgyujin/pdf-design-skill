@@ -1,127 +1,96 @@
 # pdf-design
 
-Claude Code와 Codex에서 함께 쓰는 **디자인 선택형 PDF 제작 스킬**입니다.
-HTML/CSS 템플릿에 내용을 채우고 Chrome으로 PDF를 렌더링합니다. 디자인은 여러 축으로 나뉘어 있어서, 한 축만 바꿔도 나머지 설정과 내용은 그대로 유지됩니다. 예를 들어 "스타일만 바꾸고 색조는 유지"가 가능합니다.
+Claude Code와 Codex에서 함께 쓰는 PDF 디자인 스킬입니다. 발표 자료는 **PowerPoint에서 편집할 PPTX와 같은 원본에서 출력한 PDF**를 제공합니다. 보고서·원페이저는 HTML/CSS에서 PDF로 출력합니다.
 
-논문이나 보고서를 **발표용 슬라이드 PDF와 슬라이드별 발표 대본 DOCX**로 만드는 발표 자료 모드와, 넘침·작은 글씨·노트 누락을 잡는 자동 검수(`check`)도 들어 있습니다.
+참고 PDF 전체의 서체, 제목 위계, 정렬, 여백, 정보 밀도, 색의 의미, 차트·표·이미지 배치를 분석합니다. 도형 몇 개를 추가하거나 카드 색만 바꾸는 방식으로 디자인 개선을 대신하지 않습니다. 디자인만 요청하면 원문의 글과 수치를 유지합니다.
 
-기본 디자인은 흑백 중심(`graphite`)이고, 생성형 도구가 만든 문서에서 흔한 패턴(대문자 라벨 남발, `01` 번호, 장식 도형, 그라데이션, 포인트색 세로 바, 알약 태그 등)을 쓰지 않습니다. 기준은 [references/anti-ai-design.md](references/anti-ai-design.md)에 있고, `check`가 문서에서 이런 패턴을 찾아 경고합니다.
+## 발표 디자인 기본값
 
-![스타일 9종 비교 (보고서, 1/2)](docs/styles-report-1.png)
+- 표지는 제목·부제·팀/발표자·날짜·선택적 주제 이미지만 담습니다. KPI·결론·발표 목차·설명 본문을 자동으로 넣지 않습니다.
+- ‘출처’ 라벨이나 출처 푸터, 참고자료 페이지를 요청 없이 추가하지 않습니다. 원본 자산은 별도 제작 기록에서 추적합니다.
+- 제목·여백·서체는 일관되게 유지하고 본문은 큰 차트, 정렬된 표, 대상 이미지, 공통 축 비교 등 자산에 맞게 설계합니다.
+- 텍스트·표·도식·지원 차트는 네이티브 개체로 만듭니다. 전체 슬라이드를 이미지로 넣은 PPTX를 편집용 원본으로 제공하지 않습니다.
+- 전체 축소판과 모든 개별 페이지를 확인합니다. 자동 검사 통과와 시각적 완성도를 구분합니다.
 
-## 디자인 축
+[전체 시각 설계](references/visual-storytelling.md)는 2조와 3조 참고 PDF의 전 페이지 디자인 관찰을 일반화한 지침입니다. [편집용 시각 예제](examples/visual-analysis.md)는 가상 데이터로 만든 7쪽 예제입니다. 참고 자료의 문구·수치·이미지를 분석 결과로 재사용하지 않습니다.
 
-| 축 | 옵션 | 값 |
-|---|---|---|
-| 스타일 | `--style` | `swiss` · `editorial` · `bold` · `minimal` · `tech` · `academic` · `soft` · `classic` · `split` |
-| 색조 | `--palette` | `indigo` · `navy` · `terracotta` · `forest` · `plum` · `mono` · `graphite` · `crimson` · `teal` · `sand` |
-| 폰트 | `--font` | `auto` · `sans` · `serif` · `serif-all` · `mono` |
-| 밀도 | `--density` | `normal` · `compact` · `airy` |
-| 모서리 | `--radius` | `auto` · `sharp` · `soft` · `round` |
-| 포인트색 | `--accent` | `#RRGGBB` · `none` |
+## 주제에 맞는 팔레트
 
-기본 폰트는 모든 스타일에서 고딕(Pretendard)입니다. 바탕체·명조체는 요청할 때만 쓰며(`serif`: 제목만, `serif-all`: 본문까지), 폰트는 [고운바탕](https://fonts.google.com/specimen/Gowun+Batang)입니다.
+명시 설정 > 저장한 선호 > 주제 자동 선택 > neutral 순으로 적용합니다. 기존 문서의 색 유지 요청이 우선하며, 키워드가 선택한 팔레트의 실제 적합성도 확인합니다. [팔레트 지침](references/palettes.md)에 역할별 색과 적용 기준을 정리했습니다.
 
-| 템플릿 | 용도 |
+| 팔레트 | 용도 |
 |---|---|
-| `report` | 표지·러닝 헤더·쪽번호가 있는 A4 보고서 |
-| `onepager` | A4 한 장(이력서, 프로젝트 요약) |
-| `deck` | 짧은 16:9 발표 |
-| `talk` | 논문·보고서 기반 발표. 레이아웃 8종, KaTeX 수식, 발표자 노트 → DOCX 대본 |
+| scientific | 과학·실험·데이터 분석 |
+| technology | 기술·소프트웨어·시스템 |
+| business | 사업·운영·재무 |
+| nature | 환경·생태·지속가능성 |
+| education | 교육·학습·워크숍 |
+| neutral | 주제 미지정·범용 |
 
-<details><summary>스타일·색조 비교 더 보기</summary>
+기존 색조 indigo, navy, terracotta, forest, plum, mono, graphite, crimson, teal, sand도 명시적으로 선택할 수 있습니다. 색은 ink, muted, paper, line, accent, secondary, accentSoft 역할로 관리합니다.
 
-![스타일 9종 비교 (보고서, 2/2)](docs/styles-report-2.png)
-![스타일 9종 비교 (발표 자료, 1/2)](docs/styles-talk-1.png)
-![스타일 9종 비교 (발표 자료, 2/2)](docs/styles-talk-2.png)
-![색조 10종 비교](docs/palettes.png)
-![폰트 옵션 비교: auto(Pretendard) · serif(제목 고운바탕) · serif-all(본문까지 고운바탕)](docs/fonts.png)
-
-</details>
-
-## 발표 자료 모드
-
-![발표 예제 슬라이드 (academic + graphite)](docs/talk-demo.png)
-
-- **레이아웃 8종**: 핵심 포인트, Figure + 번호 설명, 수식 + 기호 설명, 절차·Algorithm, 비교, 표, 좌우 분할, 섹션 구분
-- **발표자 노트**: 슬라이드마다 `aside.notes`에 작성합니다. `script` 명령이 이를 슬라이드 썸네일과 함께 DOCX 대본으로 만들고, 대본 분량으로 발표 시간을 추정합니다.
-- **출처·해석 구분**: 모든 슬라이드 하단에 출처가 들어가고, 제작자 해석은 점선 박스(`.interp`)로 원본 주장과 구분합니다.
-- **자동 검수(`check`)**: 페이지 밖으로 넘친 요소, 출처·쪽번호와의 겹침, 10pt 미만 글자, 16pt 미만 본문, 작은 수식·Figure 글자, 깨지거나 흐린 이미지, 수식 오류, 노트·출처 누락, AI 티 패턴을 찾습니다.
-
-프롬프트 템플릿: [prompts/presentation.md](prompts/presentation.md). 원본 자료와 발표 조건을 채워 에이전트에게 붙여 넣으면 `talk.pdf`, `talk_script.docx`, 수정할 수 있는 `talk.html`이 만들어집니다. 예제는 [examples/talk-demo.html](examples/talk-demo.html)에 있습니다(수치는 모두 예시 데이터).
-
-## 설치
+## 빠른 시작
 
 ```bash
 git clone https://github.com/kgyujin/pdf-design-skill.git ~/workspace/pdf-design-skill
 ~/workspace/pdf-design-skill/install.sh
 ```
 
-`~/.claude/skills/pdf-design`과 `~/.codex/skills/pdf-design`에 심볼릭 링크가 만들어집니다. Codex 경로는 `CODEX_HOME`이 설정돼 있으면 그 값을 따릅니다. 저장소를 `git pull`하면 두 도구에 바로 반영되고, `./install.sh --uninstall`로 링크를 제거할 수 있습니다.
-
-필요한 프로그램:
-- Google Chrome, Chromium, Edge 중 하나(필수). 다른 위치에 있으면 `CHROME_PATH`로 지정합니다.
-- Poppler(`pdftoppm`, `pdfinfo`): 미리보기, 갤러리, 대본 썸네일에 필요합니다. macOS는 `brew install poppler`로 설치합니다.
-- Python 3.9 이상(표준 라이브러리만 사용, DOCX 생성 포함)
-- 인터넷 연결: 웹폰트와 KaTeX를 CDN에서 받습니다. 오프라인이면 폰트는 OS 한글 폰트로 대체되고, 수식은 렌더링되지 않습니다(`check`가 알려줍니다).
-
-## 에이전트에게 이렇게 요청하세요
-
-- "이 내용으로 보고서 PDF 만들어줘. 디자인 시안 몇 개 보여줘"
-- "B안으로 하고, 색은 지금 그대로 둬"
-- "스타일은 editorial로 바꾸고 포인트색만 #e8590c로"
-- "촘촘하게 해서 2쪽 안에 들어가게 해줘"
-- "이 논문으로 20분 발표 슬라이드와 대본 만들어줘" (+ `prompts/presentation.md`의 조건)
-- "앞으로 이 폴더 문서는 이 디자인으로 만들어줘" → `pdf-design.json`에 저장
-
-## CLI 직접 사용
+Codex와 Claude의 스킬 경로에 같은 저장소를 가리키는 심볼릭 링크가 만들어집니다. `git pull`로 둘 다 갱신되며 `./install.sh --uninstall`로 링크를 제거합니다.
 
 ```bash
 K=~/workspace/pdf-design-skill/scripts/pdfdesign.py
-
-python3 $K options                                             # 선택지 보기
-python3 $K init report out/report.html --style bold --palette navy   # 지정하지 않으면 swiss + graphite
-python3 $K gallery out/report.html --styles all                # 색조 유지, 스타일 9안 비교
-python3 $K gallery out/report.html --palettes all --pages 1    # 스타일 유지, 색조 10안 비교
-python3 $K set out/report.html --style editorial               # 스타일만 변경
-python3 $K set out/report.html --accent "#e8590c" --save       # 포인트색 변경 + 기본값 저장
-python3 $K render out/report.html --preview                    # PDF + 페이지 PNG
-
-python3 $K init talk out/talk.html                             # 발표 자료 (academic + graphite)
-python3 $K render out/talk.html --preview --expect-pages 9
-python3 $K check out/talk.html                                 # 자동 검수 (오류가 있으면 종료 코드 1)
-python3 $K script out/talk.html --minutes 20                   # talk_script.docx + 발표 시간 추정
+python3 $K pptx examples/visual-analysis.json ./out/example.pptx --topic "물류 운영 분석"
+python3 $K init report ./out/report.html --topic "과학 데이터 분석"
+python3 $K init talk ./out/talk.html --palette scientific
+python3 $K render ./out/talk.html --preview
+python3 $K check ./out/talk.html --strict
 ```
 
-`gallery`는 `<문서명>_gallery/gallery.pdf`와 `sheet/page-N.png`(비교표)를 만들고, 후보별 적용 명령을 출력합니다.
+PPTX 생성·PDF 내보내기·편집 범위는 [편집 안내](references/editable-presentations.md)를 따릅니다. 사용자가 PowerPoint에서 수정한 PPTX를 정본으로 유지합니다. 이전 JSON을 다시 생성하면 수동 편집을 덮어쓸 수 있습니다.
 
-## 구조
+## 스타일과 템플릿
 
+| 축 | 옵션 |
+|---|---|
+| 스타일 | swiss, editorial, bold, minimal, tech, academic, soft, classic, split |
+| 폰트 | auto, sans, serif, serif-all, mono |
+| 밀도 | normal, compact, airy |
+| 모서리 | auto, sharp, soft, round |
+| 포인트색 | `--accent #RRGGBB` |
+
+기본 폰트는 Pretendard입니다. 명조체는 명시 요청이 있을 때만 고운바탕으로 적용합니다. `report`는 A4 보고서, `onepager`는 A4 한 장, `deck`은 짧은 발표, `talk`는 그림·수식·표를 포함한 발표 템플릿입니다.
+
+```bash
+python3 $K options
+python3 $K set ./out/report.html --style editorial
+python3 $K set ./out/report.html --save
+python3 $K gallery ./out/report.html --styles all
 ```
-SKILL.md                 에이전트용 작업 절차
-prompts/presentation.md  발표 자료 제작 프롬프트 템플릿
-scripts/
-  pdfdesign.py           CLI (options · init · set · render · gallery · check · script)
-  deck_tools.py          슬라이드·노트 파싱, 발표 시간 추정, 레이아웃 검사 스크립트
-  docx_writer.py         표준 라이브러리 DOCX 생성기
-assets/css/
-  core.css               공통 구조·컴포넌트·슬라이드 레이아웃 (토큰만 사용)
-  palettes.css           색조
-  styles/*.css           스타일
-  options.css            폰트·밀도·모서리
-templates/               report · onepager · deck · talk
-references/              디자인 규칙, AI 티 금지 기준, 스타일 가이드, 컴포넌트, 발표 자료 절차, 확장 방법
-examples/                예시 문서 (수치는 모두 예시 데이터)
-tests/                   unittest
-```
 
-`init`·`set`·`render`는 CSS를 합친 `pdf-design.css`를 문서 옆에 생성합니다. 이 파일은 생성물이므로 직접 수정하지 말고, 문서별 수정은 문서의 `<style>`에 적습니다.
+스타일만 바꾸면 색과 내용을 유지합니다. `--save`는 폴더의 `pdf-design.json`에 선호를 저장합니다. 디자인 개선 시에는 같은 대표 페이지의 구조 A/B도 비교합니다. 팔레트만 바꾼 갤러리가 구조 시안을 대신하지 않습니다.
 
-## 개발
+## 검수와 실행 환경
+
+HTML PDF에는 Chrome/Chromium/Edge, 미리보기에는 Poppler가 필요합니다. PPTX 생성에는 [편집 안내](references/editable-presentations.md)의 별도 의존성이 필요합니다. 글꼴·수식 리소스의 다운로드가 불가능하면 대체 폰트와 수식 출력 상태를 확인합니다.
+
+`check`는 넘침, 겹침, 작은 글씨, 깨진 이미지, 수식 문제 등을 확인합니다. 이미지 안의 축·범례·수치는 직접 읽어야 합니다. 편집 원본에서 텍스트·표 셀·차트 데이터를 바꾸고 PDF로 재출력할 수 있는지 확인합니다. PowerPoint를 직접 실행하지 않았다면 그 점을 검수 기록에 남깁니다.
 
 ```bash
 python3 -m compileall -q scripts tests
 python3 -m unittest discover -s tests
 ```
 
-Chrome과 Poppler가 없으면 렌더링 테스트는 건너뜁니다. 스타일이나 색조를 추가하는 방법은 [references/extending.md](references/extending.md)를 참고하세요.
+Chrome과 Poppler가 없는 환경에서는 렌더 테스트가 건너뛰어질 수 있으므로 실행 결과를 확인해야 합니다.
+
+## 지침과 예제
+
+- [발표 제작 절차](references/presentation.md)
+- [요청 프롬프트](prompts/presentation.md)
+- [전체 시각 설계](references/visual-storytelling.md)
+- [디자인 규칙](references/design-rules.md)
+- [반복 검토 기준](references/anti-ai-design.md)
+- [편집용 시각 예제](examples/visual-analysis.md)
+- [확장 방법](references/extending.md)
+
+`init`·`set`·`render`가 생성하는 `pdf-design.css`는 직접 수정하지 않습니다. 문서 전용 스타일은 HTML의 `<style>`에 작성합니다.

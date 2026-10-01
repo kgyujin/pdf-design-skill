@@ -26,6 +26,7 @@ html[data-palette="indigo"] {
   --on-inverse: #ffffff;
   --on-inverse-muted: #a3a9b5;
   --accent-on-inverse: #aab6de;
+  --secondary: var(--ink-2);
 }
 
 html[data-palette="navy"] {
@@ -42,6 +43,7 @@ html[data-palette="navy"] {
   --on-inverse: #ffffff;
   --on-inverse-muted: #9fb0c8;
   --accent-on-inverse: #7fb0ff;
+  --secondary: var(--ink-2);
 }
 
 html[data-palette="terracotta"] {
@@ -58,6 +60,7 @@ html[data-palette="terracotta"] {
   --on-inverse: #fffdf8;
   --on-inverse-muted: #b8ab9a;
   --accent-on-inverse: #f0a37c;
+  --secondary: var(--ink-2);
 }
 
 html[data-palette="forest"] {
@@ -74,6 +77,7 @@ html[data-palette="forest"] {
   --on-inverse: #ffffff;
   --on-inverse-muted: #9db8a8;
   --accent-on-inverse: #7fd3a0;
+  --secondary: var(--ink-2);
 }
 
 html[data-palette="plum"] {
@@ -90,6 +94,7 @@ html[data-palette="plum"] {
   --on-inverse: #ffffff;
   --on-inverse-muted: #b3a4bd;
   --accent-on-inverse: #d0a6ec;
+  --secondary: var(--ink-2);
 }
 
 html[data-palette="mono"] {
@@ -106,6 +111,7 @@ html[data-palette="mono"] {
   --on-inverse: #ffffff;
   --on-inverse-muted: #a0a3a8;
   --accent-on-inverse: #ffffff;
+  --secondary: var(--ink-2);
 }
 
 /* graphite: 흑백 중심 + 차분한 청회색 포인트. 모든 템플릿의 기본값(강조는 데이터·결론에만) */
@@ -124,6 +130,7 @@ html[data-palette="graphite"] {
   --on-inverse: #ffffff;
   --on-inverse-muted: #a6a6a6;
   --accent-on-inverse: #9cc0e4;
+  --secondary: var(--ink-2);
 }
 
 html[data-palette="crimson"] {
@@ -140,6 +147,7 @@ html[data-palette="crimson"] {
   --on-inverse: #ffffff;
   --on-inverse-muted: #bfa6ab;
   --accent-on-inverse: #f59aa9;
+  --secondary: var(--ink-2);
 }
 
 html[data-palette="teal"] {
@@ -156,6 +164,7 @@ html[data-palette="teal"] {
   --on-inverse: #ffffff;
   --on-inverse-muted: #95b3b5;
   --accent-on-inverse: #6fd3d6;
+  --secondary: var(--ink-2);
 }
 
 /* sand: 베이지 종이 + 올리브 포인트. 인문·여행·라이프스타일 */
@@ -173,4 +182,108 @@ html[data-palette="sand"] {
   --on-inverse: #fbf8f1;
   --on-inverse-muted: #b5ad9c;
   --accent-on-inverse: #c3d27a;
+  --secondary: var(--ink-2);
+}
+
+/* Curated presentation palettes: generated from assets/presentation-palettes.json. */
+html[data-palette="scientific"] {
+  --ink: #20282d;
+  --ink-2: #59656d;
+  --muted: #59656d;
+  --line: #d7dfe1;
+  --surface: #ffffff;
+  --surface-2: #f3f5f5;
+  --accent: #b63e4c;
+  --accent-soft: #f8e9ec;
+  --on-accent: #ffffff;
+  --inverse: #20282d;
+  --on-inverse: #ffffff;
+  --on-inverse-muted: #d5dfe7;
+  --accent-on-inverse: #ffffff;
+  --secondary: #246d82;
+}
+
+html[data-palette="technology"] {
+  --ink: #202735;
+  --ink-2: #566476;
+  --muted: #566476;
+  --line: #d7dee8;
+  --surface: #ffffff;
+  --surface-2: #f1f4f8;
+  --accent: #315cbd;
+  --accent-soft: #eaf0fc;
+  --on-accent: #ffffff;
+  --inverse: #202735;
+  --on-inverse: #ffffff;
+  --on-inverse-muted: #d5dfe7;
+  --accent-on-inverse: #ffffff;
+  --secondary: #0b766e;
+}
+
+html[data-palette="business"] {
+  --ink: #242b32;
+  --ink-2: #5b6570;
+  --muted: #5b6570;
+  --line: #dedcd6;
+  --surface: #ffffff;
+  --surface-2: #f5f4f1;
+  --accent: #225ca8;
+  --accent-soft: #e9f0fa;
+  --on-accent: #ffffff;
+  --inverse: #242b32;
+  --on-inverse: #ffffff;
+  --on-inverse-muted: #d5dfe7;
+  --accent-on-inverse: #ffffff;
+  --secondary: #a75420;
+}
+
+html[data-palette="nature"] {
+  --ink: #23332c;
+  --ink-2: #59675f;
+  --muted: #59675f;
+  --line: #d5dfd4;
+  --surface: #ffffff;
+  --surface-2: #f2f5f0;
+  --accent: #2d6e52;
+  --accent-soft: #e7f1e9;
+  --on-accent: #ffffff;
+  --inverse: #23332c;
+  --on-inverse: #ffffff;
+  --on-inverse-muted: #d5dfe7;
+  --accent-on-inverse: #ffffff;
+  --secondary: #936324;
+}
+
+html[data-palette="education"] {
+  --ink: #302936;
+  --ink-2: #655e6c;
+  --muted: #655e6c;
+  --line: #e0d8e3;
+  --surface: #ffffff;
+  --surface-2: #f6f3f6;
+  --accent: #744885;
+  --accent-soft: #f0e8f3;
+  --on-accent: #ffffff;
+  --inverse: #302936;
+  --on-inverse: #ffffff;
+  --on-inverse-muted: #d5dfe7;
+  --accent-on-inverse: #ffffff;
+  --secondary: #326d88;
+}
+
+html[data-palette="neutral"] {
+  --ink: #252b2c;
+  --ink-2: #5f6969;
+  --muted: #5f6969;
+  --line: #d7dcd8;
+  --surface: #ffffff;
+  --surface-2: #f2f3f1;
+  --accent: #3f6174;
+  --accent-soft: #eaf0f3;
+  --on-accent: #ffffff;
+  --inverse: #252b2c;
+  --on-inverse: #ffffff;
+  --on-inverse-muted: #d5dfe7;
+  --accent-on-inverse: #ffffff;
+  --secondary: #94553e;
 }
